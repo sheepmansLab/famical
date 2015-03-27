@@ -164,6 +164,9 @@ public class CalendarFragment extends BaseFragment {
 		}
 	};
 	
+	/**
+	 * セル押下時のイベント
+	 */
 	OnTouchListener lsnrTouch = new OnTouchListener() {
 		private final float adjust = 50;
 		

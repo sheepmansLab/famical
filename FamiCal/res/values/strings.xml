@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">evereco</string>
-    <string name="app_name_ja">イベレコ</string>
+    <string name="app_name">famireco</string>
+    <string name="app_name_ja">ふぁみかる</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_list">ListActivity</string>
-    <string name="title_activity_calebdar">CalebdarActivity</string>
-    <string name="title_activity_main">MainActivity</string>
     <!-- メニュー -->
     <string name="lblMenuCalendar">Calendar</string>
     <string name="lblMenuList">List</string>
