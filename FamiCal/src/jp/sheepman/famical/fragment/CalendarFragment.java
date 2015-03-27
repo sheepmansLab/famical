@@ -24,12 +24,17 @@ import android.widget.TextView;
 public class CalendarFragment extends BaseFragment {
 	private LayoutInflater inflator;
 	private Calendar cal;
+	
+	private InputDialogFragment dialog;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		cal = Calendar.getInstance();
 		cal.setTime(new Date());
+		
+		dialog = new InputDialogFragment();
+		dialog.setTargetFragment(this, 0);
 	}
 
 	@SuppressLint("InflateParams")
@@ -206,9 +211,8 @@ public class CalendarFragment extends BaseFragment {
 			case MotionEvent.ACTION_UP:
 				Bundle args = new Bundle();
 				args.putString("event_date", v.getTag().toString());
-//				dialog.setArguments(args);
-//				dialog.setTargetFragment(EventCalendarFragment.this, 0);
-//				dialog.show(getFragmentManager(), "dalog");
+				dialog.setArguments(args);
+				dialog.show(getFragmentManager(), "dialog");
 				flg_move = false;
 				break;
 			default:

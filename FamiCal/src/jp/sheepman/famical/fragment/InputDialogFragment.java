@@ -3,19 +3,19 @@
  */
 package jp.sheepman.famical.fragment;
 
+import jp.sheepman.common.fragment.BaseDialogFragment;
+import jp.sheepman.famical.R;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import jp.sheepman.common.fragment.BaseFragment;
-import jp.sheepman.famical.R;
 
 
 /**
  * @author sheepman
  *
  */
-public class InputDialogFragment extends BaseFragment {
+public class InputDialogFragment extends BaseDialogFragment {
 	private LayoutInflater inflator;
 	
 	@Override
