@@ -12,44 +12,42 @@
         android:layout_width="match_parent"
         android:layout_height="20dp"
         android:gravity="center" />
-	<ImageView 
-        android:id="@+id/ivCellIcon"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_gravity="bottom|left"
-        android:layout_margin="3dp"
-        android:scaleType="matrix"
-        android:contentDescription="@string/descCalIcon"
-        tools:ignore="RtlHardcoded,SmallSp" />
 
 	<LinearLayout
+	    android:id="@+id/llCellCount"
 	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content" >
+	    android:layout_height="wrap_content"
+	    android:orientation="horizontal">
 
 		<TextView
-		    android:id="@+id/textView1"
-		    android:layout_width="wrap_content"
+		    android:id="@+id/tvCelPeCircle"
+		    android:layout_width="match_parent"
 		    android:layout_height="wrap_content"
-		    android:text="TextView" />
+		    android:layout_weight="1"
+		    android:gravity="center"
+		    android:textColor="@color/nile_blue"/>
 
 		<TextView
-		    android:id="@+id/textView2"
-		    android:layout_width="wrap_content"
+		    android:id="@+id/tvCelPeCount"
+		    android:layout_width="match_parent"
 		    android:layout_height="wrap_content"
-		    android:text="TextView" />
+		    android:layout_weight="1"
+		    android:text=""/>
 
 		<TextView
-		    android:id="@+id/textView3"
-		    android:layout_width="wrap_content"
+		    android:id="@+id/tvCelPoCircle"
+		    android:layout_width="match_parent"
 		    android:layout_height="wrap_content"
-		    android:text="TextView" />
+		    android:layout_weight="1"
+		    android:gravity="center"
+		    android:textColor="@color/mustard"/>
 
 		<TextView
-		    android:id="@+id/textView4"
-		    android:layout_width="wrap_content"
+		    android:id="@+id/tvCelPoCount"
+		    android:layout_width="match_parent"
 		    android:layout_height="wrap_content"
-		    android:text="TextView" />
+		    android:layout_weight="1"
+		    android:text=""/>
 
 	</LinearLayout>
-
 </LinearLayout>

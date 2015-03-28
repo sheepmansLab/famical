@@ -2,10 +2,15 @@ package jp.sheepman.famical.fragment;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
+import jp.sheepman.common.form.BaseForm;
 import jp.sheepman.common.fragment.BaseFragment;
 import jp.sheepman.common.util.CalendarUtil;
 import jp.sheepman.famical.R;
+import jp.sheepman.famical.form.WcRecordForm;
+import jp.sheepman.famical.model.WcRecordSelectModel;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -21,11 +26,11 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-public class CalendarFragment extends BaseFragment {
+public class WcRecordCalendarFragment extends BaseFragment {
 	private LayoutInflater inflator;
 	private Calendar cal;
 	
-	private InputDialogFragment dialog;
+	private WcRecordInputDialogFragment dialog;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -33,7 +38,7 @@ public class CalendarFragment extends BaseFragment {
 		cal = Calendar.getInstance();
 		cal.setTime(new Date());
 		
-		dialog = new InputDialogFragment();
+		dialog = new WcRecordInputDialogFragment();
 		dialog.setTargetFragment(this, 0);
 	}
 
@@ -68,12 +73,6 @@ public class CalendarFragment extends BaseFragment {
 		tvCalNext.setText("→");
 		tvCalNext.setOnClickListener(lsnrNext);
 
-		//データ取得
-//		EventSelectModel model = new EventSelectModel();
-//		List<EventCalendarForm> list = model.selectForCalendar(getActivity()
-//													, String.format("%1$02d", year)
-//													, String.format("%1$02d", month));
-		
 		// テーブル作成
 		TableLayout tl = (TableLayout) v.findViewById(R.id.tlCalendar);
 		
@@ -81,6 +80,13 @@ public class CalendarFragment extends BaseFragment {
 		TableRow.LayoutParams p = new TableRow.LayoutParams(
 				TableRow.LayoutParams.MATCH_PARENT,
 				TableRow.LayoutParams.MATCH_PARENT, 1);
+		
+		//データ取得
+		WcRecordSelectModel model = new WcRecordSelectModel(getActivity());
+		WcRecordForm form = new WcRecordForm();
+		form.setWc_record_date(cal);
+		List<BaseForm> list = model.select(form);
+		
 		// 初日にリセット
 		cal.set(Calendar.DATE, 1);
 		cal.add(Calendar.DATE, (-1) * (cal.get(Calendar.DAY_OF_WEEK) - 1));
@@ -96,31 +102,43 @@ public class CalendarFragment extends BaseFragment {
 				int countDisable = 0;
 				for (int j = 0; j < 7; j++) {
 					// 日付セルのViewを生成
-					View cell = inflator.inflate(R.layout.layout_calendar_cell,
-							null);
+					View cell = inflator.inflate(R.layout.layout_calendar_cell, null);
 					// 行にViewを追加
 					tr.addView(cell, p);
 					// 前月、次月の場合は対象外
 					if (month == CalendarUtil.getMonth(cal)) {
+						//マークを設定
+						((TextView)cell.findViewById(R.id.tvCelPeCircle)).setText(R.string.lblMarkCircle);
+						((TextView)cell.findViewById(R.id.tvCelPoCircle)).setText(R.string.lblMarkCircle);
+						//初期表示のカウント0
+						((TextView)cell.findViewById(R.id.tvCelPeCount)).setText("0");
+						((TextView)cell.findViewById(R.id.tvCelPoCount)).setText("0");
+						
 						// セルの日付をセット
 						((TextView) cell.findViewById(R.id.tvCellDay))
 								.setText(String.valueOf(CalendarUtil.getDate(cal)));
 						// 付加情報として日付をセット
 						cell.setTag(CalendarUtil.cal2str(cal));
 						//その日のデータがないかチェックする
-//						for(EventCalendarForm f : list){
-//							if(f.getEventDate().equals(CalendarUtil.cal2str(cal))){
-//								((ImageView)cell.findViewById(R.id.ivCellIcon)).setImageResource(R.drawable.evereco_mark);
-//								//TODO 用済みのオブジェクトは消したいが、順序がくるってエラーを吐く
-//								//list.remove(f);
-//							}
-//						}
+						Iterator<BaseForm> ite = list.iterator();
+						while(ite.hasNext()){
+							WcRecordForm f = (WcRecordForm)ite.next();
+							if(CalendarUtil.cal2str(f.getWc_record_date()).equals(CalendarUtil.cal2str(cal))){
+								((TextView)cell.findViewById(R.id.tvCelPeCount)).setText(String.valueOf(f.getPe_count()));
+								((TextView)cell.findViewById(R.id.tvCelPoCount)).setText(String.valueOf(f.getPo_count()));
+								ite.remove();
+							}
+						}
+						
 						//土日に色を設定する
 						if(j == 6){
-							cell.setBackgroundColor(getResources().getColor(R.color.crimson));
 							cell.setBackgroundResource(R.drawable.calendar_cell_sat);
+							//赤文字
+							((TextView)cell.findViewById(R.id.tvCellDay)).setTextColor(getResources().getColor(R.color.steelblue));
 						} else if(j == 0) {
 							cell.setBackgroundResource(R.drawable.calendar_cell_sun);
+							//赤文字
+							((TextView)cell.findViewById(R.id.tvCellDay)).setTextColor(getResources().getColor(R.color.crimson));
 						}
 					} else {
 						cell.setBackgroundColor(Color.GRAY);
@@ -210,7 +228,7 @@ public class CalendarFragment extends BaseFragment {
 				break;
 			case MotionEvent.ACTION_UP:
 				Bundle args = new Bundle();
-				args.putString("event_date", v.getTag().toString());
+				args.putString("wc_record_date", v.getTag().toString());
 				dialog.setArguments(args);
 				dialog.show(getFragmentManager(), "dialog");
 				flg_move = false;
@@ -221,7 +239,7 @@ public class CalendarFragment extends BaseFragment {
 			return true;
 		}
 	};
-
+	
 	@Override
 	public void callback() {
 		createCalendarView(getView(), cal, false);

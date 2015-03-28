@@ -3,15 +3,8 @@
     <string name="app_name">famireco</string>
     <string name="app_name_ja">ふぁみかる</string>
     <string name="action_settings">Settings</string>
-    <!-- メニュー -->
-    <string name="lblMenuCalendar">Calendar</string>
-    <string name="lblMenuList">List</string>
-    <string name="lblMenuOption">Option</string>
-    <!-- 入力画面 -->
-    <string name="lblEventName">件名</string>
     <string name="lblEventDate">日付</string>
     <string name="lblComment">コメント</string>
-    <string name="lblInputLayoutTitle">イベント入力</string>
     <string name="lblInput">登録</string>
     <string name="lblClear">クリア</string>
     <string name="lblDelete">削除</string>
@@ -25,10 +18,5 @@
     <string name="lblWeekdayFri">金</string>
     <string name="lblWeekdaySat">土</string>
     <string name="lblWeekdaySun">日</string>
-    <string name="descCalIcon">予定あり</string>
-    <!-- リスト画面 -->
-    <string name="lblNewRecord">新規作成</string>
-    <string name="lblDateSpan">表示期間</string>
-    <string name="lblWaveDash">〜</string>
-    <string name="lblBatsu">X</string>
+    <string name="lblMarkCircle">●</string>
 </resources>
