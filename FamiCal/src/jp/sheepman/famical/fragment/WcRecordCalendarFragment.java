@@ -85,7 +85,7 @@ public class WcRecordCalendarFragment extends BaseFragment {
 		WcRecordSelectModel model = new WcRecordSelectModel(getActivity());
 		WcRecordForm form = new WcRecordForm();
 		form.setWc_record_date(cal);
-		List<BaseForm> list = model.select(form);
+		List<BaseForm> list = model.selectByMonth(form);
 		
 		// 初日にリセット
 		cal.set(Calendar.DATE, 1);

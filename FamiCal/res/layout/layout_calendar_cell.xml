@@ -11,7 +11,9 @@
         android:id="@+id/tvCellDay"
         android:layout_width="match_parent"
         android:layout_height="20dp"
-        android:gravity="center" />
+        android:layout_margin="3dp"
+		android:textSize="15sp"
+        android:gravity="start" />
 
 	<LinearLayout
 	    android:id="@+id/llCellCount"
@@ -25,6 +27,7 @@
 		    android:layout_height="wrap_content"
 		    android:layout_weight="1"
 		    android:gravity="center"
+		    android:textSize="13sp"
 		    android:textColor="@color/nile_blue"/>
 
 		<TextView
@@ -32,6 +35,7 @@
 		    android:layout_width="match_parent"
 		    android:layout_height="wrap_content"
 		    android:layout_weight="1"
+		    android:textSize="12sp"
 		    android:text=""/>
 
 		<TextView
@@ -40,6 +44,7 @@
 		    android:layout_height="wrap_content"
 		    android:layout_weight="1"
 		    android:gravity="center"
+		    android:textSize="13sp"
 		    android:textColor="@color/mustard"/>
 
 		<TextView
@@ -47,6 +52,7 @@
 		    android:layout_width="match_parent"
 		    android:layout_height="wrap_content"
 		    android:layout_weight="1"
+		    android:textSize="12sp"
 		    android:text=""/>
 
 	</LinearLayout>
