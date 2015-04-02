@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:orientation="vertical" >
+        <Button
+            android:id="@+id/btnNumpickUp"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:gravity="center_horizontal|top"
+            android:layout_margin="-10dp"
+            android:textSize="12sp"
+            android:text="@string/lblMarkUp" />
+
+        <EditText
+            android:id="@+id/etCount"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:ems="2"
+            android:inputType="number" />
+
+        <Button
+            android:id="@+id/btnNumpickDown"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:gravity="center_horizontal|bottom"
+            android:layout_margin="-10dp"
+            android:textSize="12sp"
+            android:text="@string/lblMarkDown" />
+    
+</LinearLayout>
