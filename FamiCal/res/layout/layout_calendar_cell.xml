@@ -13,12 +13,14 @@
         android:layout_height="20dp"
         android:layout_margin="3dp"
 		android:textSize="15sp"
+		android:textStyle="bold"
         android:gravity="start" />
 
 	<LinearLayout
 	    android:id="@+id/llCellCount"
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
+	    android:gravity="center_horizontal"
 	    android:orientation="horizontal">
 
 		<TextView
@@ -28,7 +30,7 @@
 		    android:layout_weight="1"
 		    android:gravity="center"
 		    android:textSize="13sp"
-		    android:textColor="@color/nile_blue"/>
+		    android:textColor="@color/powderblue"/>
 
 		<TextView
 		    android:id="@+id/tvCelPeCount"

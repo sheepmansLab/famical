@@ -140,12 +140,12 @@ public class WcRecordCalendarFragment extends BaseFragment {
 							//赤文字
 							((TextView)cell.findViewById(R.id.tvCellDay)).setTextColor(getResources().getColor(R.color.crimson));
 						}
+						// 押下時のイベントをセット
+						cell.setOnTouchListener(lsnrTouch);
 					} else {
 						cell.setBackgroundColor(Color.GRAY);
 						countDisable ++;
 					}
-					// 押下時のイベントをセット
-					cell.setOnTouchListener(lsnrTouch);
 					//全部別の月の場合行を隠す
 					if(countDisable == 7){
 						tr.setVisibility(View.GONE);
