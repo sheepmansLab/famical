@@ -30,16 +30,11 @@ public class WcRecordCalendarFragment extends BaseFragment {
 	private LayoutInflater inflator;
 	private Calendar cal;
 	
-	private WcRecordInputDialogFragment dialog;
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		cal = Calendar.getInstance();
 		cal.setTime(new Date());
-		
-		dialog = new WcRecordInputDialogFragment();
-		dialog.setTargetFragment(this, 0);
 	}
 
 	@SuppressLint("InflateParams")
@@ -233,6 +228,7 @@ public class WcRecordCalendarFragment extends BaseFragment {
 				}
 				break;
 			case MotionEvent.ACTION_UP:
+				WcRecordInputDialogFragment dialog = getDialogFragment();
 				Bundle args = new Bundle();
 				//TODO family_id実装時に変更
 				args.putInt("family_id", 1);
@@ -247,6 +243,17 @@ public class WcRecordCalendarFragment extends BaseFragment {
 			return true;
 		}
 	};
+	
+	/**
+	 * DialogFragmentを生成する
+	 * @return
+	 */
+	private WcRecordInputDialogFragment getDialogFragment(){
+		WcRecordInputDialogFragment dialog = new WcRecordInputDialogFragment();	
+		dialog = new WcRecordInputDialogFragment();
+		dialog.setTargetFragment(this, 0);
+		return dialog;
+	}
 	
 	@Override
 	public void callback() {

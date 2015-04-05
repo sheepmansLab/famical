@@ -13,14 +13,19 @@
         android:layout_alignParentStart="true"
         android:padding="5dp"
         android:textColor="@color/white"
-        android:background="@drawable/background_inputdialog_title"/>
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:background="@drawable/background_inputdialog_title">
+        <requestFocus/>
+    </TextView>
     <TextView
         android:id="@+id/tvDialogFamily_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
-        android:visibility="invisible"/>
+        android:visibility="invisible">
+    </TextView>
     <Button
         android:id="@+id/btnClose"
         android:layout_width="30dp"
@@ -66,18 +71,24 @@
             android:id="@+id/btnDialogInput"
             android:layout_width="80dp"
             android:layout_height="40dp"
-            android:text="@string/lblInput" />
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:text="@string/lblInput"/>
 
         <Button
             android:id="@+id/btnDialogClear"
             android:layout_width="80dp"
             android:layout_height="40dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:text="@string/lblClear" />
 
         <Button
             android:id="@+id/btnDialogDelete"
             android:layout_width="80dp"
             android:layout_height="40dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:text="@string/lblDelete" />
 
     </LinearLayout>
