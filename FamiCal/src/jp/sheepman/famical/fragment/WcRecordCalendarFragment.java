@@ -126,6 +126,12 @@ public class WcRecordCalendarFragment extends BaseFragment {
 							if(CalendarUtil.cal2str(f.getWc_record_date()).equals(CalendarUtil.cal2str(cal))){
 								((TextView)cell.findViewById(R.id.tvCelPeCount)).setText(String.valueOf(f.getPe_count()));
 								((TextView)cell.findViewById(R.id.tvCelPoCount)).setText(String.valueOf(f.getPo_count()));
+								//色を付ける
+								((TextView)cell.findViewById(R.id.tvCelPeCircle)).setTextColor(getResources().getColor(R.color.powderblue));
+								((TextView)cell.findViewById(R.id.tvCelPoCircle)).setTextColor(getResources().getColor(R.color.mustard));
+								((TextView)cell.findViewById(R.id.tvCelPeCount)).setTextColor(getResources().getColor(R.color.black));
+								((TextView)cell.findViewById(R.id.tvCelPoCount)).setTextColor(getResources().getColor(R.color.black));
+
 								ite.remove();
 							}
 						}
@@ -228,6 +234,8 @@ public class WcRecordCalendarFragment extends BaseFragment {
 				break;
 			case MotionEvent.ACTION_UP:
 				Bundle args = new Bundle();
+				//TODO family_id実装時に変更
+				args.putInt("family_id", 1);
 				args.putString("wc_record_date", v.getTag().toString());
 				dialog.setArguments(args);
 				dialog.show(getFragmentManager(), "dialog");

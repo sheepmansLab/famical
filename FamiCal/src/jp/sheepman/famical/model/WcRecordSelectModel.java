@@ -28,7 +28,7 @@ public class WcRecordSelectModel extends BaseModel {
 						+ "FROM wc_record "
 						+ "WHERE wc_record_date BETWEEN ? AND ? ";
 
-	final String sql02 = "SELECT wc_record_date "
+	final String sql02 = "SELECT family_id ,wc_record_date, pe_count, po_count, comment "
 						+ "FROM wc_record "
 						+ "WHERE family_id = ? AND wc_record_date = ? ";
 	public WcRecordSelectModel(Context context){
@@ -74,9 +74,8 @@ public class WcRecordSelectModel extends BaseModel {
 	 * @param form
 	 * @return
 	 */
-	public int selectCountByPrimary(WcRecordForm form) {
-		int ret = 0;
-		List<BaseEntity> data = new ArrayList<BaseEntity>();
+	public List<BaseEntity> selectByPrimary(WcRecordForm form) {
+		List<BaseEntity> ret = new ArrayList<BaseEntity>();
 		List<String> params = new ArrayList<String>();
 		
 		DatabaseUtil dbutil = new DatabaseUtil(mContext);
@@ -86,14 +85,9 @@ public class WcRecordSelectModel extends BaseModel {
 		params.add(String.valueOf(form.getFamily_id()));
 		params.add(CalendarUtil.cal2str(form.getWc_record_date()));
 		//データを取得
-		data = dbutil.select(sql02, params, this);
+		ret = dbutil.select(sql02, params, this);
 		dbutil.close();
 		
-		Iterator<BaseEntity> ite = data.iterator();
-		while(ite.hasNext()){
-			ite.next();
-			ret++;
-		}
 		return ret;
 	}
 	

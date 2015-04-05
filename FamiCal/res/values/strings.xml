@@ -19,6 +19,7 @@
     <string name="lblWeekdaySat">土</string>
     <string name="lblWeekdaySun">日</string>
     <string name="lblMarkCircle">●</string>
+    <string name="lblMarkBatsu">x</string>
     <string name="lblMarkUp">▲</string>
     <string name="lblMarkDown">▼</string>
 </resources>
