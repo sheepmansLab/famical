@@ -30,16 +30,11 @@ public class WcRecordCalendarFragment extends BaseFragment {
 	private LayoutInflater inflator;
 	private Calendar cal;
 	
-	private WcRecordInputDialogFragment dialog;
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		cal = Calendar.getInstance();
 		cal.setTime(new Date());
-		
-		dialog = new WcRecordInputDialogFragment();
-		dialog.setTargetFragment(this, 0);
 	}
 
 	@SuppressLint("InflateParams")
@@ -126,6 +121,12 @@ public class WcRecordCalendarFragment extends BaseFragment {
 							if(CalendarUtil.cal2str(f.getWc_record_date()).equals(CalendarUtil.cal2str(cal))){
 								((TextView)cell.findViewById(R.id.tvCelPeCount)).setText(String.valueOf(f.getPe_count()));
 								((TextView)cell.findViewById(R.id.tvCelPoCount)).setText(String.valueOf(f.getPo_count()));
+								//色を付ける
+								((TextView)cell.findViewById(R.id.tvCelPeCircle)).setTextColor(getResources().getColor(R.color.powderblue));
+								((TextView)cell.findViewById(R.id.tvCelPoCircle)).setTextColor(getResources().getColor(R.color.mustard));
+								((TextView)cell.findViewById(R.id.tvCelPeCount)).setTextColor(getResources().getColor(R.color.black));
+								((TextView)cell.findViewById(R.id.tvCelPoCount)).setTextColor(getResources().getColor(R.color.black));
+
 								ite.remove();
 							}
 						}
@@ -140,12 +141,12 @@ public class WcRecordCalendarFragment extends BaseFragment {
 							//赤文字
 							((TextView)cell.findViewById(R.id.tvCellDay)).setTextColor(getResources().getColor(R.color.crimson));
 						}
+						// 押下時のイベントをセット
+						cell.setOnTouchListener(lsnrTouch);
 					} else {
 						cell.setBackgroundColor(Color.GRAY);
 						countDisable ++;
 					}
-					// 押下時のイベントをセット
-					cell.setOnTouchListener(lsnrTouch);
 					//全部別の月の場合行を隠す
 					if(countDisable == 7){
 						tr.setVisibility(View.GONE);
@@ -227,7 +228,10 @@ public class WcRecordCalendarFragment extends BaseFragment {
 				}
 				break;
 			case MotionEvent.ACTION_UP:
+				WcRecordInputDialogFragment dialog = getDialogFragment();
 				Bundle args = new Bundle();
+				//TODO family_id実装時に変更
+				args.putInt("family_id", 1);
 				args.putString("wc_record_date", v.getTag().toString());
 				dialog.setArguments(args);
 				dialog.show(getFragmentManager(), "dialog");
@@ -239,6 +243,17 @@ public class WcRecordCalendarFragment extends BaseFragment {
 			return true;
 		}
 	};
+	
+	/**
+	 * DialogFragmentを生成する
+	 * @return
+	 */
+	private WcRecordInputDialogFragment getDialogFragment(){
+		WcRecordInputDialogFragment dialog = new WcRecordInputDialogFragment();	
+		dialog = new WcRecordInputDialogFragment();
+		dialog.setTargetFragment(this, 0);
+		return dialog;
+	}
 	
 	@Override
 	public void callback() {

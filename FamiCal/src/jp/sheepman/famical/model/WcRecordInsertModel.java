@@ -3,9 +3,6 @@
  */
 package jp.sheepman.famical.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import jp.sheepman.common.model.BaseModel;
 import jp.sheepman.common.util.CalendarUtil;
 import jp.sheepman.common.util.DatabaseUtil;
@@ -29,7 +26,7 @@ public class WcRecordInsertModel extends BaseModel {
 	/**
 	 * 記録データのInsert処理
 	 */
-	public void execute(WcRecordForm form){
+	public void insert(WcRecordForm form){
 		DatabaseUtil dbutil = new DatabaseUtil(mContext);
 		dbutil.open();
 		//input情報をセット

@@ -31,7 +31,7 @@ public class WcRecordUpdateModel extends BaseModel {
 	 * 記録データの更新処理
 	 * @param form
 	 */
-	public void execute(WcRecordForm form){
+	public void update(WcRecordForm form){
 		final String whereClause = "family_id = ? "
 								 + "AND wc_record_date = ? ";
 		List<String> list = new ArrayList<String>();

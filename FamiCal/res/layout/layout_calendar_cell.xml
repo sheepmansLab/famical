@@ -13,12 +13,14 @@
         android:layout_height="20dp"
         android:layout_margin="3dp"
 		android:textSize="15sp"
+		android:textStyle="bold"
         android:gravity="start" />
 
 	<LinearLayout
 	    android:id="@+id/llCellCount"
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
+	    android:gravity="center_horizontal"
 	    android:orientation="horizontal">
 
 		<TextView
@@ -28,7 +30,7 @@
 		    android:layout_weight="1"
 		    android:gravity="center"
 		    android:textSize="13sp"
-		    android:textColor="@color/nile_blue"/>
+		    android:textColor="@color/lightgrey"/>
 
 		<TextView
 		    android:id="@+id/tvCelPeCount"
@@ -36,7 +38,8 @@
 		    android:layout_height="wrap_content"
 		    android:layout_weight="1"
 		    android:textSize="12sp"
-		    android:text=""/>
+		    android:text=""
+		    android:textColor="@color/lightgrey"/>
 
 		<TextView
 		    android:id="@+id/tvCelPoCircle"
@@ -45,7 +48,7 @@
 		    android:layout_weight="1"
 		    android:gravity="center"
 		    android:textSize="13sp"
-		    android:textColor="@color/mustard"/>
+		    android:textColor="@color/lightgrey"/>
 
 		<TextView
 		    android:id="@+id/tvCelPoCount"
@@ -53,7 +56,8 @@
 		    android:layout_height="wrap_content"
 		    android:layout_weight="1"
 		    android:textSize="12sp"
-		    android:text=""/>
+		    android:text=""
+		    android:textColor="@color/lightgrey"/>
 
 	</LinearLayout>
 </LinearLayout>

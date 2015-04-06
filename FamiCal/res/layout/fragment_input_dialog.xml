@@ -1,94 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:layout_marginTop="15dp"
+    android:background="@drawable/background_inputdialog">
 
     <TextView
         android:id="@+id/tvDialogDate"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:padding="5dp"
+        android:textColor="@color/white"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:background="@drawable/background_inputdialog_title">
+        <requestFocus/>
+    </TextView>
+    <TextView
+        android:id="@+id/tvDialogFamily_id"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:visibility="invisible">
+    </TextView>
+    <Button
+        android:id="@+id/btnClose"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:gravity="center"
+        android:background="@drawable/button_circle"
+        android:textColor="@color/darkgray"
+        android:text="@string/lblMarkBatsu"/>
     <LinearLayout
+        android:id="@+id/llDialogCount"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <Button
-            android:id="@+id/button1"
-            android:layout_width="30dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="2dp"
-            android:padding="0dp"
-            android:textSize="12sp"
-            android:text="@string/lblMarkUp" />
-
-        <EditText
-            android:id="@+id/editText1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="2"
-            android:inputType="number" />
-
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="30dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="2dp"
-            android:padding="0dp"
-            android:textSize="12sp"
-            android:text="@string/lblMarkDown" />
-
-        <Button
-            android:id="@+id/button3"
-            android:layout_width="30dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="2dp"
-            android:padding="0dp"
-            android:textSize="12sp"
-            android:text="@string/lblMarkUp" />
-
-        <EditText
-            android:id="@+id/editText2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="2"
-            android:inputType="number" />
-
-        <Button
-            android:id="@+id/button4"
-            android:layout_width="30dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="2dp"
-            android:padding="0dp"
-            android:textSize="12sp"
-            android:text="@string/lblMarkDown" />
-
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvDialogDate"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:gravity="center">
+		<jp.sheepman.famical.view.CustomNumberPicker
+		    android:id="@+id/cnpDialogPeCount"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_marginLeft="20dp"
+		    android:layout_marginRight="20dp"
+		    />
+		<jp.sheepman.famical.view.CustomNumberPicker
+		    android:id="@+id/cnpDialogPoCount"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_marginLeft="20dp"
+		    android:layout_marginRight="20dp"
+		    />
     </LinearLayout>
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/llDialogCount"
+        android:layout_marginTop="20dp"
+        android:gravity="center_horizontal">
 
         <Button
             android:id="@+id/btnDialogInput"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/lblInput" />
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:text="@string/lblInput"/>
 
         <Button
             android:id="@+id/btnDialogClear"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:text="@string/lblClear" />
 
         <Button
             android:id="@+id/btnDialogDelete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:text="@string/lblDelete" />
 
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>
