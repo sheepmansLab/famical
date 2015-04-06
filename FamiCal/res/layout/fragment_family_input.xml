@@ -18,6 +18,14 @@
         android:background="@drawable/background_inputdialog_title">
         <requestFocus/>
     </TextView>
+    <TextView
+        android:id="@+id/tvDialogFamily_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:visibility="invisible">
+    </TextView>
     <Button
         android:id="@+id/btnClose"
         android:layout_width="30dp"

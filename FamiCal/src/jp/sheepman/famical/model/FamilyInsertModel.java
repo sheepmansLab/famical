@@ -28,9 +28,15 @@ public class FamilyInsertModel extends BaseModel {
 		
 		FamilyEntity entity = new FamilyEntity();
 		//entity.setFamily_id(form.getFamily_id());	//自動採番のため不要
-		entity.setFamily_name(form.getFamily_name());
-		entity.setBirth_date(CalendarUtil.cal2str(form.getBirth_date()));
-		entity.setImage_id(form.getImage_id());
+		if(form.getFamily_name() != null){
+			entity.setFamily_name(form.getFamily_name());
+		}
+		if(form.getBirth_date() != null){
+			entity.setBirth_date(CalendarUtil.cal2str(form.getBirth_date()));
+		}
+		if(form.getImage_id() == 0){
+			entity.setImage_id(form.getImage_id());
+		}
 		//Insert処理
 		dbutil.insert(tablename , entity );
 		

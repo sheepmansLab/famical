@@ -70,6 +70,8 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 		Bundle args = getArguments();
 		if(args != null){
 			family_id = args.getInt("family_id");
+		} else {
+			family_id = 1;
 		}
 		//Viewのレイアウトを取得
 		View view = this.inflator.inflate(R.layout.fragment_family_input, null);

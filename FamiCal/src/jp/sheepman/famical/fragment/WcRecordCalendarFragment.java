@@ -9,7 +9,9 @@ import jp.sheepman.common.form.BaseForm;
 import jp.sheepman.common.fragment.BaseFragment;
 import jp.sheepman.common.util.CalendarUtil;
 import jp.sheepman.famical.R;
+import jp.sheepman.famical.form.FamilyForm;
 import jp.sheepman.famical.form.WcRecordForm;
+import jp.sheepman.famical.model.FamilySelectModel;
 import jp.sheepman.famical.model.WcRecordSelectModel;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
@@ -43,6 +45,7 @@ public class WcRecordCalendarFragment extends BaseFragment {
 			Bundle savedInstanceState) {
 		this.inflator = inflater;
 		View v = inflator.inflate(R.layout.fragment_calebdar, null);
+		showFamilyDialogFragment();
 		createCalendarView(v, cal, false);
 		return v;
 	}
@@ -228,7 +231,7 @@ public class WcRecordCalendarFragment extends BaseFragment {
 				}
 				break;
 			case MotionEvent.ACTION_UP:
-				WcRecordInputDialogFragment dialog = getDialogFragment();
+				WcRecordInputDialogFragment dialog = getInputDialogFragment();
 				Bundle args = new Bundle();
 				//TODO family_id実装時に変更
 				args.putInt("family_id", 1);
@@ -248,11 +251,21 @@ public class WcRecordCalendarFragment extends BaseFragment {
 	 * DialogFragmentを生成する
 	 * @return
 	 */
-	private WcRecordInputDialogFragment getDialogFragment(){
-		WcRecordInputDialogFragment dialog = new WcRecordInputDialogFragment();	
-		dialog = new WcRecordInputDialogFragment();
+	private WcRecordInputDialogFragment getInputDialogFragment(){
+		WcRecordInputDialogFragment dialog = new WcRecordInputDialogFragment();
 		dialog.setTargetFragment(this, 0);
 		return dialog;
+	}
+	
+	private void showFamilyDialogFragment(){
+		FamilySelectModel model = new FamilySelectModel(getActivity());
+		FamilyForm form = new FamilyForm();
+		form.setFamily_id(1);
+		if(model.selectAll(form).size() == 0){
+			FamilyInputDialogFragment dialog = new FamilyInputDialogFragment();
+			dialog.setTargetFragment(this, 0);
+			dialog.show(getFragmentManager(), "family");
+		}
 	}
 	
 	@Override

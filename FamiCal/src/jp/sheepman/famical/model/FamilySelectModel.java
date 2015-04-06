@@ -16,7 +16,8 @@ import android.content.Context;
 public class FamilySelectModel extends BaseModel {
 	
 	private Context mContext;
-	private final String sql01 = "SELECT FROM family WHERE family_id = ? ";
+	private final String sql01 = "SELECT family_id, family_name, birth_date, image_id FROM family WHERE family_id = ? ";
+	private final String sql02 = "SELECT family_id, family_name, birth_date, image_id FROM family ";
 	
 	public FamilySelectModel(Context context) {
 		mContext = context;
@@ -35,6 +36,29 @@ public class FamilySelectModel extends BaseModel {
 		params.add(String.valueOf(form.getFamily_id()));
 		
 		Iterator<BaseEntity> ite = dbutil.select(sql01, params, this).iterator();
+		while(ite.hasNext()){
+			FamilyEntity entity = (FamilyEntity)ite.next();
+			FamilyForm data = new FamilyForm();
+			data.setFamily_id(entity.getFamily_id());
+			data.setFamily_name(entity.getFamily_name());
+			data.setBirth_date(CalendarUtil.str2cal(entity.getBirth_date()));
+			data.setImage_id(entity.getImage_id());
+			list.add(data);
+		}
+		
+		dbutil.close();
+		return list;
+	}
+	
+
+	public List<BaseForm> selectAll(FamilyForm form){
+		List<BaseForm> list = new ArrayList<BaseForm>();
+		DatabaseUtil dbutil = new DatabaseUtil(mContext);
+		dbutil.open();
+		
+		List<String> params = new ArrayList<String>();
+		
+		Iterator<BaseEntity> ite = dbutil.select(sql02, params, this).iterator();
 		while(ite.hasNext()){
 			FamilyEntity entity = (FamilyEntity)ite.next();
 			FamilyForm data = new FamilyForm();
