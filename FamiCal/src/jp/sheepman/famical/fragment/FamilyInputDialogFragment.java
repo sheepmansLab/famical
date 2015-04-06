@@ -6,12 +6,19 @@ package jp.sheepman.famical.fragment;
 import java.util.Iterator;
 
 import jp.sheepman.common.entity.BaseEntity;
+import jp.sheepman.common.form.BaseForm;
 import jp.sheepman.common.fragment.BaseDialogFragment;
 import jp.sheepman.common.fragment.BaseFragment;
 import jp.sheepman.common.util.CalendarUtil;
 import jp.sheepman.famical.R;
+import jp.sheepman.famical.entity.FamilyEntity;
 import jp.sheepman.famical.entity.WcRecordEntity;
+import jp.sheepman.famical.form.FamilyForm;
 import jp.sheepman.famical.form.WcRecordForm;
+import jp.sheepman.famical.model.FamilyDeleteModel;
+import jp.sheepman.famical.model.FamilyInsertModel;
+import jp.sheepman.famical.model.FamilySelectModel;
+import jp.sheepman.famical.model.FamilyUpdateModel;
 import jp.sheepman.famical.model.WcRecordDeleteModel;
 import jp.sheepman.famical.model.WcRecordInsertModel;
 import jp.sheepman.famical.model.WcRecordSelectModel;
@@ -37,19 +44,19 @@ import com.androidquery.AQuery;
  * @author sheepman
  *
  */
-public class WcRecordInputDialogFragment extends BaseDialogFragment {
+public class FamilyInputDialogFragment extends BaseDialogFragment {
 	private AQuery aq;
 	private Context mContext;
 	private LayoutInflater inflator;
 	
-	private WcRecordForm form;
+	private FamilyForm form;
 	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		this.aq = new AQuery(getActivity());
 		this.mContext = getActivity();
 		this.inflator = getActivity().getLayoutInflater();
-		this.form = new WcRecordForm();
+		this.form = new FamilyForm();
 		
 		//ディスプレイ情報を取得
 		final float density = getResources().getDisplayMetrics().density;  
@@ -58,21 +65,18 @@ public class WcRecordInputDialogFragment extends BaseDialogFragment {
 
 		//主キーを保持
 		int family_id = 0;
-		String wc_record_date = "";
 		
 		//引数を取得
 		Bundle args = getArguments();
 		if(args != null){
 			family_id = args.getInt("family_id");
-			wc_record_date = args.getString("wc_record_date");
 		}
 		//Viewのレイアウトを取得
-		View view = this.inflator.inflate(R.layout.fragment_wcrec_input, null);
+		View view = this.inflator.inflate(R.layout.fragment_family_input, null);
 		
 		//rootをDialog内のViewにセット
 		aq.recycle(view);
 		//各項目に初期値をセット
-		aq.id(R.id.tvDialogDate).text(wc_record_date);
 		aq.id(R.id.tvDialogFamily_id).text(String.valueOf(family_id));
 		aq.id(R.id.btnDialogInput).clicked(lsnrBtnSubmit);
 		aq.id(R.id.btnDialogClear).clicked(lsnrClickClear);
@@ -90,7 +94,7 @@ public class WcRecordInputDialogFragment extends BaseDialogFragment {
 		dialog.setContentView(view);
 		//Dialogの横幅を指定
 		WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();  
-		lp.width = dialogWidth;  
+		lp.width = dialogWidth;
 		dialog.getWindow().setAttributes(lp);
 		
 		return dialog;
@@ -100,28 +104,19 @@ public class WcRecordInputDialogFragment extends BaseDialogFragment {
 	 * データを取得して設定を戻す
 	 */
 	private void setData(){
-		WcRecordSelectModel model = new WcRecordSelectModel(mContext);
+		FamilySelectModel model = new FamilySelectModel(mContext);
 		this.form.setFamily_id(Integer.valueOf(aq.id(R.id.tvDialogFamily_id).getText().toString()));
-		this.form.setWc_record_date(CalendarUtil.str2cal(aq.id(R.id.tvDialogDate).getText().toString()));
-		Iterator<BaseEntity> ite = model.selectByPrimary(this.form).iterator();
+		Iterator<BaseForm> ite = model.selectById(this.form).iterator();
 		if(ite.hasNext()){
-			WcRecordEntity entity = (WcRecordEntity)ite.next();
-			((CustomNumberPicker)aq.id(R.id.cnpDialogPeCount).getView()).setValue(entity.getPe_count());
-			((CustomNumberPicker)aq.id(R.id.cnpDialogPoCount).getView()).setValue(entity.getPo_count());
-			//取得したデータをformにセット
-			this.form.setPe_count(entity.getPe_count());
-			this.form.setPo_count(entity.getPo_count());
-			this.form.setComment(entity.getComment());
+			FamilyForm form = (FamilyForm)ite.next();
+			
+			aq.id(R.id.etDialogFamilyName).text(form.getFamily_name());
+			aq.id(R.id.etDialogBirthDay).text(CalendarUtil.cal2str(form.getBirth_date()));
+			
 			//削除ボタンを活性化
 			aq.id(R.id.btnDialogDelete).visibility(View.VISIBLE);
 		} else {
-			((CustomNumberPicker)aq.id(R.id.cnpDialogPeCount).getView()).setValue(0);
-			((CustomNumberPicker)aq.id(R.id.cnpDialogPoCount).getView()).setValue(0);
-			//formの初期値をセット
-			this.form.setPe_count(0);
-			this.form.setPo_count(0);
-			this.form.setComment("");
-			//削除ボタンを活性化
+				//削除ボタンを非活性化
 			aq.id(R.id.btnDialogDelete).visibility(View.GONE);
 		}
 	}
@@ -130,19 +125,17 @@ public class WcRecordInputDialogFragment extends BaseDialogFragment {
 	 * データをInsertする
 	 */
 	private void inputData(){
-		WcRecordSelectModel checkModel = new WcRecordSelectModel(mContext);
+		FamilySelectModel checkModel = new FamilySelectModel(mContext);
 		//最新の値をセット
-		this.form.setPe_count(((CustomNumberPicker)aq.id(R.id.cnpDialogPeCount).getView()).getValue());
-		this.form.setPo_count(((CustomNumberPicker)aq.id(R.id.cnpDialogPoCount).getView()).getValue());
 		//Toastのメッセージ
 		String msg = "";
 		//件数が0以上ならUpdate、0ならInsert
-		if(checkModel.selectByPrimary(this.form).size() == 0){
-			WcRecordInsertModel execModel = new WcRecordInsertModel(mContext);
+		if(checkModel.selectById(this.form).size() == 0){
+			FamilyInsertModel execModel = new FamilyInsertModel(mContext);
 			execModel.insert(this.form);
 			msg = "登録しました";
 		} else {
-			WcRecordUpdateModel execModel = new WcRecordUpdateModel(mContext);
+			FamilyUpdateModel execModel = new FamilyUpdateModel(mContext);
 			execModel.update(this.form);
 			msg = "更新しました";
 		}
@@ -153,8 +146,8 @@ public class WcRecordInputDialogFragment extends BaseDialogFragment {
 	 * データを削除する
 	 */
 	private void deleteData(){
-		WcRecordDeleteModel model = new WcRecordDeleteModel(mContext);
-		model.execute(this.form);
+		FamilyDeleteModel model = new FamilyDeleteModel(mContext);
+		model.delete(this.form);
 		showToast("削除しました");
 	}
 	

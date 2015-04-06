@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="15dp"
+    android:background="@drawable/background_inputdialog">
+
+    <TextView
+        android:id="@+id/tvDialogTitle"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:padding="5dp"
+        android:textColor="@color/white"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:background="@drawable/background_inputdialog_title">
+        <requestFocus/>
+    </TextView>
+    <Button
+        android:id="@+id/btnClose"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:gravity="center"
+        android:background="@drawable/button_circle"
+        android:textColor="@color/darkgray"
+        android:text="@string/lblMarkBatsu"/>
+        <!-- メインコンテンツ -->
+    <TextView
+        android:id="@+id/tvDialogFamilyName"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvDialogTitle"
+        android:layout_alignParentStart="true"
+        android:text="名前"
+        />
+    <EditText
+        android:id="@+id/etDialogFamilyName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvDialogTitle"
+        android:layout_toRightOf="@+id/tvDialogFamilyName"
+        android:inputType="text"
+        android:maxLength="20"
+        />
+    <TextView
+        android:id="@+id/tvDialogBirthDay"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etDialogFamilyName"
+        android:layout_alignParentStart="true"
+        android:text="誕生日"
+        />
+    <EditText
+        android:id="@+id/etDialogBirthDay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etDialogFamilyName"
+        android:layout_toRightOf="@+id/tvDialogBirthDay"
+        android:inputType="date"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etDialogBirthDay"
+        android:layout_marginTop="20dp"
+        android:gravity="center_horizontal">
+
+        <Button
+            android:id="@+id/btnDialogInput"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:text="@string/lblInput"/>
+
+        <Button
+            android:id="@+id/btnDialogClear"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:text="@string/lblClear" />
+
+        <Button
+            android:id="@+id/btnDialogDelete"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:text="@string/lblDelete" />
+
+    </LinearLayout>
+
+</RelativeLayout>
