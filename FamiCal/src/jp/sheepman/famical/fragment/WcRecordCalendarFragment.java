@@ -9,9 +9,7 @@ import jp.sheepman.common.form.BaseForm;
 import jp.sheepman.common.fragment.BaseFragment;
 import jp.sheepman.common.util.CalendarUtil;
 import jp.sheepman.famical.R;
-import jp.sheepman.famical.form.FamilyForm;
 import jp.sheepman.famical.form.WcRecordForm;
-import jp.sheepman.famical.model.FamilySelectModel;
 import jp.sheepman.famical.model.WcRecordSelectModel;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
@@ -45,7 +43,6 @@ public class WcRecordCalendarFragment extends BaseFragment {
 			Bundle savedInstanceState) {
 		this.inflator = inflater;
 		View v = inflator.inflate(R.layout.fragment_calebdar, null);
-		showFamilyDialogFragment();
 		createCalendarView(v, cal, false);
 		return v;
 	}
@@ -201,8 +198,6 @@ public class WcRecordCalendarFragment extends BaseFragment {
 		private float x2;
 		private float y1;
 		private float y2;
-		//
-		private boolean flg_move = false;
 
 		@Override
 		public boolean onTouch(View v, MotionEvent event) {
@@ -231,14 +226,10 @@ public class WcRecordCalendarFragment extends BaseFragment {
 				}
 				break;
 			case MotionEvent.ACTION_UP:
-				WcRecordInputDialogFragment dialog = getInputDialogFragment();
 				Bundle args = new Bundle();
-				//TODO family_id実装時に変更
-				args.putInt("family_id", 1);
+				args.putInt("family_id", 1);	//TODO family_id実装時に変更
 				args.putString("wc_record_date", v.getTag().toString());
-				dialog.setArguments(args);
-				dialog.show(getFragmentManager(), "dialog");
-				flg_move = false;
+				//TODO 入力用Fragmentに渡す処理を実装
 				break;
 			default:
 				break;
@@ -247,29 +238,18 @@ public class WcRecordCalendarFragment extends BaseFragment {
 		}
 	};
 	
-	/**
-	 * DialogFragmentを生成する
-	 * @return
-	 */
-	private WcRecordInputDialogFragment getInputDialogFragment(){
-		WcRecordInputDialogFragment dialog = new WcRecordInputDialogFragment();
-		dialog.setTargetFragment(this, 0);
-		return dialog;
-	}
-	
-	private void showFamilyDialogFragment(){
-		FamilySelectModel model = new FamilySelectModel(getActivity());
-		FamilyForm form = new FamilyForm();
-		form.setFamily_id(1);
-		if(model.selectAll(form).size() == 0){
-			FamilyInputDialogFragment dialog = new FamilyInputDialogFragment();
-			dialog.setTargetFragment(this, 0);
-			dialog.show(getFragmentManager(), "family");
-		}
-	}
-	
 	@Override
 	public void callback() {
 		createCalendarView(getView(), cal, false);
+	}
+	
+	/**
+	 * 
+	 * @param family_id
+	 * @param wc_record_date
+	 */
+	public void changeDate(int family_id, Calendar wc_record_date){
+		//TODO family_idの連携方法を検討
+		createCalendarView(getView(), wc_record_date, true);
 	}
 }

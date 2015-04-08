@@ -1,21 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginTop="15dp"
-    android:background="@drawable/background_inputdialog">
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/tvDialogDate"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
-        android:padding="5dp"
         android:textColor="@color/white"
         android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:background="@drawable/background_inputdialog_title">
+        android:focusableInTouchMode="true">
         <requestFocus/>
     </TextView>
     <TextView
@@ -26,16 +22,6 @@
         android:layout_alignParentStart="true"
         android:visibility="invisible">
     </TextView>
-    <Button
-        android:id="@+id/btnClose"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:gravity="center"
-        android:background="@drawable/button_circle"
-        android:textColor="@color/darkgray"
-        android:text="@string/lblMarkBatsu"/>
     <LinearLayout
         android:id="@+id/llDialogCount"
         android:layout_width="match_parent"
