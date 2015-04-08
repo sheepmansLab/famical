@@ -9,6 +9,7 @@ import java.util.Iterator;
 import jp.sheepman.common.entity.BaseEntity;
 import jp.sheepman.common.fragment.BaseFragment;
 import jp.sheepman.common.util.CalendarUtil;
+import jp.sheepman.famical.MainActivity;
 import jp.sheepman.famical.R;
 import jp.sheepman.famical.entity.WcRecordEntity;
 import jp.sheepman.famical.form.WcRecordForm;
@@ -63,8 +64,6 @@ public class WcRecordInputFragment extends BaseFragment {
 		if(args != null){
 			this.form.setFamily_id(args.getInt("family_id"));
 			this.form.setWc_record_date(CalendarUtil.str2cal(args.getString("wc_record_date")));
-			//引数は取得したらクリアする
-			setArguments(null);
 		}
 		//rootをDialog内のViewにセット
 		aq.recycle(view);
@@ -72,7 +71,6 @@ public class WcRecordInputFragment extends BaseFragment {
 		aq.id(R.id.btnDialogInput).clicked(lsnrBtnSubmit);
 		aq.id(R.id.btnDialogClear).clicked(lsnrClickClear);
 		aq.id(R.id.btnDialogDelete).clicked(lsnrClickDelete);
-		aq.id(R.id.btnClose).clicked(lsnrBtnClose);
 		
 		//初期値をセット
 		setContents();
@@ -147,6 +145,13 @@ public class WcRecordInputFragment extends BaseFragment {
 			msg = "更新しました";
 		}
 		showToast(msg);
+		
+		if(getTargetFragment() instanceof WcRecordCalendarFragment){
+			Calendar cal = Calendar.getInstance();
+			cal.setTime((this.form.getWc_record_date()).getTime());
+			((WcRecordCalendarFragment)getTargetFragment())
+									.changeDate(this.form.getFamily_id(), cal);
+		}
 	}
 	
 	/**
@@ -177,17 +182,6 @@ public class WcRecordInputFragment extends BaseFragment {
 			deleteData();
 		}
 	};
-	
-	/**
-	 * 画面の閉じるボタン押下時のイベントリスナー
-	 */
-	private OnClickListener lsnrBtnClose = new OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			//dismiss();
-		}
-	};
-	
 	/**
 	 * クリアボタン押下時のイベント
 	 */

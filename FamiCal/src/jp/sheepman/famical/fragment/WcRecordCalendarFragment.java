@@ -226,10 +226,10 @@ public class WcRecordCalendarFragment extends BaseFragment {
 				}
 				break;
 			case MotionEvent.ACTION_UP:
-				Bundle args = new Bundle();
-				args.putInt("family_id", 1);	//TODO family_id実装時に変更
-				args.putString("wc_record_date", v.getTag().toString());
 				//TODO 入力用Fragmentに渡す処理を実装
+				if(getTargetFragment() instanceof WcRecordInputFragment){ 
+					((WcRecordInputFragment)getTargetFragment()).changeDate(1, CalendarUtil.str2cal(v.getTag().toString()));
+				}
 				break;
 			default:
 				break;
