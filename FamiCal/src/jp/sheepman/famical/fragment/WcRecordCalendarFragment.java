@@ -250,6 +250,10 @@ public class WcRecordCalendarFragment extends BaseFragment {
 	 */
 	public void changeDate(int family_id, Calendar wc_record_date){
 		//TODO family_idの連携方法を検討
-		createCalendarView(getView(), wc_record_date, true);
+		boolean doAnimation = false;
+		if(CalendarUtil.getMonth(wc_record_date) != CalendarUtil.getMonth(cal)){
+			doAnimation = true;
+		}
+		createCalendarView(getView(), wc_record_date, doAnimation);
 	}
 }

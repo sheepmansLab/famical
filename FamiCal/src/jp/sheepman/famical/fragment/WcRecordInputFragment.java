@@ -9,7 +9,6 @@ import java.util.Iterator;
 import jp.sheepman.common.entity.BaseEntity;
 import jp.sheepman.common.fragment.BaseFragment;
 import jp.sheepman.common.util.CalendarUtil;
-import jp.sheepman.famical.MainActivity;
 import jp.sheepman.famical.R;
 import jp.sheepman.famical.entity.WcRecordEntity;
 import jp.sheepman.famical.form.WcRecordForm;
@@ -18,18 +17,12 @@ import jp.sheepman.famical.model.WcRecordInsertModel;
 import jp.sheepman.famical.model.WcRecordSelectModel;
 import jp.sheepman.famical.model.WcRecordUpdateModel;
 import jp.sheepman.famical.view.CustomNumberPicker;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
-import android.view.Window;
-import android.view.WindowManager;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.androidquery.AQuery;
@@ -144,13 +137,19 @@ public class WcRecordInputFragment extends BaseFragment {
 			execModel.update(this.form);
 			msg = "更新しました";
 		}
+		//メッセージの表示
 		showToast(msg);
-		
+	}
+	
+	/**
+	 * カレンダーに反映する
+	 */
+	private void refrectCalendar(){
+		//カレンダーに反映
 		if(getTargetFragment() instanceof WcRecordCalendarFragment){
-			Calendar cal = Calendar.getInstance();
-			cal.setTime((this.form.getWc_record_date()).getTime());
-			((WcRecordCalendarFragment)getTargetFragment())
-									.changeDate(this.form.getFamily_id(), cal);
+			((WcRecordCalendarFragment)getTargetFragment()).changeDate(
+					this.form.getFamily_id()
+					, (Calendar)(this.form.getWc_record_date()).clone());
 		}
 	}
 	
@@ -170,6 +169,9 @@ public class WcRecordInputFragment extends BaseFragment {
 		@Override
 		public void onClick(View v) {
 			inputData();
+			//カレンダーに反映する
+			refrectCalendar();
+			setContents();
 		}
 	};
 	
@@ -180,6 +182,9 @@ public class WcRecordInputFragment extends BaseFragment {
 		@Override
 		public void onClick(View v) {
 			deleteData();
+			//カレンダーに反映する
+			refrectCalendar();
+			setContents();
 		}
 	};
 	/**
