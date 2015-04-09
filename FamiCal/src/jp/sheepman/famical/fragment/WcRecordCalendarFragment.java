@@ -114,9 +114,6 @@ public class WcRecordCalendarFragment extends BaseFragment {
 					tr.addView(cell, p);
 					// 前月、次月の場合は対象外
 					if (month == CalendarUtil.getMonth(cal)) {
-						//マークを設定
-						((TextView)cell.findViewById(R.id.tvCelPeCircle)).setText(R.string.lblMarkCircle);
-						((TextView)cell.findViewById(R.id.tvCelPoCircle)).setText(R.string.lblMarkCircle);
 						//初期表示のカウント0
 						((TextView)cell.findViewById(R.id.tvCelPeCount)).setText("0");
 						((TextView)cell.findViewById(R.id.tvCelPoCount)).setText("0");
