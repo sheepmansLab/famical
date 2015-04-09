@@ -63,9 +63,7 @@ public class WcRecordCalendarFragment extends BaseFragment {
 		TextView tvCalNext = (TextView) llHeader.findViewById(R.id.tvCalNext);
 		TextView tvCalMonth = (TextView) llHeader.findViewById(R.id.tvCalMonth);
 		tvCalMonth.setText(year + "年 " + month + "月");
-		tvCalPrev.setText("←");
 		tvCalPrev.setOnClickListener(lsnrPrev);
-		tvCalNext.setText("→");
 		tvCalNext.setOnClickListener(lsnrNext);
 
 		// テーブル作成

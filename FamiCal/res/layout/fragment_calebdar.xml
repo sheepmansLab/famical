@@ -10,33 +10,35 @@
 	    android:layout_height="30dp"
 	    android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:background="@color/darkslategray">
+        android:background="@color/black">
 	    <TextView 
-	        android:layout_width="0dp"
-	        android:layout_height="match_parent"
-	        android:layout_weight="1"
+	        android:layout_width="20dp"
+	        android:layout_height="20dp"
+		    android:layout_marginStart="10dp"
+		    android:layout_gravity="center_vertical"
 	        android:gravity="center"
 	        android:textColor="@color/white"
 	        android:textSize="20sp"
-	        android:background="@color/black"
+	        android:background="@drawable/button_left_img"
 	        android:id="@+id/tvCalPrev"/>
 	    <TextView 
-	        android:layout_width="0dp"
+	        android:layout_width="wrap_content"
 	        android:layout_height="match_parent"
-	        android:layout_weight="1"
+		    android:layout_marginLeft="10dp"
+		    android:layout_marginRight="10dp"
 	        android:gravity="center"
 	        android:textColor="@color/white"
 	        android:textSize="20sp"
 	        android:background="@color/black"
 	        android:id="@+id/tvCalMonth"/>
 	    <TextView 
-	        android:layout_width="0dp"
-	        android:layout_height="match_parent"
-	        android:layout_weight="1"
+	        android:layout_width="20dp"
+	        android:layout_height="20dp"
+		    android:layout_gravity="center_vertical"
 	        android:gravity="center"
 	        android:textColor="@color/white"
 	        android:textSize="20sp"
-	        android:background="@color/black"
+	        android:background="@drawable/button_right"
 	        android:id="@+id/tvCalNext"/>
     </LinearLayout>
     

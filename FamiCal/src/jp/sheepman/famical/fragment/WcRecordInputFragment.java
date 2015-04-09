@@ -61,9 +61,11 @@ public class WcRecordInputFragment extends BaseFragment {
 		//rootをDialog内のViewにセット
 		aq.recycle(view);
 		//各項目に初期値をセット
-		aq.id(R.id.btnDialogInput).clicked(lsnrBtnSubmit);
+		aq.id(R.id.btnDialogInput).clicked(lsnrClickSubmit);
 		aq.id(R.id.btnDialogClear).clicked(lsnrClickClear);
 		aq.id(R.id.btnDialogDelete).clicked(lsnrClickDelete);
+		aq.id(R.id.btnPrevDay).clicked(lsnrClickAddDay);
+		aq.id(R.id.btnNextDay).clicked(lsnrClickAddDay);
 		
 		//初期値をセット
 		setContents();
@@ -162,10 +164,25 @@ public class WcRecordInputFragment extends BaseFragment {
 		showToast("削除しました");
 	}
 	
+	/////////////////////////// Listener ///////////////////////// 
+	
+	private OnClickListener lsnrClickAddDay = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			if (v.getId() == R.id.btnPrevDay) {
+				form.getWc_record_date().add(Calendar.DATE, -1);
+			} else if(v.getId() == R.id.btnNextDay) {
+				form.getWc_record_date().add(Calendar.DATE, 1);
+			}
+			setContents();
+			refrectCalendar();
+		}
+	};
+	
 	/**
 	 * 登録ボタン押下時イベント
 	 */
-	private OnClickListener lsnrBtnSubmit = new OnClickListener() {
+	private OnClickListener lsnrClickSubmit = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
 			inputData();
