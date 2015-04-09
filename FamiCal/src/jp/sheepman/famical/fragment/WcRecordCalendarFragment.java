@@ -11,18 +11,17 @@ import jp.sheepman.common.util.CalendarUtil;
 import jp.sheepman.famical.R;
 import jp.sheepman.famical.form.WcRecordForm;
 import jp.sheepman.famical.model.WcRecordSelectModel;
+import jp.sheepman.famical.util.CommonConst;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.animation.AlphaAnimation;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
@@ -33,11 +32,30 @@ public class WcRecordCalendarFragment extends BaseFragment {
 	private LayoutInflater inflator;
 	private Calendar cal;
 	
+	private int family_id;
+	private Calendar wc_record_date;
+	
 	int statusBarHeight;
 	View frm;
 	
 	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		if(outState != null){
+			outState.putInt("family_id", family_id);
+			outState.putString("wc_record_date", CalendarUtil.cal2str(wc_record_date));
+		}
+	}
+	
+	
+	
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		if(savedInstanceState == null){
+			if(getArguments() != null){
+				savedInstanceState.putAll(getArguments());
+			}
+		}
 		super.onCreate(savedInstanceState);
 		cal = Calendar.getInstance();
 		cal.setTime(new Date());
@@ -114,7 +132,7 @@ public class WcRecordCalendarFragment extends BaseFragment {
 					tr.addView(cell, p);
 					// 前月、次月の場合は対象外
 					if (month == CalendarUtil.getMonth(cal)) {
-						//マークを設定
+						//当月のみマークを表示
 						((TextView)cell.findViewById(R.id.tvCelPeCircle)).setText(R.string.lblMarkCircle);
 						((TextView)cell.findViewById(R.id.tvCelPoCircle)).setText(R.string.lblMarkCircle);
 						//初期表示のカウント0

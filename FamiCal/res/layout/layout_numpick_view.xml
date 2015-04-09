@@ -8,7 +8,7 @@
         <Button
             android:id="@+id/btnNumpickUp"
             android:layout_width="80dp"
-            android:layout_height="30dp"
+            android:layout_height="25dp"
             android:gravity="center_horizontal|top"
             android:layout_margin="-10dp"
             android:textSize="12sp"
@@ -17,16 +17,16 @@
         <EditText
             android:id="@+id/etCount"
             android:layout_width="80dp"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:gravity="center"
-            android:ems="2"
             android:maxLength="2"
+            android:textSize="15sp"
             android:inputType="number" />
 
         <Button
             android:id="@+id/btnNumpickDown"
             android:layout_width="80dp"
-            android:layout_height="30dp"
+            android:layout_height="25dp"
             android:gravity="center_horizontal|bottom"
             android:layout_margin="-10dp"
             android:textSize="12sp"
