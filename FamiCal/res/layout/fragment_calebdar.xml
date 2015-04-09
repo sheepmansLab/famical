@@ -1,15 +1,15 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context="${relativePackage}.${activityClass}" >
     
     <LinearLayout
         android:id="@+id/llCalendarHeader"
 	    android:layout_height="30dp"
-	    android:orientation="horizontal"
         android:layout_width="match_parent"
+        android:layout_alignParentTop="true"
+	    android:orientation="horizontal"
         android:background="@color/black">
 	    <TextView 
 	        android:layout_width="20dp"
@@ -45,8 +45,9 @@
     <LinearLayout
         android:id="@+id/llCalendarWeekday"
 	    android:layout_height="30dp"
-	    android:orientation="horizontal"
-        android:layout_width="match_parent">
+        android:layout_width="match_parent"
+        android:layout_below="@+id/llCalendarHeader"
+	    android:orientation="horizontal">
 
 	    <TextView
 	        android:id="@+id/tvCalWeekday01"
@@ -118,6 +119,7 @@
 	<TableLayout 
 	    android:layout_width="match_parent"
 	    android:layout_height="match_parent"
+	    android:layout_below="@+id/llCalendarWeekday"
 	    android:id="@+id/tlCalendar">
 	    
 	    <TableRow
@@ -156,4 +158,10 @@
 	        android:layout_height="match_parent" 
 	        android:layout_weight="1"/>
 	</TableLayout>
-</LinearLayout>
+    <TextView
+        android:id="@+id/vSelectedFrame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/SELECTED"
+        android:visibility="gone"/>
+</RelativeLayout>

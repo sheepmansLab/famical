@@ -13,13 +13,16 @@ import jp.sheepman.famical.form.WcRecordForm;
 import jp.sheepman.famical.model.WcRecordSelectModel;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.animation.AlphaAnimation;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
@@ -29,6 +32,9 @@ import android.widget.TextView;
 public class WcRecordCalendarFragment extends BaseFragment {
 	private LayoutInflater inflator;
 	private Calendar cal;
+	
+	int statusBarHeight;
+	View frm;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -42,8 +48,13 @@ public class WcRecordCalendarFragment extends BaseFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		this.inflator = inflater;
+		//Viewを生成
 		View v = inflator.inflate(R.layout.fragment_calebdar, null);
+		//選択表示用の枠
+		this.frm = v.findViewById(R.id.vSelectedFrame);
+		
 		createCalendarView(v, cal, false);
+		
 		return v;
 	}
 
@@ -56,6 +67,9 @@ public class WcRecordCalendarFragment extends BaseFragment {
 	private void createCalendarView(View v, Calendar cal, boolean doAmimation) {
 		int year = CalendarUtil.getYear(cal);
 		int month = CalendarUtil.getMonth(cal);
+		
+		//選択表示を消す
+		this.frm.setVisibility(View.GONE);
 		
 		// ヘッダをセット
 		LinearLayout llHeader = (LinearLayout) v.findViewById(R.id.llCalendarHeader);
@@ -112,6 +126,7 @@ public class WcRecordCalendarFragment extends BaseFragment {
 								.setText(String.valueOf(CalendarUtil.getDate(cal)));
 						// 付加情報として日付をセット
 						cell.setTag(CalendarUtil.cal2str(cal));
+						
 						//その日のデータがないかチェックする
 						Iterator<BaseForm> ite = list.iterator();
 						while(ite.hasNext()){
@@ -162,6 +177,29 @@ public class WcRecordCalendarFragment extends BaseFragment {
 			alpha.setDuration(300);
 			tl.startAnimation(alpha);
 		}
+	}
+	
+	/**
+	 * 選択中のセルの色を変える
+	 */
+	private void setSelectedColor(View cell){
+		frm.setVisibility(View.GONE);
+		//画面情報を取得
+		Rect rect = new Rect();
+		//ステータスバーの高さ
+		getActivity().getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
+		this.statusBarHeight = rect.top;
+		//セルの座標取得
+		int[] location = new int[2];
+		cell.getLocationInWindow(location);
+		//フレームの座標をセット
+		frm.setX(location[0]);
+		frm.setY(location[1] - this.statusBarHeight);
+		//フレームの大きさをセルにあわせる
+		frm.getLayoutParams().width = cell.getWidth();
+		frm.getLayoutParams().height = cell.getHeight();
+		//セルを表示する
+		frm.setVisibility(View.VISIBLE);
 	}
 	
 	/**
@@ -228,6 +266,7 @@ public class WcRecordCalendarFragment extends BaseFragment {
 				if(getTargetFragment() instanceof WcRecordInputFragment){ 
 					((WcRecordInputFragment)getTargetFragment()).changeDate(1, CalendarUtil.str2cal(v.getTag().toString()));
 				}
+				setSelectedColor(v);
 				break;
 			default:
 				break;
