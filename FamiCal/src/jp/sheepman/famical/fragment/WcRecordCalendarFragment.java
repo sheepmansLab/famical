@@ -23,6 +23,7 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.animation.AlphaAnimation;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -101,10 +102,15 @@ public class WcRecordCalendarFragment extends BaseFragment {
 		TextView tvCalPrev = (TextView) llHeader.findViewById(R.id.tvCalPrev);
 		TextView tvCalNext = (TextView) llHeader.findViewById(R.id.tvCalNext);
 		TextView tvCalMonth = (TextView) llHeader.findViewById(R.id.tvCalMonth);
+		
+		TextView tvCalFamilyName = (TextView) v.findViewById(R.id.tvCalFamilyName);
+		ImageView ivCalFamily = (ImageView) v.findViewById(R.id.ivCalFamily);
+		
 		tvCalMonth.setText(year + "年 " + month + "月");
 		tvCalPrev.setOnClickListener(lsnrPrev);
 		tvCalNext.setOnClickListener(lsnrNext);
-
+		tvCalFamilyName.setText(String.valueOf(family_id));
+		
 		// テーブル作成
 		TableLayout tl = (TableLayout) v.findViewById(R.id.tlCalendar);
 		
@@ -243,7 +249,6 @@ public class WcRecordCalendarFragment extends BaseFragment {
 				ｍFrmSelectedCell.setVisibility(View.VISIBLE);
 			}
 		});
-		
 	}
 	
 	/**
@@ -306,9 +311,10 @@ public class WcRecordCalendarFragment extends BaseFragment {
 				}
 				break;
 			case MotionEvent.ACTION_UP:
-				//TODO 入力用Fragmentに渡す処理を実装
 				if(getTargetFragment() instanceof WcRecordInputFragment){ 
 					((WcRecordInputFragment)getTargetFragment()).changeDate(1, CalendarUtil.str2cal(v.getTag().toString()));
+					//選択したセルの日付を保持
+					wc_record_date = CalendarUtil.str2cal(v.getTag().toString());
 				}
 				setSelectedColor(v);
 				break;
@@ -330,18 +336,39 @@ public class WcRecordCalendarFragment extends BaseFragment {
 	 * @param wc_record_date
 	 */
 	public void changeDate(int family_id, Calendar wc_record_date){
-		//アニメーションの有無は基本"なし"とする
-		boolean doAnimation = false;
-		
 		this.family_id = family_id;
-		//指定が異なる月であった場合アニメーションする
+		
+		//指定が異なる月であった場合カレンダーを再描画する
 		if(CalendarUtil.getMonth(wc_record_date) != CalendarUtil.getMonth(this.wc_record_date)){
-			doAnimation = true;
-		}
+			createCalendarView(getView(), wc_record_date, true);
+		} 
+		
 		//日付をFragmentに保持させる
 		this.wc_record_date = wc_record_date;
 		this.mCalendarBase = CalendarUtil.getMonthFirstDate(wc_record_date);
 		
-		createCalendarView(getView(), wc_record_date, doAnimation);
+		//指定日付のセルを探して色付けする
+		TableLayout tlCalendar = (TableLayout)getView().findViewById(R.id.tlCalendar);
+		//TableRow分回す
+		for(int i = 0; i < tlCalendar.getChildCount(); i ++){
+			//型チェック
+			if(tlCalendar.getChildAt(i) instanceof TableRow){
+				TableRow tr = (TableRow)tlCalendar.getChildAt(i);
+				//TableRow内のセル分回す
+				for(int j = 0; j < tr.getChildCount(); j ++){
+					//型チェック＆タグ情報チェック
+					if(tr.getChildAt(j) instanceof View 
+					&& tr.getChildAt(j).getTag() instanceof String){
+						//指定日と等しければ色づけ
+						if(((String)tr.getChildAt(j).getTag()).equals(CalendarUtil.cal2str(wc_record_date))){
+							setSelectedColor(tr.getChildAt(j));
+							//以降の処理は不要なので終了
+							return;
+						}
+					}
+				}
+			}
+		}
+		
 	}
 }

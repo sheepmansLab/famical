@@ -41,7 +41,22 @@
 	        android:background="@drawable/button_right"
 	        android:id="@+id/tvCalNext"/>
     </LinearLayout>
-    
+    <ImageView 
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_toStartOf="@+id/tvCalFamilyName"
+        android:gravity="center"
+        android:contentDescription="@string/str_blank"
+        android:id="@+id/ivCalFamily"/>
+    <TextView 
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:layout_alignParentEnd="true"
+        android:gravity="start"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:text="---"
+        android:id="@+id/tvCalFamilyName"/>
     <LinearLayout
         android:id="@+id/llCalendarWeekday"
 	    android:layout_height="30dp"

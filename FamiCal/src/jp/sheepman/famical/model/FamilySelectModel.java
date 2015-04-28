@@ -51,7 +51,7 @@ public class FamilySelectModel extends BaseModel {
 	}
 	
 
-	public List<BaseForm> selectAll(FamilyForm form){
+	public List<BaseForm> selectAll(){
 		List<BaseForm> list = new ArrayList<BaseForm>();
 		DatabaseUtil dbutil = new DatabaseUtil(mContext);
 		dbutil.open();

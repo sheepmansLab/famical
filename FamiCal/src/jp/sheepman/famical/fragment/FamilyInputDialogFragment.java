@@ -9,6 +9,7 @@ import jp.sheepman.common.form.BaseForm;
 import jp.sheepman.common.fragment.BaseDialogFragment;
 import jp.sheepman.common.fragment.BaseFragment;
 import jp.sheepman.common.util.CalendarUtil;
+import jp.sheepman.famical.MainActivity;
 import jp.sheepman.famical.R;
 import jp.sheepman.famical.form.FamilyForm;
 import jp.sheepman.famical.model.FamilyDeleteModel;
@@ -151,6 +152,7 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 		@Override
 		public void onClick(View v) {
 			inputData();
+			((MainActivity)getActivity()).callbackSetFamilyId(form.getFamily_id());
 			dismiss();
 		}
 	};
@@ -172,6 +174,7 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 	private OnClickListener lsnrBtnClose = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
+			((MainActivity)getActivity()).callbackSetFamilyId(form.getFamily_id());
 			dismiss();
 		}
 	};
