@@ -30,8 +30,7 @@
 		    android:layout_weight="1"
 		    android:gravity="center"
 		    android:textSize="13sp"
-		    android:textColor="@color/lightgrey"
-		    android:text="@string/lblMarkCircle"/>
+		    android:textColor="@color/lightgrey"/>
 
 		<TextView
 		    android:id="@+id/tvCelPeCount"
@@ -49,8 +48,7 @@
 		    android:layout_weight="1"
 		    android:gravity="center"
 		    android:textSize="13sp"
-		    android:textColor="@color/lightgrey"
-		    android:text="@string/lblMarkCircle"/>
+		    android:textColor="@color/lightgrey"/>
 
 		<TextView
 		    android:id="@+id/tvCelPoCount"
