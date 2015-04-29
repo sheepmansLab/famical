@@ -58,6 +58,7 @@ public class WcRecordInputFragment extends BaseFragment {
 			this.form.setFamily_id(args.getInt("family_id"));
 			this.form.setWc_record_date(CalendarUtil.str2cal(args.getString("wc_record_date")));
 		}
+		
 		//rootをDialog内のViewにセット
 		aq.recycle(view);
 		//各項目に初期値をセット

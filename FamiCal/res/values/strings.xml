@@ -22,4 +22,5 @@
     <string name="lblMarkBatsu">x</string>
     <string name="lblMarkUp">▲</string>
     <string name="lblMarkDown">▼</string>
+    <string name="str_blank"></string>
 </resources>
