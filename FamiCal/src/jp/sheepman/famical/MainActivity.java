@@ -44,7 +44,7 @@ public class MainActivity extends Activity {
 			fragment_family = new FamilyInputDialogFragment();
 			//TODO 家族選択画面表示
 		}
-		fragment_family.show(getFragmentManager(), "family");
+		//fragment_family.show(getFragmentManager(), "family");
 		//TODO family_idを受け取る
 		
 		//引数をセット

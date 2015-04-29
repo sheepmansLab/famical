@@ -40,19 +40,18 @@ public class WcRecordCalendarFragment extends BaseFragment {
 	
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
-		Log.d("famical","onSaveInstanceState");
+		Log.d("famical","onSaveInstanceState Start");
 		super.onSaveInstanceState(outState);
 		if(outState != null){
 			outState.putInt("family_id", family_id);
 			outState.putString("wc_record_date", CalendarUtil.cal2str(wc_record_date));
 		}
+		Log.d("famical","onSaveInstanceState End");
 	}
-	
-	
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		Log.d("famical","onCreate");
+		Log.d("famical","onCreate Start");
 		super.onCreate(savedInstanceState);
 		mCalendarBase = CalendarUtil.getToday();
 		wc_record_date = CalendarUtil.getToday();
@@ -62,13 +61,14 @@ public class WcRecordCalendarFragment extends BaseFragment {
 			family_id = getArguments().getInt("family_id");
 			wc_record_date = CalendarUtil.str2cal(getArguments().getString("wc_record_date"));
 		}
+		Log.d("famical","onCreate End");
 	}
 	
 	@SuppressLint("InflateParams")
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		Log.d("famical","onCreateView");
+		Log.d("famical","onCreateView Start");
 		this.mInflator = inflater;
 		//Viewを生成
 		View v = mInflator.inflate(R.layout.fragment_calebdar, null);
@@ -76,7 +76,8 @@ public class WcRecordCalendarFragment extends BaseFragment {
 		this.ｍFrmSelectedCell = v.findViewById(R.id.vSelectedFrame);
 		
 		createCalendarView(v, mCalendarBase, false);
-		
+
+		Log.d("famical","onCreateView End");
 		return v;
 	}
 	
@@ -88,6 +89,7 @@ public class WcRecordCalendarFragment extends BaseFragment {
 	 */
 	@SuppressLint("InflateParams")
 	private void createCalendarView(View v, Calendar vCal, boolean doAmimation) {
+		Log.d("famical","createCalendarView Start");
 		//処理用にカレンダーを複製する
 		Calendar vCalTemp = CalendarUtil.clone(vCal);
 		
@@ -96,7 +98,7 @@ public class WcRecordCalendarFragment extends BaseFragment {
 		
 		//選択表示を消す
 		this.ｍFrmSelectedCell.setVisibility(View.GONE);
-		
+
 		// ヘッダをセット
 		LinearLayout llHeader = (LinearLayout) v.findViewById(R.id.llCalendarHeader);
 		TextView tvCalPrev = (TextView) llHeader.findViewById(R.id.tvCalPrev);
@@ -129,6 +131,7 @@ public class WcRecordCalendarFragment extends BaseFragment {
 		vCalTemp.set(Calendar.DATE, 1);
 		vCalTemp.add(Calendar.DATE, (-1) * (vCalTemp.get(Calendar.DAY_OF_WEEK) - 1));
 
+		Log.d("famical","createCalendarView 5");
 		// カレンダーを作成
 		for (int i = 0; i < tl.getChildCount(); i++) {
 			// テーブル行のループ
@@ -139,8 +142,10 @@ public class WcRecordCalendarFragment extends BaseFragment {
 				// 日にち列のループ
 				int countDisable = 0;
 				for (int j = 0; j < 7; j++) {
+					Log.d("famical","createCalendarView 5.1");
 					// 日付セルのViewを生成
 					final View cell = mInflator.inflate(R.layout.layout_calendar_cell, null);
+					Log.d("famical","createCalendarView 5.2");
 					// 行にViewを追加
 					tr.addView(cell, p);
 					// 前月、次月の場合は対象外
@@ -160,6 +165,7 @@ public class WcRecordCalendarFragment extends BaseFragment {
 						
 						//その日のデータがないかチェックする
 						Iterator<BaseForm> ite = list.iterator();
+
 						while(ite.hasNext()){
 							WcRecordForm f = (WcRecordForm)ite.next();
 							if(CalendarUtil.cal2str(f.getWc_record_date()).equals(CalendarUtil.cal2str(vCalTemp))){
@@ -174,6 +180,7 @@ public class WcRecordCalendarFragment extends BaseFragment {
 								ite.remove();
 							}
 						}
+
 						//土日に色を設定する
 						if(j == 6){
 							cell.setBackgroundResource(R.drawable.calendar_cell_sat);
@@ -184,13 +191,14 @@ public class WcRecordCalendarFragment extends BaseFragment {
 							//赤文字
 							((TextView)cell.findViewById(R.id.tvCellDay)).setTextColor(getResources().getColor(R.color.crimson));
 						}
-						// 押下時のイベントをセット
-						cell.setOnTouchListener(lsnrTouch);
 						
-						//指定日だった場合色をつける
+						//指定日なら色をつける
 						if(vCalTemp.compareTo(wc_record_date) == 0){
 							setSelectedColor(cell);
 						}
+						
+						// 押下時のイベントをセット
+						cell.setOnTouchListener(lsnrTouch);
 					} else {
 						cell.setBackgroundColor(Color.GRAY);
 						countDisable ++;
@@ -205,24 +213,25 @@ public class WcRecordCalendarFragment extends BaseFragment {
 			}
 		}
 
+		Log.d("famical","createCalendarView 6");
 		if(doAmimation){
 			AlphaAnimation alpha = new AlphaAnimation(0.5f, 1.0f);
 			alpha.setDuration(300);
 			tl.startAnimation(alpha);
 		}
+		Log.d("famical","createCalendarView End");
 	}
 	
 	/**
 	 * 選択中のセルの色を変える
 	 */
 	private void setSelectedColor(final View cell){
-		Log.d("famical", "setSelectedColor");
+		Log.d("famical", "setSelectedColor Start");
 		//画面のレイアウトが決まった段階でレイアウトの計算をする
 		cell.getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
-			
 			@Override
 			public void onGlobalLayout() {
-				Log.d("famical", "onGlobalLayout");
+				Log.d("famical", "onGlobalLayout Start");
 				//不要になるのでリスナは削除する
 				cell.getViewTreeObserver().removeOnGlobalLayoutListener(this);
 				
@@ -247,8 +256,10 @@ public class WcRecordCalendarFragment extends BaseFragment {
 				
 				//セルを表示する
 				ｍFrmSelectedCell.setVisibility(View.VISIBLE);
+				Log.d("famical", "onGlobalLayout End");
 			}
 		});
+		Log.d("famical", "setSelectedColor End");
 	}
 	
 	/**
@@ -334,12 +345,15 @@ public class WcRecordCalendarFragment extends BaseFragment {
 	 * 外部からのカレンダー更新指示
 	 * @param family_id
 	 * @param wc_record_date
+	 * @param reload
 	 */
-	public void changeDate(int family_id, Calendar wc_record_date){
+	public void changeDate(int family_id, Calendar wc_record_date, boolean reload){
+		Log.d("famical", "changeDate Start");
 		this.family_id = family_id;
 		
 		//指定が異なる月であった場合カレンダーを再描画する
-		if(CalendarUtil.getMonth(wc_record_date) != CalendarUtil.getMonth(this.wc_record_date)){
+		if(CalendarUtil.getMonth(wc_record_date) != CalendarUtil.getMonth(this.wc_record_date)
+				|| reload){
 			createCalendarView(getView(), wc_record_date, true);
 		} 
 		
@@ -363,12 +377,13 @@ public class WcRecordCalendarFragment extends BaseFragment {
 						if(((String)tr.getChildAt(j).getTag()).equals(CalendarUtil.cal2str(wc_record_date))){
 							setSelectedColor(tr.getChildAt(j));
 							//以降の処理は不要なので終了
+							Log.d("famical", "changeDate End");
 							return;
 						}
 					}
 				}
 			}
 		}
-		
+		Log.d("famical", "changeDate End");
 	}
 }
