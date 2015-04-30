@@ -124,6 +124,8 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 		//Toastのメッセージ
 		String msg = "";
 		//件数が0以上ならUpdate、0ならInsert
+		form.setFamily_name(aq.id(R.id.etDialogFamilyName).getText().toString());
+		form.setBirth_date(CalendarUtil.str2cal(aq.id(R.id.etDialogBirthDay).getText().toString()));
 		if(checkModel.selectById(this.form).size() == 0){
 			FamilyInsertModel execModel = new FamilyInsertModel(mContext);
 			execModel.insert(this.form);
@@ -152,7 +154,6 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 		@Override
 		public void onClick(View v) {
 			inputData();
-			//((MainActivity)getActivity()).callbackSetFamilyId(form.getFamily_id());
 			dismiss();
 		}
 	};
@@ -174,7 +175,6 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 	private OnClickListener lsnrBtnClose = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			((MainActivity)getActivity()).callbackSetFamilyId(form.getFamily_id());
 			dismiss();
 		}
 	};

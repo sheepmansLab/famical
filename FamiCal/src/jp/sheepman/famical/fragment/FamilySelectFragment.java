@@ -1,5 +1,6 @@
 package jp.sheepman.famical.fragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jp.sheepman.common.adapter.BaseCustomAdapter;
@@ -14,12 +15,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
 
 import com.androidquery.AQuery;
 
 public class FamilySelectFragment extends BaseFragment {
 	private Context mContext;
 	private AQuery aq;
+	private FamilySelectListAdapter mAdapter;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -37,38 +42,63 @@ public class FamilySelectFragment extends BaseFragment {
 		aq.recycle(view);
 		
 		aq.id(R.id.btnFamSelInput).clicked(new OnClickListener() {
-			
 			@Override
 			public void onClick(View v) {
 				FamilyInputDialogFragment dialog = new FamilyInputDialogFragment();
+				dialog.setTargetFragment(FamilySelectFragment.this, 0);
 				dialog.show(getFragmentManager(), "input");
 			}
 		});
-		
-		
 		//アダプタを生成してセット
-		FamilySelectListAdapter adapter = new FamilySelectListAdapter();
+		mAdapter = new FamilySelectListAdapter();
+
+		//画面の反映
+		reload();
 		
+		//更新
+		aq.id(R.id.lvFamSel).adapter(mAdapter);
+		((ListView)aq.id(R.id.lvFamSel).getView()).setOnItemClickListener(lsnrItemClick);
+		return view;
+	}
+	
+	/**
+	 * 画面のリロード
+	 */
+	private void reload(){
+		mAdapter.clear();
 		//データの取得
 		FamilySelectModel model = new FamilySelectModel(mContext);
 		List<BaseForm> list = model.selectAll();
 		
 		//アダプタにデータをセット
-		adapter.setList(list);
-		
-		//更新
-		aq.id(R.id.lvFamSel).adapter(adapter);
-		adapter.notifyDataSetChanged();
-		
-		return view;
+		mAdapter.setList(list);
+		mAdapter.notifyDataSetChanged();
 	}
 	
 	@Override
 	public void callback() {
+		reload();
 	}
+
+	OnItemClickListener lsnrItemClick = new OnItemClickListener() {
+		@Override
+		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+			FamilyInputDialogFragment fragment = new FamilyInputDialogFragment();
+			Bundle args = new Bundle();
+			if(arg1.getTag() instanceof Integer){
+				args.putInt("family_id", Integer.parseInt(arg1.getTag().toString()));
+			}
+			fragment.setArguments(args);
+			fragment.setTargetFragment(FamilySelectFragment.this, 0);
+			fragment.show(getChildFragmentManager(), "");
+		}
+	};
 	
 	//リスト用のアダプタクラス
 	private class FamilySelectListAdapter extends BaseCustomAdapter {
+		public FamilySelectListAdapter() {
+			setList(new ArrayList<BaseForm>());
+		}
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			View v = convertView;
@@ -77,13 +107,12 @@ public class FamilySelectFragment extends BaseFragment {
 			}
 			//データ取得
 			FamilyForm form = (FamilyForm)list.get(position);
+			v.setTag(form.getFamily_id());
 			aq.recycle(v);
 			//aq.id(R.id.ivFamSelItemFamilyPict).image(Bitmapなど)
-			aq.id(R.id.tvFamSelItemFamilyName).text(form.getFamily_name());
+			aq.id(R.id.tvFamSelItemFamilyName).text(form.getFamily_name() +"_"+String.valueOf(form.getFamily_id()));
 			
 			return v;
 		}
-		
 	}
-
 }
