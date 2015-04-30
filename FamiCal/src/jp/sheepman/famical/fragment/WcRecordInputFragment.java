@@ -58,7 +58,6 @@ public class WcRecordInputFragment extends BaseFragment {
 			this.form.setFamily_id(args.getInt("family_id"));
 			this.form.setWc_record_date(CalendarUtil.str2cal(args.getString("wc_record_date")));
 		}
-		
 		//rootをDialog内のViewにセット
 		aq.recycle(view);
 		//各項目に初期値をセット
@@ -147,12 +146,13 @@ public class WcRecordInputFragment extends BaseFragment {
 	/**
 	 * カレンダーに反映する
 	 */
-	private void refrectCalendar(){
+	private void refrectCalendar(boolean reload){
 		//カレンダーに反映
 		if(getTargetFragment() instanceof WcRecordCalendarFragment){
 			((WcRecordCalendarFragment)getTargetFragment()).changeDate(
 					this.form.getFamily_id()
-					, (Calendar)(this.form.getWc_record_date()).clone());
+					, (Calendar)(this.form.getWc_record_date()).clone()
+					, reload);
 		}
 	}
 	
@@ -176,7 +176,7 @@ public class WcRecordInputFragment extends BaseFragment {
 				form.getWc_record_date().add(Calendar.DATE, 1);
 			}
 			setContents();
-			refrectCalendar();
+			refrectCalendar(false);
 		}
 	};
 	
@@ -188,7 +188,7 @@ public class WcRecordInputFragment extends BaseFragment {
 		public void onClick(View v) {
 			inputData();
 			//カレンダーに反映する
-			refrectCalendar();
+			refrectCalendar(true);
 			setContents();
 		}
 	};
@@ -201,7 +201,7 @@ public class WcRecordInputFragment extends BaseFragment {
 		public void onClick(View v) {
 			deleteData();
 			//カレンダーに反映する
-			refrectCalendar();
+			refrectCalendar(true);
 			setContents();
 		}
 	};

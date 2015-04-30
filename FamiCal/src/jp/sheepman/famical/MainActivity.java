@@ -29,7 +29,7 @@ public class MainActivity extends Activity {
 		Fragment fragment_cal = new WcRecordCalendarFragment(); 
 		//入力欄フラグメント
 		Fragment fragment_input = new WcRecordInputFragment(); 
-
+		
 		//TODO 家族ID処理待ち
 		this.family_id = 1;
 		//家族選択処理
@@ -44,7 +44,7 @@ public class MainActivity extends Activity {
 			fragment_family = new FamilyInputDialogFragment();
 			//TODO 家族選択画面表示
 		}
-		fragment_family.show(getFragmentManager(), "family");
+		//fragment_family.show(getFragmentManager(), "family");
 		//TODO family_idを受け取る
 		
 		//引数をセット

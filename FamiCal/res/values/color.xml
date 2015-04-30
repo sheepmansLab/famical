@@ -23,5 +23,6 @@
     <color name="powderblue">#b0e0e6</color>
     <color name="lightgrey">#d3d3d3</color>
     <color name="SELECTED">#55f3c759</color>
+    <color name="BLANK">#ffffffff</color>
     
 </resources>
