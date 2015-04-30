@@ -152,7 +152,7 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 		@Override
 		public void onClick(View v) {
 			inputData();
-			((MainActivity)getActivity()).callbackSetFamilyId(form.getFamily_id());
+			//((MainActivity)getActivity()).callbackSetFamilyId(form.getFamily_id());
 			dismiss();
 		}
 	};

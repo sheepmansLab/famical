@@ -5,6 +5,7 @@ import java.util.Calendar;
 import jp.sheepman.common.fragment.BaseDialogFragment;
 import jp.sheepman.common.util.CalendarUtil;
 import jp.sheepman.famical.fragment.FamilyInputDialogFragment;
+import jp.sheepman.famical.fragment.FamilySelectFragment;
 import jp.sheepman.famical.fragment.WcRecordCalendarFragment;
 import jp.sheepman.famical.fragment.WcRecordInputFragment;
 import jp.sheepman.famical.model.FamilySelectModel;
@@ -32,19 +33,6 @@ public class MainActivity extends Activity {
 		
 		//TODO 家族ID処理待ち
 		this.family_id = 1;
-		//家族選択処理
-		FamilySelectModel familyModel = new FamilySelectModel(MainActivity.this);
-		BaseDialogFragment fragment_family = null;
-		
-		if(familyModel.selectAll().size() == 0){
-			//TODO 家族登録画面表示
-			fragment_family = new FamilyInputDialogFragment();
-		} else {
-			//TODO 家族登録画面表示
-			fragment_family = new FamilyInputDialogFragment();
-			//TODO 家族選択画面表示
-		}
-		//fragment_family.show(getFragmentManager(), "family");
 		//TODO family_idを受け取る
 		
 		//引数をセット

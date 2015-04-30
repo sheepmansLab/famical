@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">famireco</string>
     <string name="app_name_ja">ふぁみかる</string>
     <string name="action_settings">Settings</string>
@@ -23,4 +24,7 @@
     <string name="lblMarkUp">▲</string>
     <string name="lblMarkDown">▼</string>
     <string name="str_blank"></string>
+    <string name="title_activity_family">FamilyActivity</string>
+    <string name="hello_world">Hello world!</string>
+
 </resources>
