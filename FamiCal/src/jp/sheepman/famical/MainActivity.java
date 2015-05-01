@@ -33,6 +33,9 @@ public class MainActivity extends Activity {
 		
 		//TODO 家族ID処理待ち
 		this.family_id = 1;
+		if(getIntent() != null){
+			family_id = getIntent().getIntExtra("family_id", 0);
+		}
 		//TODO family_idを受け取る
 		
 		//引数をセット

@@ -10,7 +10,9 @@ import jp.sheepman.common.form.BaseForm;
 import jp.sheepman.common.fragment.BaseFragment;
 import jp.sheepman.common.util.CalendarUtil;
 import jp.sheepman.famical.R;
+import jp.sheepman.famical.form.FamilyForm;
 import jp.sheepman.famical.form.WcRecordForm;
+import jp.sheepman.famical.model.FamilySelectModel;
 import jp.sheepman.famical.model.WcRecordSelectModel;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
@@ -84,6 +86,7 @@ public class WcRecordCalendarFragment extends BaseFragment {
 		this.ｍFrmSelectedCell = aq.id(R.id.vSelectedFrame).getView();
 		
 		createCalendarView();
+		setFamilyData();
 		setCellDetail(false);
 		
 		Log.d("famical","onCreateView End");
@@ -126,7 +129,27 @@ public class WcRecordCalendarFragment extends BaseFragment {
 		}
 		Log.d("famical","createCalendarView End");
 	}
-						
+	
+	/**
+	 * 対象者のデータをセットする
+	 */
+	private void setFamilyData(){
+
+		FamilySelectModel model = new FamilySelectModel(getActivity());
+		
+		FamilyForm form = new FamilyForm();
+		form.setFamily_id(family_id);
+		
+		Iterator<BaseForm> ite = model.selectById(form).iterator();
+		if(ite.hasNext()){
+			form = (FamilyForm)ite.next();
+		}
+		
+		aq.id(R.id.tvCalFamilyName).text(form.getFamily_name() + "(" + form.getFamily_id() +")");
+		//aq.id(R.id.ivCalFamily).image(Bitmapなど);
+		
+	}
+	
 	/**
 	 * セルに内容をセットする
 	 */
@@ -140,20 +163,17 @@ public class WcRecordCalendarFragment extends BaseFragment {
 		int year = CalendarUtil.getYear(vCalTemp);
 		int month = CalendarUtil.getMonth(vCalTemp);
 
-		//データ取得1
+		//データ取得
 		WcRecordSelectModel model = new WcRecordSelectModel(getActivity());
 		WcRecordForm form = new WcRecordForm();
 		form.setWc_record_date(vCalTemp);
+		form.setFamily_id(family_id);
 		List<BaseForm> list = model.selectByMonth(form);
 		
 		// ヘッダをセット
 		aq.id(R.id.tvCalMonth).text(year + "年 " + month + "月");
 		aq.id(R.id.tvCalPrev).clicked(lsnrPrev);
 		aq.id(R.id.tvCalNext).clicked(lsnrNext);
-		
-		//TODO 家族機能実装待ち
-		aq.id(R.id.tvCalFamilyName).text(String.valueOf(family_id));
-		//aq.id(R.id.ivCalFamily).image(Bitmapなど);
 		
 		TableLayout tl = (TableLayout)aq.id(R.id.tlCalendar).getView();
 		// テーブルのタグがカレンダーでなければ、指定日をセットする
@@ -358,7 +378,7 @@ public class WcRecordCalendarFragment extends BaseFragment {
 				break;
 			case MotionEvent.ACTION_UP:
 				if(getTargetFragment() instanceof WcRecordInputFragment){ 
-					((WcRecordInputFragment)getTargetFragment()).changeDate(1, CalendarUtil.str2cal(v.getTag().toString()));
+					((WcRecordInputFragment)getTargetFragment()).changeDate(family_id, CalendarUtil.str2cal(v.getTag().toString()));
 					//選択したセルの日付を保持
 					wc_record_date = CalendarUtil.str2cal(v.getTag().toString());
 				}

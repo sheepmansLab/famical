@@ -26,7 +26,7 @@ public class WcRecordSelectModel extends BaseModel {
 
 	final String sql01 = "SELECT family_id ,wc_record_date, pe_count, po_count, comment "
 						+ "FROM wc_record "
-						+ "WHERE wc_record_date BETWEEN ? AND ? ";
+						+ "WHERE family_id = ? AND wc_record_date BETWEEN ? AND ? ";
 
 	final String sql02 = "SELECT family_id ,wc_record_date, pe_count, po_count, comment "
 						+ "FROM wc_record "
@@ -47,9 +47,11 @@ public class WcRecordSelectModel extends BaseModel {
 		List<String> params = new ArrayList<String>();
 
 		Calendar wc_record_date = form.getWc_record_date();
+		int family_id = form.getFamily_id();
 		String start_date = CalendarUtil.cal2str(CalendarUtil.getMonthFirstDate(wc_record_date));
 		String end_date = CalendarUtil.cal2str(CalendarUtil.getMonthLastDate(wc_record_date));
 		
+		params.add(String.valueOf(family_id));
 		params.add(start_date);
 		params.add(end_date);
 		data = dbutil.select(sql01, params, this);
