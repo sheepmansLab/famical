@@ -98,7 +98,6 @@ public class WcRecordCalendarFragment extends BaseFragment {
 
 		//家族データの表示
 		setFamilyData();
-		
 		Log.d("famical","onCreateView End");
 		return v;
 	}
