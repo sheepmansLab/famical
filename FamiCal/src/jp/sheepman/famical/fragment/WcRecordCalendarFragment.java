@@ -4,8 +4,6 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
-import com.androidquery.AQuery;
-
 import jp.sheepman.common.form.BaseForm;
 import jp.sheepman.common.fragment.BaseFragment;
 import jp.sheepman.common.util.CalendarUtil;
@@ -14,6 +12,7 @@ import jp.sheepman.famical.form.FamilyForm;
 import jp.sheepman.famical.form.WcRecordForm;
 import jp.sheepman.famical.model.FamilySelectModel;
 import jp.sheepman.famical.model.WcRecordSelectModel;
+import jp.sheepman.famical.util.CommonConst;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -27,67 +26,78 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.animation.AlphaAnimation;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
-import android.widget.TextView;
+
+import com.androidquery.AQuery;
 
 public class WcRecordCalendarFragment extends BaseFragment {
 	private AQuery aq;
-	private LayoutInflater mInflator;
-	private Calendar mCalendarBase;
-	
-	private int family_id;
-	private Calendar wc_record_date;
-	
-	private View ｍFrmSelectedCell;
+
+	private LayoutInflater mInflator;	//Infrator
+	private Calendar mCalendarBase;		//カレンダの月を決める基準日
+	private Calendar wc_record_date;	//指定日
+	private int family_id;				//表示している対象者ID
 	
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		Log.d("famical","onSaveInstanceState Start");
 		super.onSaveInstanceState(outState);
+		//Bundleに画面情報を保持
 		if(outState != null){
-			outState.putInt("family_id", family_id);
-			outState.putString("wc_record_date", CalendarUtil.cal2str(wc_record_date));
+			Log.d("famical", "Data set to Bundle");
+			outState.putInt(CommonConst.BUNDLE_KEY_FAMILY_ID, family_id);
+			outState.putString(CommonConst.BUNDLE_KEY_WC_RECORD_DATE, CalendarUtil.cal2str(wc_record_date));
+			outState.putString(CommonConst.BUNDLE_KEY_M_CALENDAR_BASE, CalendarUtil.cal2str(mCalendarBase));
 		}
 		Log.d("famical","onSaveInstanceState End");
 	}
-	
-	
-	
+		
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		Log.d("famical","onCreate Start");
 		super.onCreate(savedInstanceState);
 		aq = new AQuery(getActivity());
+		//カレンダーの基準日にデフォルト値として当日をセット
 		mCalendarBase = CalendarUtil.getToday();
+		//指定日にデフォルト値として当日をセット
 		wc_record_date = CalendarUtil.getToday();
 		
 		//引数を受け取る
 		if(getArguments() != null){
-			family_id = getArguments().getInt("family_id");
-			wc_record_date = CalendarUtil.str2cal(getArguments().getString("wc_record_date"));
+			family_id = getArguments().getInt(CommonConst.BUNDLE_KEY_FAMILY_ID);
+			wc_record_date = CalendarUtil.str2cal(getArguments().getString(CommonConst.BUNDLE_KEY_WC_RECORD_DATE));
+			mCalendarBase = CalendarUtil.getMonthFirstDate(wc_record_date);
 		}
+		
 		Log.d("famical","onCreate End");
 	}
 	
-	@SuppressLint("InflateParams")
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		Log.d("famical","onCreateView Start");
 		this.mInflator = inflater;
+		
+		//Bundleのデータ復帰
+		if(savedInstanceState != null){
+			Log.d("famical", "Data restore from Bundle");
+			wc_record_date = CalendarUtil.str2cal(savedInstanceState.getString(CommonConst.BUNDLE_KEY_WC_RECORD_DATE));
+			mCalendarBase = CalendarUtil.str2cal(savedInstanceState.getString(CommonConst.BUNDLE_KEY_M_CALENDAR_BASE));
+			family_id = savedInstanceState.getInt(CommonConst.BUNDLE_KEY_FAMILY_ID);
+		}
+		
 		//Viewを生成
 		View v = mInflator.inflate(R.layout.fragment_calebdar, null);
 		//AQueryを初期化
 		aq.recycle(v);
-		//選択表示用の枠
-		this.ｍFrmSelectedCell = aq.id(R.id.vSelectedFrame).getView();
-		
+		//カレンダを作成
 		createCalendarView();
-		setFamilyData();
+		//セルのデータ表示
 		setCellDetail(false);
+
+		//家族データの表示
+		setFamilyData();
 		
 		Log.d("famical","onCreateView End");
 		return v;
@@ -155,7 +165,7 @@ public class WcRecordCalendarFragment extends BaseFragment {
 	 */
 	private void setCellDetail(boolean doAnimation){
 		//選択表示を消す
-		this.ｍFrmSelectedCell.setVisibility(View.GONE);
+		aq.id(R.id.vSelectedFrame).visibility(View.GONE);
 						
 		//1日を取得し作業用にコピーする
 		Calendar vCalTemp = CalendarUtil.getMonthFirstDate(CalendarUtil.clone(mCalendarBase));
@@ -175,17 +185,14 @@ public class WcRecordCalendarFragment extends BaseFragment {
 		aq.id(R.id.tvCalPrev).clicked(lsnrPrev);
 		aq.id(R.id.tvCalNext).clicked(lsnrNext);
 		
-		TableLayout tl = (TableLayout)aq.id(R.id.tlCalendar).getView();
-		// テーブルのタグがカレンダーでなければ、指定日をセットする
-		if(!(tl.getTag() instanceof Calendar)){
-			tl.setTag(vCalTemp);
-		}
-		//テーブルに日付をタグ付けする
-		tl.setTag(vCalTemp);
 		// 初日にリセット
 		vCalTemp.set(Calendar.DATE, 1);
 		vCalTemp.add(Calendar.DATE, (-1) * (vCalTemp.get(Calendar.DAY_OF_WEEK) - 1));
 		
+		//TableLayoutを取得
+		TableLayout tl = (TableLayout)aq.id(R.id.tlCalendar).getView();
+		
+		//カレンダーのセルをセット
 		for(int i = 0; i < tl.getChildCount(); i ++){
 			//型チェック
 			if(tl.getChildAt(i) instanceof TableRow){
@@ -290,6 +297,7 @@ public class WcRecordCalendarFragment extends BaseFragment {
 				//不要になるのでリスナは削除する
 				cell.getViewTreeObserver().removeOnGlobalLayoutListener(this);
 				
+				View ｍFrmSelectedCell = aq.id(R.id.vSelectedFrame).getView();
 				//セルの非表示化
 				ｍFrmSelectedCell.setVisibility(View.GONE);
 				

@@ -14,6 +14,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.util.Log;
 
 public class MainActivity extends Activity {
 
@@ -25,11 +26,8 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		
 		Calendar wc_record_date = CalendarUtil.getToday();
-		
-		//カレンダーフラグメント
-		Fragment fragment_cal = new WcRecordCalendarFragment(); 
-		//入力欄フラグメント
-		Fragment fragment_input = new WcRecordInputFragment(); 
+
+		FragmentTransaction tran = getFragmentManager().beginTransaction();
 		
 		//TODO 家族ID処理待ち
 		this.family_id = 1;
@@ -42,20 +40,27 @@ public class MainActivity extends Activity {
 		Bundle args = new Bundle();
 		args.putInt("family_id", family_id);
 		args.putString("wc_record_date", CalendarUtil.cal2str(wc_record_date));
-		fragment_cal.setArguments(args);
-		fragment_input.setArguments(args);
-		
-		//targetフラグメントをセット
-		fragment_cal.setTargetFragment(fragment_input, 0);
-		fragment_input.setTargetFragment(fragment_cal, 0);
-		
-		FragmentTransaction tran = getFragmentManager().beginTransaction();
-		tran.add(R.id.frmCalendarFragment
-				, fragment_cal
-				, CommonConst.FRAGMENT_TAG_CALENDAR);
-		tran.add(R.id.frmInputFragment
-				, fragment_input
-				, CommonConst.FRAGMENT_TAG_WCREC_INPUT);
+
+		if(getFragmentManager().findFragmentByTag(CommonConst.FRAGMENT_TAG_CALENDAR) == null){
+			//カレンダーフラグメント
+			Fragment fragment_cal = new WcRecordCalendarFragment(); 
+			//入力欄フラグメント
+			Fragment fragment_input = new WcRecordInputFragment(); 
+			
+			fragment_cal.setArguments(args);
+			fragment_input.setArguments(args);
+			
+			//targetフラグメントをセット
+			fragment_cal.setTargetFragment(fragment_input, 0);
+			fragment_input.setTargetFragment(fragment_cal, 0);
+			
+			tran.replace(R.id.frmCalendarFragment
+					, fragment_cal
+					, CommonConst.FRAGMENT_TAG_CALENDAR);
+			tran.replace(R.id.frmInputFragment
+					, fragment_input
+					, CommonConst.FRAGMENT_TAG_WCREC_INPUT);
+		}
 		
 		tran.commit();
 		

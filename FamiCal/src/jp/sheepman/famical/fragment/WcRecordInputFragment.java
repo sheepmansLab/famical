@@ -16,6 +16,7 @@ import jp.sheepman.famical.model.WcRecordDeleteModel;
 import jp.sheepman.famical.model.WcRecordInsertModel;
 import jp.sheepman.famical.model.WcRecordSelectModel;
 import jp.sheepman.famical.model.WcRecordUpdateModel;
+import jp.sheepman.famical.util.CommonConst;
 import jp.sheepman.famical.view.CustomNumberPicker;
 import android.content.Context;
 import android.os.Bundle;
@@ -39,25 +40,42 @@ public class WcRecordInputFragment extends BaseFragment {
 	private WcRecordForm form;
 	
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		if(outState != null){
+			if(form != null){
+				outState.putString(CommonConst.BUNDLE_KEY_WC_RECORD_DATE, CalendarUtil.cal2str(form.getWc_record_date()));
+				outState.putInt(CommonConst.BUNDLE_KEY_FAMILY_ID, form.getFamily_id());
+			}
+		}
 	}
 	
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		this.aq = new AQuery(getActivity());
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 		this.mContext = getActivity();
 		this.form = new WcRecordForm();
-		
-		//Viewのレイアウトを取得
-		View view = inflater.inflate(R.layout.fragment_wcrec_input, null);
-
 		//引数を取得
 		Bundle args = getArguments();
 		if(args != null){
 			this.form.setFamily_id(args.getInt("family_id"));
 			this.form.setWc_record_date(CalendarUtil.str2cal(args.getString("wc_record_date")));
 		}
+	}
+	
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		this.aq = new AQuery(getActivity());
+		
+		//Viewのレイアウトを取得
+		View view = inflater.inflate(R.layout.fragment_wcrec_input, null);
+		
+		if(savedInstanceState != null){
+			//Bundleの保持情報を取得
+			form.setFamily_id(savedInstanceState.getInt(CommonConst.BUNDLE_KEY_FAMILY_ID));
+			form.setWc_record_date(CalendarUtil.str2cal(savedInstanceState.getString(CommonConst.BUNDLE_KEY_WC_RECORD_DATE)));
+		}
+
 		//rootをDialog内のViewにセット
 		aq.recycle(view);
 		//各項目に初期値をセット
