@@ -1,16 +1,18 @@
 package jp.sheepman.famical.fragment;
 
-import java.io.ObjectOutputStream.PutField;
 import java.util.ArrayList;
 import java.util.List;
 
+import jp.sheepman.common.activity.BaseActivity;
 import jp.sheepman.common.adapter.BaseCustomAdapter;
 import jp.sheepman.common.form.BaseForm;
 import jp.sheepman.common.fragment.BaseFragment;
 import jp.sheepman.famical.MainActivity;
 import jp.sheepman.famical.R;
 import jp.sheepman.famical.form.FamilyForm;
+import jp.sheepman.famical.form.MainActivityForm;
 import jp.sheepman.famical.model.FamilySelectModel;
+import jp.sheepman.famical.util.CommonConst;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -30,11 +32,16 @@ public class FamilySelectFragment extends BaseFragment {
 	private AQuery aq;
 	private FamilySelectListAdapter mAdapter;
 	
+	private int family_id;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mContext = getActivity();
 		aq = new AQuery(mContext);
+		if(getArguments() != null){
+			this.family_id = getArguments().getInt(CommonConst.BUNDLE_KEY_FAMILY_ID);
+		}
 	}
 	
 	@Override
@@ -81,11 +88,6 @@ public class FamilySelectFragment extends BaseFragment {
 		mAdapter.notifyDataSetChanged();
 	}
 	
-	@Override
-	public void callback() {
-		reload();
-	}
-	
 	/**
 	 * アイテムをクリックしたときのイベントリスナ
 	 */
@@ -93,11 +95,13 @@ public class FamilySelectFragment extends BaseFragment {
 		@Override
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 			Log.d("famical", "item");
-			Intent intent = new Intent(getActivity(), MainActivity.class);
+			MainActivityForm form = new MainActivityForm();
 			if(arg1.getTag() instanceof Integer){
-				intent.putExtra("family_id", Integer.valueOf(arg1.getTag().toString()));
+				FamilySelectFragment.this.family_id = Integer.valueOf(arg1.getTag().toString());
 			}
-			getActivity().startActivity(intent);
+			form.setFamily_id(FamilySelectFragment.this.family_id);
+			((BaseActivity)getActivity()).callback(form);
+			reload();
 		}
 	};
 	
@@ -122,6 +126,13 @@ public class FamilySelectFragment extends BaseFragment {
 			aq.id(R.id.tvFamSelItemFamilyName).text(form.getFamily_name() +"_"+String.valueOf(form.getFamily_id()));
 			aq.id(R.id.btnFamSelItemEdit).clicked(lsnrClickEdit);
 			aq.id(R.id.btnFamSelItemDel).clicked(null);
+			//選択中のIDと同じならば背景色を設定
+			if(form.getFamily_id() == FamilySelectFragment.this.family_id){
+				aq.recycle(v).backgroundColorId(R.color.SELECTED);
+			} else {
+				aq.recycle(v).backgroundColorId(R.color.white);
+			}
+				
 			return v;
 		}
 		
@@ -134,12 +145,30 @@ public class FamilySelectFragment extends BaseFragment {
 				FamilyInputDialogFragment fragment = new FamilyInputDialogFragment();
 				Bundle args = new Bundle();
 				if(v.getTag() instanceof Integer){
-					args.putInt("family_id", Integer.valueOf(v.getTag().toString()));
+					args.putInt(CommonConst.BUNDLE_KEY_FAMILY_ID, Integer.valueOf(v.getTag().toString()));
 				}
 				fragment.setArguments(args);
 				fragment.setTargetFragment(FamilySelectFragment.this, 0);
 				fragment.show(getChildFragmentManager(), "");
 			}
 		};
+	}
+	
+	@Override
+	public void callback() {
+		//再描画
+		reload();
+	}
+
+	/**
+	 * formを受け取って再描画する
+	 */
+	@Override
+	public void callback(BaseForm arg0) {
+		//引数がFamilyFormであればIDを保持する
+		if(arg0 instanceof FamilyForm){
+			this.family_id = ((FamilyForm)arg0).getFamily_id();
+		}
+		reload();
 	}
 }

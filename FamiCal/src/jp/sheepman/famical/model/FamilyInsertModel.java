@@ -22,25 +22,28 @@ public class FamilyInsertModel extends BaseModel {
 	 * 家族データをInsertする
 	 * @param form
 	 */
-	public void insert(FamilyForm form){
+	public long insert(FamilyForm form){
+		long rowid = 0;
 		DatabaseUtil dbutil = new DatabaseUtil(mContext);
 		dbutil.open();
-		
-		FamilyEntity entity = new FamilyEntity();
-		//entity.setFamily_id(form.getFamily_id());	//自動採番のため不要
-		if(form.getFamily_name() != null){
-			entity.setFamily_name(form.getFamily_name());
+		try {
+			FamilyEntity entity = new FamilyEntity();
+			//entity.setFamily_id(form.getFamily_id());	//自動採番のため不要
+			if(form.getFamily_name() != null){
+				entity.setFamily_name(form.getFamily_name());
+			}
+			if(form.getBirth_date() != null){
+				entity.setBirth_date(CalendarUtil.cal2str(form.getBirth_date()));
+			}
+			if(form.getImage_id() == 0){
+				entity.setImage_id(form.getImage_id());
+			}
+			//Insert処理
+			rowid = dbutil.insert(tablename , entity);
+		} finally {
+			dbutil.close();
 		}
-		if(form.getBirth_date() != null){
-			entity.setBirth_date(CalendarUtil.cal2str(form.getBirth_date()));
-		}
-		if(form.getImage_id() == 0){
-			entity.setImage_id(form.getImage_id());
-		}
-		//Insert処理
-		dbutil.insert(tablename , entity );
-		
-		dbutil.close();
+		return rowid;
 	}
 	
 	@Override

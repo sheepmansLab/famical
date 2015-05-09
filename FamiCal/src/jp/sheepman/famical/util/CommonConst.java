@@ -17,6 +17,8 @@ public class CommonConst {
 	public static final String FRAGMENT_TAG_CALENDAR = "FRAGMENT_CALENDAR";
 	/** フラグメントタグ名 入力 */
 	public static final String FRAGMENT_TAG_WCREC_INPUT = "FRAGMENT_TAG_WCREC_INPUT";
+	/** フラグメントタグ名 家族選択 */
+	public static final String FRAGMENT_TAG_FAMILY_SELECT = "FRAGMENT_TAG_FAMILY_SELECT";
 	
 	/** Bundle用Key wc_record_date */
 	public static final String BUNDLE_KEY_WC_RECORD_DATE = "wc_record_date";

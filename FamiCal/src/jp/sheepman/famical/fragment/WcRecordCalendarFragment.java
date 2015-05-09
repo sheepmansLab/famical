@@ -190,7 +190,9 @@ public class WcRecordCalendarFragment extends BaseFragment {
 		
 		//TableLayoutを取得
 		TableLayout tl = (TableLayout)aq.id(R.id.tlCalendar).getView();
-		
+
+		//Cell用のAQueryを作成
+		AQuery aqCell = new AQuery(getActivity());
 		//カレンダーのセルをセット
 		for(int i = 0; i < tl.getChildCount(); i ++){
 			//型チェック
@@ -203,28 +205,27 @@ public class WcRecordCalendarFragment extends BaseFragment {
 				//日付分繰り返す
 				for(int j = 0; j < tr.getChildCount(); j ++){
 					View cell = tr.getChildAt(j);
+					aqCell.recycle(cell);
 					//セルの初期化
 					cell.setTag(null);
 					cell.setOnTouchListener(null);
 					cell.setBackgroundColor(getResources().getColor(R.color.BLANK));
-					//AQueryのrootの変更
-					aq.recycle(cell);
 					//当月のデータのみ処理する
 					if(month == CalendarUtil.getMonth(vCalTemp)){
 						//セルを初期化する
-						aq.id(R.id.tvCellDay).text(String.valueOf(CalendarUtil.getDate(vCalTemp)));
-						aq.id(R.id.tvCelPeCircle).text(R.string.lblMarkCircle).textColorId(R.color.lightgrey);
-						aq.id(R.id.tvCelPoCircle).text(R.string.lblMarkCircle).textColorId(R.color.lightgrey);
-						aq.id(R.id.tvCelPeCount).text("0").textColorId(R.color.lightgrey);
-						aq.id(R.id.tvCelPoCount).text("0").textColorId(R.color.lightgrey);
+						aqCell.id(R.id.tvCellDay).text(String.valueOf(CalendarUtil.getDate(vCalTemp)));
+						aqCell.id(R.id.tvCelPeCircle).text(R.string.lblMarkCircle).textColorId(R.color.lightgrey);
+						aqCell.id(R.id.tvCelPoCircle).text(R.string.lblMarkCircle).textColorId(R.color.lightgrey);
+						aqCell.id(R.id.tvCelPeCount).text("0").textColorId(R.color.lightgrey);
+						aqCell.id(R.id.tvCelPoCount).text("0").textColorId(R.color.lightgrey);
 						if(j == 6){	//土曜日
-							aq.id(R.id.tvCellDay).textColorId(R.color.steelblue);
+							aqCell.id(R.id.tvCellDay).textColorId(R.color.steelblue);
 							cell.setBackgroundResource(R.drawable.calendar_cell_sat);
 						} else if(j == 0){	//日曜日
-							aq.id(R.id.tvCellDay).textColorId(R.color.crimson);
+							aqCell.id(R.id.tvCellDay).textColorId(R.color.crimson);
 							cell.setBackgroundResource(R.drawable.calendar_cell_sun);
 						} else {	//その他
-							aq.id(R.id.tvCellDay).textColorId(R.color.black);
+							aqCell.id(R.id.tvCellDay).textColorId(R.color.black);
 							cell.setBackgroundResource(R.drawable.calendar_cell);
 						}
 						//データの注入
@@ -233,11 +234,11 @@ public class WcRecordCalendarFragment extends BaseFragment {
 							WcRecordForm f = (WcRecordForm)ite.next();
 							if(CalendarUtil.cal2str(f.getWc_record_date()).equals(CalendarUtil.cal2str(vCalTemp))){
 								//マークの色付け
-								aq.id(R.id.tvCelPeCircle).textColorId(R.color.powderblue);
-								aq.id(R.id.tvCelPoCircle).textColorId(R.color.mustard);
+								aqCell.id(R.id.tvCelPeCircle).textColorId(R.color.powderblue);
+								aqCell.id(R.id.tvCelPoCircle).textColorId(R.color.mustard);
 								//取得した値を表示する
-								aq.id(R.id.tvCelPeCount).text(String.valueOf(f.getPe_count())).textColorId(R.color.black);
-								aq.id(R.id.tvCelPoCount).text(String.valueOf(f.getPo_count())).textColorId(R.color.black);
+								aqCell.id(R.id.tvCelPeCount).text(String.valueOf(f.getPe_count())).textColorId(R.color.black);
+								aqCell.id(R.id.tvCelPoCount).text(String.valueOf(f.getPo_count())).textColorId(R.color.black);
 								ite.remove();
 							}
 						}
@@ -252,13 +253,13 @@ public class WcRecordCalendarFragment extends BaseFragment {
 					} else {
 						//前月翌月の場合は除外する
 						//セルの初期化
-						aq.id(R.id.tvCellDay).text("");
-						aq.id(R.id.tvCelPeCircle).text("");
-						aq.id(R.id.tvCelPoCircle).text("");
-						aq.id(R.id.tvCelPeCount).text("");
-						aq.id(R.id.tvCelPoCount).text("");
+						aqCell.id(R.id.tvCellDay).text("");
+						aqCell.id(R.id.tvCelPeCircle).text("");
+						aqCell.id(R.id.tvCelPoCircle).text("");
+						aqCell.id(R.id.tvCelPeCount).text("");
+						aqCell.id(R.id.tvCelPoCount).text("");
 						//背景をグレーにする
-						aq.id(R.id.tvCellDay).textColorId(R.color.black);
+						aqCell.id(R.id.tvCellDay).textColorId(R.color.black);
 						cell.setBackgroundColor(Color.GRAY);
 						//非表示セル数をカウント
 						disableCount++;
@@ -278,8 +279,6 @@ public class WcRecordCalendarFragment extends BaseFragment {
 			alpha.setDuration(300);
 			tl.startAnimation(alpha);
 		}
-		//AQueryの初期化
-		aq.recycle(getView());
 	}
 	
 	/**
@@ -385,7 +384,7 @@ public class WcRecordCalendarFragment extends BaseFragment {
 				break;
 			case MotionEvent.ACTION_UP:
 				if(getTargetFragment() instanceof WcRecordInputFragment){ 
-					((WcRecordInputFragment)getTargetFragment()).changeDate(family_id, CalendarUtil.str2cal(v.getTag().toString()));
+					((WcRecordInputFragment)getTargetFragment()).changeDisplay(family_id, CalendarUtil.str2cal(v.getTag().toString()));
 					//選択したセルの日付を保持
 					wc_record_date = CalendarUtil.str2cal(v.getTag().toString());
 				}
@@ -398,18 +397,13 @@ public class WcRecordCalendarFragment extends BaseFragment {
 		}
 	};
 	
-	@Override
-	public void callback() {
-		setCellDetail(true);
-	}
-	
 	/**
 	 * 外部からのカレンダー更新指示
 	 * @param family_id
 	 * @param wc_record_date
 	 * @param reload
 	 */
-	public void changeDate(int family_id, Calendar wc_record_date, boolean reload){
+	public void changeDisplay(int family_id, Calendar wc_record_date, boolean reload){
 		Log.d("famical", "changeDate Start");
 		this.family_id = family_id;
 		
@@ -420,6 +414,9 @@ public class WcRecordCalendarFragment extends BaseFragment {
 		}
 		//日付をFragmentに保持させる
 		this.wc_record_date = wc_record_date;
+
+		//家族データの更新
+		setFamilyData();
 		
 		//指定日付のセルを探して色付けする
 		TableLayout tlCalendar = (TableLayout)aq.id(R.id.tlCalendar).getView();
@@ -445,5 +442,15 @@ public class WcRecordCalendarFragment extends BaseFragment {
 			}
 		}
 		Log.d("famical", "changeDate End");
+	}
+	
+	@Override
+	public void callback() {
+		setCellDetail(true);
+	}
+	
+	@Override
+	public void callback(BaseForm arg0) {
+		this.callback();
 	}
 }

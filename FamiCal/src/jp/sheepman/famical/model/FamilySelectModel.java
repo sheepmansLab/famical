@@ -18,6 +18,7 @@ public class FamilySelectModel extends BaseModel {
 	private Context mContext;
 	private final String sql01 = "SELECT family_id, family_name, birth_date, image_id FROM family WHERE family_id = ? ";
 	private final String sql02 = "SELECT family_id, family_name, birth_date, image_id FROM family ";
+	private final String sql03 = "SELECT family_id, family_name, birth_date, image_id FROM family WHERE rowid = ? ";
 	
 	public FamilySelectModel(Context context) {
 		mContext = context;
@@ -50,7 +51,10 @@ public class FamilySelectModel extends BaseModel {
 		return list;
 	}
 	
-
+	/**
+	 * 検索条件なしでデータを取得する
+	 * @return
+	 */
 	public List<BaseForm> selectAll(){
 		List<BaseForm> list = new ArrayList<BaseForm>();
 		DatabaseUtil dbutil = new DatabaseUtil(mContext);
@@ -59,6 +63,34 @@ public class FamilySelectModel extends BaseModel {
 		List<String> params = new ArrayList<String>();
 		
 		Iterator<BaseEntity> ite = dbutil.select(sql02, params, this).iterator();
+		while(ite.hasNext()){
+			FamilyEntity entity = (FamilyEntity)ite.next();
+			FamilyForm data = new FamilyForm();
+			data.setFamily_id(entity.getFamily_id());
+			data.setFamily_name(entity.getFamily_name());
+			data.setBirth_date(CalendarUtil.str2cal(entity.getBirth_date()));
+			data.setImage_id(entity.getImage_id());
+			list.add(data);
+		}
+		
+		dbutil.close();
+		return list;
+	}
+
+	/**
+	 * rowidからデータを取得する
+	 * @param rowid
+	 * @return
+	 */
+	public List<BaseForm> selectByRowId(long rowid){
+		List<BaseForm> list = new ArrayList<BaseForm>();
+		DatabaseUtil dbutil = new DatabaseUtil(mContext);
+		dbutil.open();
+		
+		List<String> params = new ArrayList<String>();
+		params.add(String.valueOf(rowid));
+		
+		Iterator<BaseEntity> ite = dbutil.select(sql03, params, this).iterator();
 		while(ite.hasNext()){
 			FamilyEntity entity = (FamilyEntity)ite.next();
 			FamilyForm data = new FamilyForm();

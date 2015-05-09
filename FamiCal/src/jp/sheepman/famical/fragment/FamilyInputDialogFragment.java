@@ -9,13 +9,13 @@ import jp.sheepman.common.form.BaseForm;
 import jp.sheepman.common.fragment.BaseDialogFragment;
 import jp.sheepman.common.fragment.BaseFragment;
 import jp.sheepman.common.util.CalendarUtil;
-import jp.sheepman.famical.MainActivity;
 import jp.sheepman.famical.R;
 import jp.sheepman.famical.form.FamilyForm;
 import jp.sheepman.famical.model.FamilyDeleteModel;
 import jp.sheepman.famical.model.FamilyInsertModel;
 import jp.sheepman.famical.model.FamilySelectModel;
 import jp.sheepman.famical.model.FamilyUpdateModel;
+import jp.sheepman.famical.util.CommonConst;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -47,7 +47,7 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		this.aq = new AQuery(getActivity());
 		this.mContext = getActivity();
-		this.inflator = getActivity().getLayoutInflater();
+		this.inflator = LayoutInflater.from(mContext);
 		this.form = new FamilyForm();
 		
 		//ディスプレイ情報を取得
@@ -55,23 +55,18 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 		//ダイアログの横幅：280dpi
 		final int dialogWidth = (int) (280 * density);
 
-		//主キーを保持
-		int family_id = 0;
+		//Viewのレイアウトを取得
+		View view = this.inflator.inflate(R.layout.fragment_family_input, null);
 		
 		//引数を取得
 		Bundle args = getArguments();
 		if(args != null){
-			family_id = args.getInt("family_id");
-		} else {
-			family_id = 1;
+			//IDをformにセット
+			form.setFamily_id(args.getInt(CommonConst.BUNDLE_KEY_FAMILY_ID));
 		}
-		//Viewのレイアウトを取得
-		View view = this.inflator.inflate(R.layout.fragment_family_input, null);
-		
 		//rootをDialog内のViewにセット
 		aq.recycle(view);
 		//各項目に初期値をセット
-		aq.id(R.id.tvDialogFamily_id).text(String.valueOf(family_id));
 		aq.id(R.id.btnDialogInput).clicked(lsnrBtnSubmit);
 		aq.id(R.id.btnDialogClear).clicked(lsnrClickClear);
 		aq.id(R.id.btnDialogDelete).clicked(lsnrClickDelete);
@@ -99,10 +94,9 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 	 */
 	private void setData(){
 		FamilySelectModel model = new FamilySelectModel(mContext);
-		this.form.setFamily_id(Integer.valueOf(aq.id(R.id.tvDialogFamily_id).getText().toString()));
-		Iterator<BaseForm> ite = model.selectById(this.form).iterator();
+		Iterator<BaseForm> ite = model.selectById(form).iterator();
 		if(ite.hasNext()){
-			FamilyForm form = (FamilyForm)ite.next();
+			this.form = (FamilyForm)ite.next();
 			
 			aq.id(R.id.etDialogFamilyName).text(form.getFamily_name());
 			aq.id(R.id.etDialogBirthDay).text(CalendarUtil.cal2str(form.getBirth_date()));
@@ -119,16 +113,18 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 	 * データをInsertする
 	 */
 	private void inputData(){
-		FamilySelectModel checkModel = new FamilySelectModel(mContext);
+		FamilySelectModel selectModel = new FamilySelectModel(mContext);
 		//最新の値をセット
 		//Toastのメッセージ
 		String msg = "";
 		//件数が0以上ならUpdate、0ならInsert
 		form.setFamily_name(aq.id(R.id.etDialogFamilyName).getText().toString());
 		form.setBirth_date(CalendarUtil.str2cal(aq.id(R.id.etDialogBirthDay).getText().toString()));
-		if(checkModel.selectById(this.form).size() == 0){
+		if(selectModel.selectById(this.form).size() == 0){
 			FamilyInsertModel execModel = new FamilyInsertModel(mContext);
-			execModel.insert(this.form);
+			long rowid = execModel.insert(this.form);
+			//Insertしたデータをformにセット
+			form = (FamilyForm)selectModel.selectByRowId(rowid).iterator().next();
 			msg = "登録しました";
 		} else {
 			FamilyUpdateModel execModel = new FamilyUpdateModel(mContext);
@@ -202,15 +198,19 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 	 */
 	@Override
 	public void onDismiss(DialogInterface dialog) {
-		if(getTargetFragment() != null && getTargetFragment() instanceof BaseFragment){
-			BaseFragment target = (BaseFragment)getTargetFragment();
-			target.callback();
+		if(getTargetFragment() instanceof BaseFragment){
+			((BaseFragment)getTargetFragment()).callback(form);
 		}
 		super.onDismiss(dialog);
 	}
 	
 	@Override
 	public void callback() {
+	}
+
+	@Override
+	public void callback(BaseForm arg0) {
+		this.callback();
 	}
 
 }

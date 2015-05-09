@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Iterator;
 
 import jp.sheepman.common.entity.BaseEntity;
+import jp.sheepman.common.form.BaseForm;
 import jp.sheepman.common.fragment.BaseFragment;
 import jp.sheepman.common.util.CalendarUtil;
 import jp.sheepman.famical.R;
@@ -96,7 +97,7 @@ public class WcRecordInputFragment extends BaseFragment {
 	 * @param family_id
 	 * @param wc_record_date
 	 */
-	public void changeDate(int family_id, Calendar wc_record_date){
+	public void changeDisplay(int family_id, Calendar wc_record_date){
 		//formのPK情報を変更する
 		this.form.setFamily_id(family_id);
 		this.form.setWc_record_date(wc_record_date);
@@ -167,7 +168,7 @@ public class WcRecordInputFragment extends BaseFragment {
 	private void refrectCalendar(boolean reload){
 		//カレンダーに反映
 		if(getTargetFragment() instanceof WcRecordCalendarFragment){
-			((WcRecordCalendarFragment)getTargetFragment()).changeDate(
+			((WcRecordCalendarFragment)getTargetFragment()).changeDisplay(
 					this.form.getFamily_id()
 					, (Calendar)(this.form.getWc_record_date()).clone()
 					, reload);
@@ -244,5 +245,9 @@ public class WcRecordInputFragment extends BaseFragment {
 	@Override
 	public void callback() {
 	}
-
+	
+	@Override
+	public void callback(BaseForm arg0) {
+		this.callback();
+	}
 }
