@@ -5,12 +5,14 @@ package jp.sheepman.famical.fragment;
 
 import java.util.Iterator;
 
+import jp.sheepman.common.activity.BaseActivity;
 import jp.sheepman.common.form.BaseForm;
 import jp.sheepman.common.fragment.BaseDialogFragment;
 import jp.sheepman.common.fragment.BaseFragment;
 import jp.sheepman.common.util.CalendarUtil;
 import jp.sheepman.famical.R;
 import jp.sheepman.famical.form.FamilyForm;
+import jp.sheepman.famical.form.MainActivityForm;
 import jp.sheepman.famical.model.FamilyDeleteModel;
 import jp.sheepman.famical.model.FamilyInsertModel;
 import jp.sheepman.famical.model.FamilySelectModel;
@@ -42,6 +44,7 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 	private LayoutInflater inflator;
 	
 	private FamilyForm form;
+	private boolean isModal = false;
 	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -63,6 +66,7 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 		if(args != null){
 			//IDをformにセット
 			form.setFamily_id(args.getInt(CommonConst.BUNDLE_KEY_FAMILY_ID));
+			this.isModal = args.getBoolean(CommonConst.BUNDLE_KEY_IS_MODAL);
 		}
 		//rootをDialog内のViewにセット
 		aq.recycle(view);
@@ -71,6 +75,14 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 		aq.id(R.id.btnDialogClear).clicked(lsnrClickClear);
 		aq.id(R.id.btnDialogDelete).clicked(lsnrClickDelete);
 		aq.id(R.id.btnClose).clicked(lsnrBtnClose);
+		//モーダル時の処理
+		if(isModal){
+			aq.id(R.id.btnClose).visibility(View.GONE);
+			aq.id(R.id.btnDialogDelete).visibility(View.GONE);
+		} else {
+			aq.id(R.id.btnClose).visibility(View.VISIBLE);
+			aq.id(R.id.btnDialogDelete).visibility(View.VISIBLE);
+		}
 		
 		//初期値をセット
 		setData();
@@ -201,7 +213,13 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 		if(getTargetFragment() instanceof BaseFragment){
 			((BaseFragment)getTargetFragment()).callback(form);
 		}
-		super.onDismiss(dialog);
+		if(isModal){
+			MainActivityForm mainForm = new MainActivityForm();
+			mainForm.setFamily_id(form.getFamily_id());
+			((BaseActivity)getActivity()).callback(form);
+		} else {
+			super.onDismiss(dialog);
+		}
 	}
 	
 	@Override
