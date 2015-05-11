@@ -13,21 +13,23 @@ import java.util.List;
 import jp.sheepman.common.activity.BaseActivity;
 import jp.sheepman.common.form.BaseForm;
 import jp.sheepman.common.util.CalendarUtil;
+import jp.sheepman.famical.form.ActivityForm;
 import jp.sheepman.famical.form.FamilyForm;
-import jp.sheepman.famical.form.MainActivityForm;
-import jp.sheepman.famical.fragment.FamilyInputDialogFragment;
 import jp.sheepman.famical.fragment.FamilySelectFragment;
 import jp.sheepman.famical.fragment.WcRecordCalendarFragment;
 import jp.sheepman.famical.fragment.WcRecordInputFragment;
 import jp.sheepman.famical.model.FamilySelectModel;
 import jp.sheepman.famical.util.CommonConst;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 
 import com.androidquery.AQuery;
 
 public class MainActivity extends BaseActivity {
+	private static final int REQUEST_CODE_FAMILY_ACTIVITY = 0;
+	
 	private AQuery aq;
 	private int family_id;
 	private Calendar wc_record_date;
@@ -53,8 +55,6 @@ public class MainActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		this.aq = new AQuery(this);
 		setContentView(R.layout.activity_main);
-		//引数を作成
-		Bundle args = new Bundle();
 		
 		//Fragment処理
 		FragmentTransaction tran = getFragmentManager().beginTransaction();
@@ -85,16 +85,13 @@ public class MainActivity extends BaseActivity {
 		//家族データ取得処理
 		List<Integer> family_list = getFamilyIdList();
 		//データが0件の場合入力画面を表示する
-		if(family_list.size() == 0){
-			FamilyInputDialogFragment fragment_dlg = new FamilyInputDialogFragment();
-			//modalにするフラグをセット
-			args.putBoolean(CommonConst.BUNDLE_KEY_IS_MODAL, true);
-			fragment_dlg.setArguments(args);
-			fragment_dlg.show(getFragmentManager(), CommonConst.FRAGMENT_TAG_WCREC_INPUT);
-		} else if(family_list.indexOf(Integer.valueOf(this.family_id)) < 0) {
-			//リスト内にない場合は選択させる
-			
+		if(family_list.size() == 0 || family_list.indexOf(Integer.valueOf(this.family_id)) < 0) {
+			Intent intent = new Intent(this, FamilyActivity.class);
+			startActivityForResult(intent, REQUEST_CODE_FAMILY_ACTIVITY);
 		}
+		
+		//引数を作成
+		Bundle args = new Bundle();
 		//family_idをキャッシュに書き込み
 		this.writeChacheFamilyId(this.family_id);
 		
@@ -206,7 +203,20 @@ public class MainActivity extends BaseActivity {
 	}
 
 	@Override
-	public void callback() {
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		switch (requestCode) {
+		case REQUEST_CODE_FAMILY_ACTIVITY:
+			if(resultCode == RESULT_OK){
+				this.family_id = data.getIntExtra(CommonConst.BUNDLE_KEY_FAMILY_ID, family_id);
+				reload();
+			}
+			break;
+		default:
+			break;
+		}
+	}
+	
+	private void reload(){
 		if(fragment_cal != null && fragment_inp != null){
 			fragment_cal.changeDisplay(family_id, wc_record_date, true);
 			fragment_inp.changeDisplay(family_id, wc_record_date);
@@ -215,13 +225,18 @@ public class MainActivity extends BaseActivity {
 			writeChacheFamilyId(family_id);
 		}
 	}
+	
+	@Override
+	public void callback() {
+		reload();
+	}
 
 	@Override
 	public void callback(BaseForm arg0) {
-		if(arg0 instanceof MainActivityForm){
-			this.family_id = ((MainActivityForm)arg0).getFamily_id();
-			if(((MainActivityForm)arg0).getWc_record_date() != null){
-				this.wc_record_date = ((MainActivityForm)arg0).getWc_record_date();
+		if(arg0 instanceof ActivityForm){
+			this.family_id = ((ActivityForm)arg0).getFamily_id();
+			if(((ActivityForm)arg0).getWc_record_date() != null){
+				this.wc_record_date = ((ActivityForm)arg0).getWc_record_date();
 			}
 		}
 		this.callback();

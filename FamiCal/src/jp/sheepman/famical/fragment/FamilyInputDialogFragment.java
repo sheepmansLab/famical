@@ -12,7 +12,7 @@ import jp.sheepman.common.fragment.BaseFragment;
 import jp.sheepman.common.util.CalendarUtil;
 import jp.sheepman.famical.R;
 import jp.sheepman.famical.form.FamilyForm;
-import jp.sheepman.famical.form.MainActivityForm;
+import jp.sheepman.famical.form.ActivityForm;
 import jp.sheepman.famical.model.FamilyDeleteModel;
 import jp.sheepman.famical.model.FamilyInsertModel;
 import jp.sheepman.famical.model.FamilySelectModel;
@@ -75,14 +75,6 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 		aq.id(R.id.btnDialogClear).clicked(lsnrClickClear);
 		aq.id(R.id.btnDialogDelete).clicked(lsnrClickDelete);
 		aq.id(R.id.btnClose).clicked(lsnrBtnClose);
-		//モーダル時の処理
-		if(isModal){
-			aq.id(R.id.btnClose).visibility(View.GONE);
-			aq.id(R.id.btnDialogDelete).visibility(View.GONE);
-		} else {
-			aq.id(R.id.btnClose).visibility(View.VISIBLE);
-			aq.id(R.id.btnDialogDelete).visibility(View.VISIBLE);
-		}
 		
 		//初期値をセット
 		setData();
@@ -98,6 +90,13 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 		lp.width = dialogWidth;
 		dialog.getWindow().setAttributes(lp);
 		
+		//モーダル時の処理
+		if(isModal){
+			aq.id(R.id.btnClose).visibility(View.GONE);
+			aq.id(R.id.btnDialogDelete).visibility(View.GONE);
+			dialog.setCancelable(false);
+			dialog.setCanceledOnTouchOutside(false);
+		}
 		return dialog;
 	}
 	
@@ -212,14 +211,12 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 	public void onDismiss(DialogInterface dialog) {
 		if(getTargetFragment() instanceof BaseFragment){
 			((BaseFragment)getTargetFragment()).callback(form);
-		}
-		if(isModal){
-			MainActivityForm mainForm = new MainActivityForm();
+		}else if(isModal){
+			ActivityForm mainForm = new ActivityForm();
 			mainForm.setFamily_id(form.getFamily_id());
-			((BaseActivity)getActivity()).callback(form);
-		} else {
-			super.onDismiss(dialog);
+			((BaseActivity)getActivity()).callback(mainForm);
 		}
+		super.onDismiss(dialog);
 	}
 	
 	@Override

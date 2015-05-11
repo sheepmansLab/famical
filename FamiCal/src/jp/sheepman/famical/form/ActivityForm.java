@@ -4,7 +4,7 @@ import java.util.Calendar;
 
 import jp.sheepman.common.form.BaseForm;
 
-public class MainActivityForm extends BaseForm {
+public class ActivityForm extends BaseForm {
 	private int family_id;
 	private Calendar wc_record_date;
 	/**

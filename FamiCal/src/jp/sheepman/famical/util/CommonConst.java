@@ -24,6 +24,8 @@ public class CommonConst {
 	public static final String FRAGMENT_TAG_WCREC_INPUT = "FRAGMENT_TAG_WCREC_INPUT";
 	/** フラグメントタグ名 家族選択 */
 	public static final String FRAGMENT_TAG_FAMILY_SELECT = "FRAGMENT_TAG_FAMILY_SELECT";
+	/** フラグメントタグ名 家族入力 */
+	public static final String FRAGMENT_TAG_FAMILY_DIALOG = "FRAGMENT_TAG_FAMILY_DIALOG";
 
 	/** Bundle用Key モーダル判定フラグ */
 	public static final String BUNDLE_KEY_IS_MODAL = "isModal";

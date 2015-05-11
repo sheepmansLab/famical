@@ -10,7 +10,7 @@ import jp.sheepman.common.fragment.BaseFragment;
 import jp.sheepman.famical.MainActivity;
 import jp.sheepman.famical.R;
 import jp.sheepman.famical.form.FamilyForm;
-import jp.sheepman.famical.form.MainActivityForm;
+import jp.sheepman.famical.form.ActivityForm;
 import jp.sheepman.famical.model.FamilySelectModel;
 import jp.sheepman.famical.util.CommonConst;
 import android.content.Context;
@@ -95,13 +95,13 @@ public class FamilySelectFragment extends BaseFragment {
 		@Override
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 			Log.d("famical", "item");
-			MainActivityForm form = new MainActivityForm();
+			ActivityForm form = new ActivityForm();
 			if(arg1.getTag() instanceof Integer){
 				FamilySelectFragment.this.family_id = Integer.valueOf(arg1.getTag().toString());
 			}
 			form.setFamily_id(FamilySelectFragment.this.family_id);
-			((BaseActivity)getActivity()).callback(form);
 			reload();
+			((BaseActivity)getActivity()).callback(form);
 		}
 	};
 	
