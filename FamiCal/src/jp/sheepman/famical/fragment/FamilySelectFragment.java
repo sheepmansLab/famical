@@ -7,14 +7,12 @@ import jp.sheepman.common.activity.BaseActivity;
 import jp.sheepman.common.adapter.BaseCustomAdapter;
 import jp.sheepman.common.form.BaseForm;
 import jp.sheepman.common.fragment.BaseFragment;
-import jp.sheepman.famical.MainActivity;
 import jp.sheepman.famical.R;
-import jp.sheepman.famical.form.FamilyForm;
 import jp.sheepman.famical.form.ActivityForm;
+import jp.sheepman.famical.form.FamilyForm;
 import jp.sheepman.famical.model.FamilySelectModel;
 import jp.sheepman.famical.util.CommonConst;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -149,7 +147,7 @@ public class FamilySelectFragment extends BaseFragment {
 				}
 				fragment.setArguments(args);
 				fragment.setTargetFragment(FamilySelectFragment.this, 0);
-				fragment.show(getChildFragmentManager(), "");
+				fragment.show(getFragmentManager(), "");
 			}
 		};
 	}

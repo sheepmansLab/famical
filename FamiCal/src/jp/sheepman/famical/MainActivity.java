@@ -24,6 +24,7 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 
 import com.androidquery.AQuery;
 
@@ -52,34 +53,27 @@ public class MainActivity extends BaseActivity {
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		Log.d(this.getClass().toString(), String.valueOf(new Throwable().getStackTrace()[0].getLineNumber()) + ": start");
 		super.onCreate(savedInstanceState);
 		this.aq = new AQuery(this);
 		setContentView(R.layout.activity_main);
 		
-		//Fragment処理
-		FragmentTransaction tran = getFragmentManager().beginTransaction();
 		//カレンダーフラグメント
 		fragment_cal = new WcRecordCalendarFragment(); 
 		//入力欄フラグメント
 		fragment_inp = new WcRecordInputFragment();
 		//家族選択フラグメント
 		fragment_select = new FamilySelectFragment();
-		
+
+		//キャッシュからfamily_idを取得
+		this.family_id = readChacheFamilyId();
 		//当日をセット
 		this.wc_record_date = CalendarUtil.getToday();
+		
 		//Bundleに保持していた場合再取得
 		if(savedInstanceState != null){
 			this.family_id = savedInstanceState.getInt(CommonConst.BUNDLE_KEY_FAMILY_ID);
 			this.wc_record_date = CalendarUtil.str2cal(savedInstanceState.getString(CommonConst.BUNDLE_KEY_WC_RECORD_DATE));
-		} else if(getIntent() != null){
-			this.family_id = getIntent().getIntExtra(CommonConst.BUNDLE_KEY_FAMILY_ID, 0);
-			Calendar tmpDate = CalendarUtil.str2cal(getIntent().getStringExtra(CommonConst.BUNDLE_KEY_WC_RECORD_DATE));
-			if(tmpDate != null){
-				this.wc_record_date = tmpDate;
-			}
-		} else {
-			//キャッシュからfamily_idを取得
-			this.family_id = readChacheFamilyId();
 		}
 		
 		//家族データ取得処理
@@ -89,6 +83,9 @@ public class MainActivity extends BaseActivity {
 			Intent intent = new Intent(this, FamilyActivity.class);
 			startActivityForResult(intent, REQUEST_CODE_FAMILY_ACTIVITY);
 		}
+		
+		//Fragment処理
+		FragmentTransaction tran = getFragmentManager().beginTransaction();
 		
 		//引数を作成
 		Bundle args = new Bundle();
@@ -124,6 +121,8 @@ public class MainActivity extends BaseActivity {
 					, CommonConst.FRAGMENT_TAG_FAMILY_SELECT);
 		}
 		tran.commit();
+		
+		Log.d(this.getClass().toString(), new Throwable().getStackTrace()[0].getMethodName() + ": end");
 	}
 	
 	/**
@@ -131,6 +130,7 @@ public class MainActivity extends BaseActivity {
 	 * @return family_idのリスト
 	 */
 	private List<Integer> getFamilyIdList(){
+		Log.d(this.getClass().toString(), new Throwable().getStackTrace()[0].getMethodName() + ": start");
 		//家族データ取得処理
 		FamilySelectModel selectModel = new FamilySelectModel(this);
 		List<Integer> list = new ArrayList<Integer>();
@@ -138,6 +138,7 @@ public class MainActivity extends BaseActivity {
 		while(ite.hasNext()){
 			list.add(((FamilyForm)ite.next()).getFamily_id());
 		}
+		Log.d(this.getClass().toString(), new Throwable().getStackTrace()[0].getMethodName() + ": end");
 		return list;
 	}
 	
@@ -146,6 +147,7 @@ public class MainActivity extends BaseActivity {
 	 * @return family_id
 	 */
 	private int readChacheFamilyId(){
+		Log.d(this.getClass().toString(), new Throwable().getStackTrace()[0].getMethodName() + ": start");
 		int ret = 0;
 
 		File chache = new File(getCacheDir(), CommonConst.CHACHE_FILE);
@@ -172,6 +174,7 @@ public class MainActivity extends BaseActivity {
 				}
 			}
 		}
+		Log.d(this.getClass().toString(), new Throwable().getStackTrace()[0].getMethodName() + ": end");
 		return ret;
 	}
 	
@@ -179,6 +182,7 @@ public class MainActivity extends BaseActivity {
 	 * キャッシュファイルにfamily_idを書き込む
 	 */
 	private void writeChacheFamilyId(int family_id){
+		Log.d(this.getClass().toString(), new Throwable().getStackTrace()[0].getMethodName() + ": start");
 		File chache = new File(getCacheDir(), CommonConst.CHACHE_FILE);
 		FileOutputStream fos = null;
 		try {
@@ -200,10 +204,12 @@ public class MainActivity extends BaseActivity {
 				e.printStackTrace();
 			}
 		}
+		Log.d(this.getClass().toString(), new Throwable().getStackTrace()[0].getMethodName() + ": end");
 	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		Log.d(this.getClass().toString(), new Throwable().getStackTrace()[0].getMethodName() + ": start");
 		switch (requestCode) {
 		case REQUEST_CODE_FAMILY_ACTIVITY:
 			if(resultCode == RESULT_OK){
@@ -214,25 +220,32 @@ public class MainActivity extends BaseActivity {
 		default:
 			break;
 		}
+		Log.d(this.getClass().toString(), new Throwable().getStackTrace()[0].getMethodName() + ": end");
 	}
 	
 	private void reload(){
+		Log.d(this.getClass().toString(), new Throwable().getStackTrace()[0].getMethodName() + ": start");
 		if(fragment_cal != null && fragment_inp != null){
 			fragment_cal.changeDisplay(family_id, wc_record_date, true);
 			fragment_inp.changeDisplay(family_id, wc_record_date);
+			fragment_select.callback();
 			((DrawerLayout)aq.id(R.id.dlMainFamilySelect).getView()).closeDrawers();
 			//family_idを書き込む
 			writeChacheFamilyId(family_id);
 		}
+		Log.d(this.getClass().toString(), new Throwable().getStackTrace()[0].getMethodName() + ": end");
 	}
 	
 	@Override
 	public void callback() {
+		Log.d(this.getClass().toString(), new Throwable().getStackTrace()[0].getMethodName() + ": start");
 		reload();
+		Log.d(this.getClass().toString(), new Throwable().getStackTrace()[0].getMethodName() + ": end");
 	}
 
 	@Override
 	public void callback(BaseForm arg0) {
+		Log.d(this.getClass().toString(), new Throwable().getStackTrace()[0].getMethodName() + ": start");
 		if(arg0 instanceof ActivityForm){
 			this.family_id = ((ActivityForm)arg0).getFamily_id();
 			if(((ActivityForm)arg0).getWc_record_date() != null){
@@ -240,5 +253,6 @@ public class MainActivity extends BaseActivity {
 			}
 		}
 		this.callback();
+		Log.d(this.getClass().toString(), new Throwable().getStackTrace()[0].getMethodName() + ": end");
 	}
 }
