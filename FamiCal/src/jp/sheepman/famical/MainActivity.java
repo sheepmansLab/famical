@@ -158,7 +158,8 @@ public class MainActivity extends BaseActivity {
 				fis = new FileInputStream(chache);
 				fis.read(buffer);
 				try{
-					ret = Integer.valueOf(new String(buffer, CommonConst.ENCODE));
+					String tmp = new String(buffer, CommonConst.ENCODE);
+					ret = Integer.valueOf(tmp.trim());
 				} catch(ClassCastException e) {
 					e.printStackTrace();
 				}

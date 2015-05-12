@@ -15,8 +15,10 @@ public class CommonConst {
 	
 	/** テーブル名 wc_record */
 	public static final String TABLE_NAME_WC_RECORD = "wc_record";
-	/** テーブル名 wc_record */
+	/** テーブル名 family */
 	public static final String TABLE_NAME_FAMILY = "family";
+	/** テーブル名 images */
+	public static final String TABLE_NAME_IMAGES = "images";
 	
 	/** フラグメントタグ名 カレンダー */
 	public static final String FRAGMENT_TAG_CALENDAR = "FRAGMENT_CALENDAR";

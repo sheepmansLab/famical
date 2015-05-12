@@ -3,6 +3,8 @@
  */
 package jp.sheepman.famical.fragment;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Iterator;
 
 import jp.sheepman.common.activity.BaseActivity;
@@ -11,19 +13,24 @@ import jp.sheepman.common.fragment.BaseDialogFragment;
 import jp.sheepman.common.fragment.BaseFragment;
 import jp.sheepman.common.util.CalendarUtil;
 import jp.sheepman.famical.R;
-import jp.sheepman.famical.form.FamilyForm;
 import jp.sheepman.famical.form.ActivityForm;
+import jp.sheepman.famical.form.FamilyForm;
 import jp.sheepman.famical.model.FamilyDeleteModel;
 import jp.sheepman.famical.model.FamilyInsertModel;
 import jp.sheepman.famical.model.FamilySelectModel;
 import jp.sheepman.famical.model.FamilyUpdateModel;
 import jp.sheepman.famical.util.CommonConst;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -33,12 +40,13 @@ import android.widget.Toast;
 
 import com.androidquery.AQuery;
 
-
 /**
  * @author sheepman
  *
  */
 public class FamilyInputDialogFragment extends BaseDialogFragment {
+	private static final int REQUEST_CODE_GALLERY = 0;
+	
 	private AQuery aq;
 	private Context mContext;
 	private LayoutInflater inflator;
@@ -75,6 +83,7 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 		aq.id(R.id.btnDialogClear).clicked(lsnrClickClear);
 		aq.id(R.id.btnDialogDelete).clicked(lsnrClickDelete);
 		aq.id(R.id.btnClose).clicked(lsnrBtnClose);
+		aq.id(R.id.ivDialogImage).clicked(lsnrBtnImage);
 		
 		//初期値をセット
 		setData();
@@ -196,6 +205,42 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 		}
 	};
 	
+	/**
+	 * 画像押下時のイベント
+	 */
+	OnClickListener lsnrBtnImage = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+			intent.setType("image/*");
+			startActivityForResult(intent, REQUEST_CODE_GALLERY);
+		}
+	};
+	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, android.content.Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		switch (requestCode) {
+		case REQUEST_CODE_GALLERY:
+			if(resultCode == Activity.RESULT_OK){
+				try {
+					
+					Bitmap bmp = null;
+					aq.id(R.id.ivDialogImage).image(bmp);
+				} catch (FileNotFoundException e) {
+					// TODO 自動生成された catch ブロック
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO 自動生成された catch ブロック
+					e.printStackTrace();
+				}
+			}
+			break;
+		default:
+			break;
+		}
+	}
+		
 	/**
 	 * Toast表示
 	 * @param msg
