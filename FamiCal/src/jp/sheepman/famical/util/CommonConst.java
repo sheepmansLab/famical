@@ -13,6 +13,9 @@ public class CommonConst {
 	/** キャッシュファイル名 */
 	public static final String CHACHE_FILE = "chache_file.txt";
 	
+	/**	リクエストコード ギャラリー */
+	public static final int REQUEST_CODE_GALLERY = 1;
+	
 	/** テーブル名 wc_record */
 	public static final String TABLE_NAME_WC_RECORD = "wc_record";
 	/** テーブル名 family */

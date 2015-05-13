@@ -13,10 +13,7 @@ import jp.sheepman.common.util.CalendarUtil;
 import jp.sheepman.famical.R;
 import jp.sheepman.famical.entity.WcRecordEntity;
 import jp.sheepman.famical.form.WcRecordForm;
-import jp.sheepman.famical.model.WcRecordDeleteModel;
-import jp.sheepman.famical.model.WcRecordInsertModel;
-import jp.sheepman.famical.model.WcRecordSelectModel;
-import jp.sheepman.famical.model.WcRecordUpdateModel;
+import jp.sheepman.famical.model.WcRecordModel;
 import jp.sheepman.famical.util.CommonConst;
 import jp.sheepman.famical.view.CustomNumberPicker;
 import android.content.Context;
@@ -110,7 +107,7 @@ public class WcRecordInputFragment extends BaseFragment {
 	 */
 	private void setContents(){
 		//SelectModel作成
-		WcRecordSelectModel model = new WcRecordSelectModel(mContext);
+		WcRecordModel model = new WcRecordModel(mContext);
 		//当日のデータを検索し存在していたら画面上とformに反映
 		Iterator<BaseEntity> ite = model.selectByPrimary(this.form).iterator();
 		if(ite.hasNext()){
@@ -142,20 +139,18 @@ public class WcRecordInputFragment extends BaseFragment {
 	 * データをInsertする
 	 */
 	private void inputData(){
-		WcRecordSelectModel checkModel = new WcRecordSelectModel(mContext);
+		WcRecordModel model = new WcRecordModel(mContext);
 		//最新の値をセット
 		this.form.setPe_count(((CustomNumberPicker)aq.id(R.id.cnpDialogPeCount).getView()).getValue());
 		this.form.setPo_count(((CustomNumberPicker)aq.id(R.id.cnpDialogPoCount).getView()).getValue());
 		//Toastのメッセージ
 		String msg = "";
 		//件数が0以上ならUpdate、0ならInsert
-		if(checkModel.selectByPrimary(this.form).size() == 0){
-			WcRecordInsertModel execModel = new WcRecordInsertModel(mContext);
-			execModel.insert(this.form);
+		if(model.selectByPrimary(this.form).size() == 0){
+			model.insert(this.form);
 			msg = "登録しました";
 		} else {
-			WcRecordUpdateModel execModel = new WcRecordUpdateModel(mContext);
-			execModel.update(this.form);
+			model.update(this.form);
 			msg = "更新しました";
 		}
 		//メッセージの表示
@@ -179,7 +174,7 @@ public class WcRecordInputFragment extends BaseFragment {
 	 * データを削除する
 	 */
 	private void deleteData(){
-		WcRecordDeleteModel model = new WcRecordDeleteModel(mContext);
+		WcRecordModel model = new WcRecordModel(mContext);
 		model.execute(this.form);
 		showToast("削除しました");
 	}

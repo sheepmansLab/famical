@@ -3,6 +3,7 @@
  */
 package jp.sheepman.famical.fragment;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Iterator;
@@ -15,10 +16,9 @@ import jp.sheepman.common.util.CalendarUtil;
 import jp.sheepman.famical.R;
 import jp.sheepman.famical.form.ActivityForm;
 import jp.sheepman.famical.form.FamilyForm;
-import jp.sheepman.famical.model.FamilyDeleteModel;
-import jp.sheepman.famical.model.FamilyInsertModel;
-import jp.sheepman.famical.model.FamilySelectModel;
-import jp.sheepman.famical.model.FamilyUpdateModel;
+import jp.sheepman.famical.form.ImagesForm;
+import jp.sheepman.famical.model.FamilyModel;
+import jp.sheepman.famical.model.ImagesModel;
 import jp.sheepman.famical.util.CommonConst;
 import android.app.Activity;
 import android.app.Dialog;
@@ -26,16 +26,18 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.provider.MediaStore.Images.Media;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.androidquery.AQuery;
@@ -45,8 +47,6 @@ import com.androidquery.AQuery;
  *
  */
 public class FamilyInputDialogFragment extends BaseDialogFragment {
-	private static final int REQUEST_CODE_GALLERY = 0;
-	
 	private AQuery aq;
 	private Context mContext;
 	private LayoutInflater inflator;
@@ -113,7 +113,7 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 	 * データを取得して設定を戻す
 	 */
 	private void setData(){
-		FamilySelectModel model = new FamilySelectModel(mContext);
+		FamilyModel model = new FamilyModel(mContext);
 		Iterator<BaseForm> ite = model.selectById(form).iterator();
 		if(ite.hasNext()){
 			this.form = (FamilyForm)ite.next();
@@ -133,22 +133,36 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 	 * データをInsertする
 	 */
 	private void inputData(){
-		FamilySelectModel selectModel = new FamilySelectModel(mContext);
-		//最新の値をセット
+		FamilyModel modelFamily = new FamilyModel(mContext);
+		ImagesModel modelImages = new ImagesModel(mContext);
+		ImagesForm formImages = new ImagesForm();
 		//Toastのメッセージ
 		String msg = "";
-		//件数が0以上ならUpdate、0ならInsert
+		//最新の値をセット
 		form.setFamily_name(aq.id(R.id.etDialogFamilyName).getText().toString());
 		form.setBirth_date(CalendarUtil.str2cal(aq.id(R.id.etDialogBirthDay).getText().toString()));
-		if(selectModel.selectById(this.form).size() == 0){
-			FamilyInsertModel execModel = new FamilyInsertModel(mContext);
-			long rowid = execModel.insert(this.form);
+		//画像データを取得
+		BitmapDrawable bd = (BitmapDrawable)((ImageView)aq.id(R.id.ivDialogImage).getView()).getDrawable();
+		if(bd != null){
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			bd.getBitmap().compress(CompressFormat.PNG, 100, baos);
+			//formにセット
+			formImages.setImage(baos.toByteArray());
+		}
+		
+		//件数が0以上ならUpdate、0ならInsert
+		long rowid = 0;
+		if(modelFamily.selectById(this.form).size() == 0){
+			rowid = modelImages.insert(formImages);
+			formImages = (ImagesForm)modelImages.selectByRowId(rowid).get(0);
+			this.form.setImage_id(formImages.getImage_id());
+			
+			rowid = modelFamily.insert(this.form);
 			//Insertしたデータをformにセット
-			form = (FamilyForm)selectModel.selectByRowId(rowid).iterator().next();
+			form = (FamilyForm)modelFamily.selectByRowId(rowid).get(0);
 			msg = "登録しました";
 		} else {
-			FamilyUpdateModel execModel = new FamilyUpdateModel(mContext);
-			execModel.update(this.form);
+			modelFamily.update(this.form);
 			msg = "更新しました";
 		}
 		showToast(msg);
@@ -158,9 +172,24 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 	 * データを削除する
 	 */
 	private void deleteData(){
-		FamilyDeleteModel model = new FamilyDeleteModel(mContext);
+		FamilyModel model = new FamilyModel(mContext);
 		model.delete(this.form);
 		showToast("削除しました");
+	}
+	
+	/**
+	 * ImageViewの画像データをbyte配列にして返却する
+	 * @return byte配列
+	 */
+	private byte[] getImageByteArray(){
+		byte[] data = null;
+		BitmapDrawable bd = (BitmapDrawable)((ImageView)aq.id(R.id.ivDialogImage).getView()).getDrawable();
+		if(bd != null){
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			bd.getBitmap().compress(CompressFormat.PNG, 100, baos);
+			data = baos.toByteArray();
+		}
+		return data;
 	}
 	
 	/**
@@ -213,25 +242,25 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 		public void onClick(View v) {
 			Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
 			intent.setType("image/*");
-			startActivityForResult(intent, REQUEST_CODE_GALLERY);
+			startActivityForResult(intent, CommonConst.REQUEST_CODE_GALLERY);
 		}
 	};
 	
+	/**
+	 * startActovityForResultの結果を受け取る
+	 */
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, android.content.Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		switch (requestCode) {
-		case REQUEST_CODE_GALLERY:
+		case CommonConst.REQUEST_CODE_GALLERY:
 			if(resultCode == Activity.RESULT_OK){
 				try {
-					
-					Bitmap bmp = null;
+					Bitmap bmp = Media.getBitmap(mContext.getContentResolver(), data.getData());
 					aq.id(R.id.ivDialogImage).image(bmp);
 				} catch (FileNotFoundException e) {
-					// TODO 自動生成された catch ブロック
 					e.printStackTrace();
 				} catch (IOException e) {
-					// TODO 自動生成された catch ブロック
 					e.printStackTrace();
 				}
 			}

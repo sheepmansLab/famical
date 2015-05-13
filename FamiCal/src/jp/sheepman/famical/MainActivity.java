@@ -18,7 +18,7 @@ import jp.sheepman.famical.form.FamilyForm;
 import jp.sheepman.famical.fragment.FamilySelectFragment;
 import jp.sheepman.famical.fragment.WcRecordCalendarFragment;
 import jp.sheepman.famical.fragment.WcRecordInputFragment;
-import jp.sheepman.famical.model.FamilySelectModel;
+import jp.sheepman.famical.model.FamilyModel;
 import jp.sheepman.famical.util.CommonConst;
 import android.app.FragmentTransaction;
 import android.content.Intent;
@@ -132,7 +132,7 @@ public class MainActivity extends BaseActivity {
 	private List<Integer> getFamilyIdList(){
 		Log.d(this.getClass().toString(), new Throwable().getStackTrace()[0].getMethodName() + ": start");
 		//家族データ取得処理
-		FamilySelectModel selectModel = new FamilySelectModel(this);
+		FamilyModel selectModel = new FamilyModel(this);
 		List<Integer> list = new ArrayList<Integer>();
 		Iterator<BaseForm> ite = selectModel.selectAll().iterator();
 		while(ite.hasNext()){

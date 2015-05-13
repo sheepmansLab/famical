@@ -10,8 +10,8 @@ import jp.sheepman.common.util.CalendarUtil;
 import jp.sheepman.famical.R;
 import jp.sheepman.famical.form.FamilyForm;
 import jp.sheepman.famical.form.WcRecordForm;
-import jp.sheepman.famical.model.FamilySelectModel;
-import jp.sheepman.famical.model.WcRecordSelectModel;
+import jp.sheepman.famical.model.FamilyModel;
+import jp.sheepman.famical.model.WcRecordModel;
 import jp.sheepman.famical.util.CommonConst;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
@@ -144,7 +144,7 @@ public class WcRecordCalendarFragment extends BaseFragment {
 	 */
 	private void setFamilyData(){
 
-		FamilySelectModel model = new FamilySelectModel(getActivity());
+		FamilyModel model = new FamilyModel(getActivity());
 		
 		FamilyForm form = new FamilyForm();
 		form.setFamily_id(family_id);
@@ -173,7 +173,7 @@ public class WcRecordCalendarFragment extends BaseFragment {
 		int month = CalendarUtil.getMonth(vCalTemp);
 
 		//データ取得
-		WcRecordSelectModel model = new WcRecordSelectModel(getActivity());
+		WcRecordModel model = new WcRecordModel(getActivity());
 		WcRecordForm form = new WcRecordForm();
 		form.setWc_record_date(vCalTemp);
 		form.setFamily_id(family_id);

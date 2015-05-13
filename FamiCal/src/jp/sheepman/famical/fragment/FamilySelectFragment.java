@@ -1,5 +1,6 @@
 package jp.sheepman.famical.fragment;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,9 +11,13 @@ import jp.sheepman.common.fragment.BaseFragment;
 import jp.sheepman.famical.R;
 import jp.sheepman.famical.form.ActivityForm;
 import jp.sheepman.famical.form.FamilyForm;
-import jp.sheepman.famical.model.FamilySelectModel;
+import jp.sheepman.famical.form.ImagesForm;
+import jp.sheepman.famical.model.FamilyModel;
+import jp.sheepman.famical.model.ImagesModel;
 import jp.sheepman.famical.util.CommonConst;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -78,7 +83,7 @@ public class FamilySelectFragment extends BaseFragment {
 	private void reload(){
 		mAdapter.clear();
 		//データの取得
-		FamilySelectModel model = new FamilySelectModel(mContext);
+		FamilyModel model = new FamilyModel(mContext);
 		List<BaseForm> list = model.selectAll();
 		
 		//アダプタにデータをセット
@@ -120,7 +125,20 @@ public class FamilySelectFragment extends BaseFragment {
 			v.setTag(form.getFamily_id());
 			aq.recycle(v);
 			//項目にデータをセット
-			//aq.id(R.id.ivFamSelItemFamilyPict).image(Bitmapなど)
+			Bitmap bmp = null;
+			if(form.getImage_id() > 0){
+				ImagesModel imagesModel = new ImagesModel(mContext);
+				ImagesForm imagesForm = new ImagesForm();
+				imagesForm.setImage_id(form.getImage_id());
+				List<BaseForm> images = imagesModel.selectById(imagesForm);
+				if(images.size() > 0){
+					imagesForm = (ImagesForm)images.get(0); 
+				}
+				if(imagesForm != null && imagesForm.getImage() != null){
+					byte[] image = imagesForm.getImage();
+					aq.id(R.id.ivFamSelItemFamilyPict).image(BitmapFactory.decodeByteArray(image, 0, image.length));
+				}
+			}
 			aq.id(R.id.tvFamSelItemFamilyName).text(form.getFamily_name() +"_"+String.valueOf(form.getFamily_id()));
 			aq.id(R.id.btnFamSelItemEdit).clicked(lsnrClickEdit);
 			aq.id(R.id.btnFamSelItemDel).clicked(null);
