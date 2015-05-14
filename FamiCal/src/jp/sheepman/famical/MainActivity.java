@@ -54,13 +54,6 @@ public class MainActivity extends BaseActivity {
 		this.aq = new AQuery(this);
 		setContentView(R.layout.activity_main);
 		
-		//カレンダーフラグメント
-		fragment_cal = new WcRecordCalendarFragment(); 
-		//入力欄フラグメント
-		fragment_inp = new WcRecordInputFragment();
-		//家族選択フラグメント
-		fragment_select = new FamilySelectFragment();
-
 		//キャッシュからfamily_idを取得
 		this.family_id = CommonFileUtil.readChacheFamilyId(getCacheDir());
 		//当日をセット
@@ -92,30 +85,30 @@ public class MainActivity extends BaseActivity {
 		args.putString(CommonConst.BUNDLE_KEY_WC_RECORD_DATE, CalendarUtil.cal2str(wc_record_date));
 		
 		//カレンダがセットされていなければセット
-		if(getFragmentManager().findFragmentByTag(CommonConst.FRAGMENT_TAG_CALENDAR) == null){
-			fragment_cal.setArguments(args);
-			//targetフラグメントをセット
-			fragment_cal.setTargetFragment(fragment_inp, 0);
-			tran.replace(R.id.frmCalendarFragment
-					, fragment_cal
-					, CommonConst.FRAGMENT_TAG_CALENDAR);
-		}
+		//カレンダーフラグメント
+		fragment_cal = new WcRecordCalendarFragment();
+		fragment_cal.setArguments(args);
+		//targetフラグメントをセット
+		fragment_cal.setTargetFragment(fragment_inp, 0);
+		tran.replace(R.id.frmCalendarFragment
+				, fragment_cal
+				, CommonConst.FRAGMENT_TAG_CALENDAR);
 		//入力欄がセットされていなければセット
-		if(getFragmentManager().findFragmentByTag(CommonConst.FRAGMENT_TAG_CALENDAR) == null){
-			fragment_inp.setArguments(args);
-			//targetフラグメントをセット
-			fragment_inp.setTargetFragment(fragment_cal, 0);
-			tran.replace(R.id.frmInputFragment
-					, fragment_inp
-					, CommonConst.FRAGMENT_TAG_WCREC_INPUT);
-		}
+		//入力欄フラグメント
+		fragment_inp = new WcRecordInputFragment();
+		fragment_inp.setArguments(args);
+		//targetフラグメントをセット
+		fragment_inp.setTargetFragment(fragment_cal, 0);
+		tran.replace(R.id.frmInputFragment
+				, fragment_inp
+				, CommonConst.FRAGMENT_TAG_WCREC_INPUT);
 		//DrawerLayoutがなければ追加する
-		if(getFragmentManager().findFragmentByTag(CommonConst.FRAGMENT_TAG_FAMILY_SELECT) == null){
-			fragment_select.setArguments(args);
-			tran.replace(R.id.frmDrawerLayout
-					, fragment_select
-					, CommonConst.FRAGMENT_TAG_FAMILY_SELECT);
-		}
+		//家族選択フラグメント
+		fragment_select = new FamilySelectFragment();
+		fragment_select.setArguments(args);
+		tran.replace(R.id.frmDrawerLayout
+				, fragment_select
+				, CommonConst.FRAGMENT_TAG_FAMILY_SELECT);
 		tran.commit();
 		CommonLogUtil.method_end();
 	}

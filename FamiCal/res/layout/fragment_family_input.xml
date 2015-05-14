@@ -37,6 +37,7 @@
         android:textColor="@color/darkgray"
         android:text="@string/lblMarkBatsu"/>
         <!-- メインコンテンツ -->
+    <!-- 名前 -->    
     <TextView
         android:id="@+id/tvDialogFamilyName"
         android:layout_width="80dp"
@@ -55,19 +56,22 @@
         android:inputType="text"
         android:maxLength="20"
         />
+    <!-- 写真 -->
     <ImageView 
         android:id="@+id/ivDialogImage"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_below="@+id/tvDialogTitle"
         android:layout_alignParentEnd="true"
+        android:background="@drawable/imageview_face"
         android:contentDescription="@string/str_blank"
         />
+    <!-- 誕生日 -->
     <TextView
         android:id="@+id/tvDialogBirthDay"
         android:layout_width="80dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/etDialogFamilyName"
+        android:layout_alignTop="@+id/etDialogBirthDay"
         android:layout_alignParentStart="true"
         android:text="誕生日"
         />
@@ -75,8 +79,9 @@
         android:id="@+id/etDialogBirthDay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/etDialogFamilyName"
-        android:layout_toRightOf="@+id/tvDialogBirthDay"
+        android:layout_alignBottom="@+id/ivDialogImage"
+        android:layout_toEndOf="@+id/tvDialogBirthDay"
+        android:layout_toStartOf="@+id/ivDialogImage"
         android:inputType="date"
         />
     <LinearLayout

@@ -15,12 +15,10 @@ import jp.sheepman.famical.model.FamilyModel;
 import jp.sheepman.famical.model.ImagesModel;
 import jp.sheepman.famical.util.CommonConst;
 import jp.sheepman.famical.util.CommonLogUtil;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;

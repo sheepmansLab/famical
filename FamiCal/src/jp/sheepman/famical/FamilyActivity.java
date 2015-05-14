@@ -3,7 +3,6 @@ package jp.sheepman.famical;
 import jp.sheepman.common.activity.BaseActivity;
 import jp.sheepman.common.form.BaseForm;
 import jp.sheepman.famical.form.ActivityForm;
-import jp.sheepman.famical.fragment.FamilyInputDialogFragment;
 import jp.sheepman.famical.fragment.FamilySelectFragment;
 import jp.sheepman.famical.util.CommonConst;
 import jp.sheepman.famical.util.CommonLogUtil;

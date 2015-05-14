@@ -4,20 +4,16 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
-import jp.sheepman.common.activity.BaseActivity;
 import jp.sheepman.common.form.BaseForm;
 import jp.sheepman.common.fragment.BaseFragment;
 import jp.sheepman.common.util.CalendarUtil;
-import jp.sheepman.famical.MainActivity;
 import jp.sheepman.famical.R;
-import jp.sheepman.famical.form.ActivityForm;
 import jp.sheepman.famical.form.FamilyForm;
 import jp.sheepman.famical.form.WcRecordForm;
 import jp.sheepman.famical.model.FamilyModel;
 import jp.sheepman.famical.model.WcRecordModel;
 import jp.sheepman.famical.util.CommonConst;
 import jp.sheepman.famical.util.CommonLogUtil;
-
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -62,18 +58,12 @@ public class WcRecordCalendarFragment extends BaseFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		Log.d("famical","onCreate Start");
 		super.onCreate(savedInstanceState);
+		setRetainInstance(true);
 		aq = new AQuery(getActivity());
 		//カレンダーの基準日にデフォルト値として当日をセット
 		mCalendarBase = CalendarUtil.getToday();
 		//指定日にデフォルト値として当日をセット
 		wc_record_date = CalendarUtil.getToday();
-		
-		//引数を受け取る
-		if(getArguments() != null){
-			family_id = getArguments().getInt(CommonConst.BUNDLE_KEY_FAMILY_ID);
-			wc_record_date = CalendarUtil.str2cal(getArguments().getString(CommonConst.BUNDLE_KEY_WC_RECORD_DATE));
-			mCalendarBase = CalendarUtil.getMonthFirstDate(wc_record_date);
-		}
 		
 		Log.d("famical","onCreate End");
 	}
@@ -83,6 +73,13 @@ public class WcRecordCalendarFragment extends BaseFragment {
 			Bundle savedInstanceState) {
 		Log.d("famical","onCreateView Start");
 		this.mInflator = inflater;
+
+		//引数を受け取る
+		if(getArguments() != null){
+			family_id = getArguments().getInt(CommonConst.BUNDLE_KEY_FAMILY_ID);
+			wc_record_date = CalendarUtil.str2cal(getArguments().getString(CommonConst.BUNDLE_KEY_WC_RECORD_DATE));
+			mCalendarBase = CalendarUtil.getMonthFirstDate(wc_record_date);
+		}
 		
 		//Bundleのデータ復帰
 		if(savedInstanceState != null){
