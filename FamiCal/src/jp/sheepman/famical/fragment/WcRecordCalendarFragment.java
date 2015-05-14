@@ -16,6 +16,8 @@ import jp.sheepman.famical.form.WcRecordForm;
 import jp.sheepman.famical.model.FamilyModel;
 import jp.sheepman.famical.model.WcRecordModel;
 import jp.sheepman.famical.util.CommonConst;
+import jp.sheepman.famical.util.CommonLogUtil;
+
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -108,13 +110,10 @@ public class WcRecordCalendarFragment extends BaseFragment {
 
 	/**
 	 * カレンダーViewをセットする
-	 * @param v
-	 * @param vCal
 	 */
 	@SuppressLint("InflateParams")
 	private void createCalendarView() {
-		Log.d("famical","createCalendarView Start");
-
+        CommonLogUtil.method_start();
 		// テーブル作成
 		TableLayout tl = (TableLayout)aq.id(R.id.tlCalendar).getView();
 		
@@ -139,14 +138,14 @@ public class WcRecordCalendarFragment extends BaseFragment {
 				}
 			}
 		}
-		Log.d("famical","createCalendarView End");
+        CommonLogUtil.method_end();
 	}
 	
 	/**
 	 * 対象者のデータをセットする
 	 */
 	private void setFamilyData(){
-
+        CommonLogUtil.method_start();
 		FamilyModel model = new FamilyModel(getActivity());
 		
 		FamilyForm form = new FamilyForm();
@@ -159,13 +158,14 @@ public class WcRecordCalendarFragment extends BaseFragment {
 		
 		aq.id(R.id.tvCalFamilyName).text(form.getFamily_name() + "(" + form.getFamily_id() +")");
 		//aq.id(R.id.ivCalFamily).image(Bitmapなど);
-		
+        CommonLogUtil.method_end();
 	}
 	
 	/**
 	 * セルに内容をセットする
 	 */
 	private void setCellDetail(boolean doAnimation){
+        CommonLogUtil.method_start();
 		//選択表示を消す
 		aq.id(R.id.vSelectedFrame).visibility(View.GONE);
 						
@@ -282,19 +282,20 @@ public class WcRecordCalendarFragment extends BaseFragment {
 			alpha.setDuration(300);
 			tl.startAnimation(alpha);
 		}
+        CommonLogUtil.method_end();
 	}
 	
 	/**
 	 * 選択中のセルの色を変える
 	 */
 	private void setSelectedColor(final View cell){
-		Log.d("famical", "setSelectedColor Start");
+        CommonLogUtil.method_start();
 		//画面のレイアウトが決まった段階でレイアウトの計算をする
 		cell.getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
 			
 			@Override
 			public void onGlobalLayout() {
-				Log.d("famical", "onGlobalLayout Start");
+                CommonLogUtil.method_start();
 				//不要になるのでリスナは削除する
 				cell.getViewTreeObserver().removeOnGlobalLayoutListener(this);
 				
@@ -320,10 +321,10 @@ public class WcRecordCalendarFragment extends BaseFragment {
 				
 				//セルを表示する
 				ｍFrmSelectedCell.setVisibility(View.VISIBLE);
-				Log.d("famical", "onGlobalLayout End");
+                CommonLogUtil.method_end();
 			}
 		});
-		Log.d("famical", "setSelectedColor End");
+        CommonLogUtil.method_end();
 	}
 	
 	/**
@@ -332,8 +333,10 @@ public class WcRecordCalendarFragment extends BaseFragment {
 	private OnClickListener lsnrPrev = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
+            CommonLogUtil.method_start();
 			mCalendarBase.add(Calendar.MONTH, -1);
 			setCellDetail(true);
+            CommonLogUtil.method_end();
 		}
 	};
 	
@@ -343,8 +346,10 @@ public class WcRecordCalendarFragment extends BaseFragment {
 	private OnClickListener lsnrNext = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
+            CommonLogUtil.method_start();
 			mCalendarBase.add(Calendar.MONTH, 1);
 			setCellDetail(true);
+            CommonLogUtil.method_end();
 		}
 	};
 	
@@ -361,6 +366,7 @@ public class WcRecordCalendarFragment extends BaseFragment {
 
 		@Override
 		public boolean onTouch(View v, MotionEvent event) {
+            CommonLogUtil.method_start();
 			switch (event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
 				x1 = event.getX();
@@ -396,6 +402,7 @@ public class WcRecordCalendarFragment extends BaseFragment {
 			default:
 				break;
 			}
+            CommonLogUtil.method_end();
 			return true;
 		}
 	};
@@ -407,7 +414,7 @@ public class WcRecordCalendarFragment extends BaseFragment {
 	 * @param reload
 	 */
 	public void changeDisplay(int family_id, Calendar wc_record_date, boolean reload){
-		Log.d("famical", "changeDate Start");
+        CommonLogUtil.method_start();
 		this.family_id = family_id;
 		
 		this.mCalendarBase = CalendarUtil.getMonthFirstDate(wc_record_date);
@@ -444,16 +451,20 @@ public class WcRecordCalendarFragment extends BaseFragment {
 				}
 			}
 		}
-		Log.d("famical", "changeDate End");
+        CommonLogUtil.method_end();
 	}
 	
 	@Override
 	public void callback() {
+        CommonLogUtil.method_start();
 		setCellDetail(true);
+        CommonLogUtil.method_end();
 	}
 	
 	@Override
 	public void callback(BaseForm arg0) {
+        CommonLogUtil.method_start();
 		this.callback();
+        CommonLogUtil.method_end();
 	}
 }

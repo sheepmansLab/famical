@@ -15,6 +15,7 @@ import jp.sheepman.famical.entity.WcRecordEntity;
 import jp.sheepman.famical.form.WcRecordForm;
 import jp.sheepman.famical.model.WcRecordModel;
 import jp.sheepman.famical.util.CommonConst;
+import jp.sheepman.famical.util.CommonLogUtil;
 import jp.sheepman.famical.view.CustomNumberPicker;
 import android.content.Context;
 import android.os.Bundle;
@@ -39,6 +40,7 @@ public class WcRecordInputFragment extends BaseFragment {
 	
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
+        CommonLogUtil.method_start();
 		super.onSaveInstanceState(outState);
 		if(outState != null){
 			if(form != null){
@@ -46,11 +48,13 @@ public class WcRecordInputFragment extends BaseFragment {
 				outState.putInt(CommonConst.BUNDLE_KEY_FAMILY_ID, form.getFamily_id());
 			}
 		}
+        CommonLogUtil.method_end();
 	}
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+        CommonLogUtil.method_start();
 		this.mContext = getActivity();
 		this.form = new WcRecordForm();
 		//引数を取得
@@ -59,10 +63,12 @@ public class WcRecordInputFragment extends BaseFragment {
 			this.form.setFamily_id(args.getInt("family_id"));
 			this.form.setWc_record_date(CalendarUtil.str2cal(args.getString("wc_record_date")));
 		}
+        CommonLogUtil.method_end();
 	}
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        CommonLogUtil.method_start();
 		this.aq = new AQuery(getActivity());
 		
 		//Viewのレイアウトを取得
@@ -85,7 +91,8 @@ public class WcRecordInputFragment extends BaseFragment {
 		
 		//初期値をセット
 		setContents();
-		
+
+        CommonLogUtil.method_end();
 		return view;
 	}
 
@@ -95,17 +102,20 @@ public class WcRecordInputFragment extends BaseFragment {
 	 * @param wc_record_date
 	 */
 	public void changeDisplay(int family_id, Calendar wc_record_date){
+        CommonLogUtil.method_start();
 		//formのPK情報を変更する
 		this.form.setFamily_id(family_id);
 		this.form.setWc_record_date(wc_record_date);
 		//画面情報を変更
 		setContents();
+        CommonLogUtil.method_end();
 	}
 	
 	/**
 	 * データを取得して設定を戻す
 	 */
 	private void setContents(){
+        CommonLogUtil.method_start();
 		//SelectModel作成
 		WcRecordModel model = new WcRecordModel(mContext);
 		//当日のデータを検索し存在していたら画面上とformに反映
@@ -133,12 +143,14 @@ public class WcRecordInputFragment extends BaseFragment {
 		}
 		//ラベルに日付を表示
 		aq.id(R.id.tvDialogDate).text(CalendarUtil.cal2str(form.getWc_record_date()));
+        CommonLogUtil.method_end();
 	}
 	
 	/**
 	 * データをInsertする
 	 */
 	private void inputData(){
+        CommonLogUtil.method_start();
 		WcRecordModel model = new WcRecordModel(mContext);
 		//最新の値をセット
 		this.form.setPe_count(((CustomNumberPicker)aq.id(R.id.cnpDialogPeCount).getView()).getValue());
@@ -155,12 +167,14 @@ public class WcRecordInputFragment extends BaseFragment {
 		}
 		//メッセージの表示
 		showToast(msg);
+        CommonLogUtil.method_end();
 	}
 	
 	/**
 	 * カレンダーに反映する
 	 */
 	private void refrectCalendar(boolean reload){
+        CommonLogUtil.method_start();
 		//カレンダーに反映
 		if(getTargetFragment() instanceof WcRecordCalendarFragment){
 			((WcRecordCalendarFragment)getTargetFragment()).changeDisplay(
@@ -168,15 +182,18 @@ public class WcRecordInputFragment extends BaseFragment {
 					, (Calendar)(this.form.getWc_record_date()).clone()
 					, reload);
 		}
+        CommonLogUtil.method_end();
 	}
 	
 	/**
 	 * データを削除する
 	 */
 	private void deleteData(){
+        CommonLogUtil.method_start();
 		WcRecordModel model = new WcRecordModel(mContext);
 		model.execute(this.form);
 		showToast("削除しました");
+        CommonLogUtil.method_end();
 	}
 	
 	/////////////////////////// Listener ///////////////////////// 
@@ -184,6 +201,7 @@ public class WcRecordInputFragment extends BaseFragment {
 	private OnClickListener lsnrClickAddDay = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
+            CommonLogUtil.method_start();
 			if (v.getId() == R.id.btnPrevDay) {
 				form.getWc_record_date().add(Calendar.DATE, -1);
 			} else if(v.getId() == R.id.btnNextDay) {
@@ -191,6 +209,7 @@ public class WcRecordInputFragment extends BaseFragment {
 			}
 			setContents();
 			refrectCalendar(false);
+            CommonLogUtil.method_end();
 		}
 	};
 	
@@ -200,10 +219,12 @@ public class WcRecordInputFragment extends BaseFragment {
 	private OnClickListener lsnrClickSubmit = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
+            CommonLogUtil.method_start();
 			inputData();
 			//カレンダーに反映する
 			refrectCalendar(true);
 			setContents();
+            CommonLogUtil.method_end();
 		}
 	};
 	
@@ -213,10 +234,12 @@ public class WcRecordInputFragment extends BaseFragment {
 	private OnClickListener lsnrClickDelete = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
+            CommonLogUtil.method_start();
 			deleteData();
 			//カレンダーに反映する
 			refrectCalendar(true);
 			setContents();
+            CommonLogUtil.method_end();
 		}
 	};
 	/**
@@ -225,7 +248,9 @@ public class WcRecordInputFragment extends BaseFragment {
 	private OnClickListener lsnrClickClear = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
+            CommonLogUtil.method_start();
 			setContents();
+            CommonLogUtil.method_end();
 		}
 	};
 	
@@ -239,10 +264,14 @@ public class WcRecordInputFragment extends BaseFragment {
 	
 	@Override
 	public void callback() {
+        CommonLogUtil.method_start();
+        CommonLogUtil.method_end();
 	}
 	
 	@Override
 	public void callback(BaseForm arg0) {
+        CommonLogUtil.method_start();
 		this.callback();
+        CommonLogUtil.method_end();
 	}
 }

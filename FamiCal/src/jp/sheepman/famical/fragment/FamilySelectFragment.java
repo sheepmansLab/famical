@@ -14,6 +14,8 @@ import jp.sheepman.famical.form.ImagesForm;
 import jp.sheepman.famical.model.FamilyModel;
 import jp.sheepman.famical.model.ImagesModel;
 import jp.sheepman.famical.util.CommonConst;
+import jp.sheepman.famical.util.CommonLogUtil;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -38,17 +40,20 @@ public class FamilySelectFragment extends BaseFragment {
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+        CommonLogUtil.method_start();
 		super.onCreate(savedInstanceState);
 		mContext = getActivity();
 		aq = new AQuery(mContext);
 		if(getArguments() != null){
 			this.family_id = getArguments().getInt(CommonConst.BUNDLE_KEY_FAMILY_ID);
 		}
+        CommonLogUtil.method_end();
 	}
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+        CommonLogUtil.method_start();
 		//ベースとなるViewを生成
 		View view = inflater.inflate(R.layout.fragment_family_select, null);
 		//aqのルートをViewでセット
@@ -73,6 +78,7 @@ public class FamilySelectFragment extends BaseFragment {
 		
 		//アダプタをセット
 		aq.id(R.id.lvFamSel).adapter(mAdapter);
+        CommonLogUtil.method_end();
 		return view;
 	}
 	
@@ -80,6 +86,7 @@ public class FamilySelectFragment extends BaseFragment {
 	 * 画面のリロード
 	 */
 	private void reload(){
+        CommonLogUtil.method_start();
 		mAdapter.clear();
 		//データの取得
 		FamilyModel model = new FamilyModel(mContext);
@@ -88,6 +95,7 @@ public class FamilySelectFragment extends BaseFragment {
 		//アダプタにデータをセット
 		mAdapter.setList(list);
 		mAdapter.notifyDataSetChanged();
+        CommonLogUtil.method_end();
 	}
 	
 	/**
@@ -96,7 +104,7 @@ public class FamilySelectFragment extends BaseFragment {
 	OnItemClickListener lsnrItemClick = new OnItemClickListener() {
 		@Override
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-			Log.d("famical", "item");
+            CommonLogUtil.method_start();
 			ActivityForm form = new ActivityForm();
 			if(arg1.getTag() instanceof Integer){
 				FamilySelectFragment.this.family_id = Integer.valueOf(arg1.getTag().toString());
@@ -104,16 +112,18 @@ public class FamilySelectFragment extends BaseFragment {
 			form.setFamily_id(FamilySelectFragment.this.family_id);
 			reload();
 			((BaseActivity)getActivity()).callback(form);
+            CommonLogUtil.method_end();
 		}
 	};
 	
 	//リスト用のアダプタクラス
 	private class FamilySelectListAdapter extends BaseCustomAdapter {
 		public FamilySelectListAdapter() {
-			setList(new ArrayList<BaseForm>());
+		    setList(new ArrayList<BaseForm>());
 		}
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
+            CommonLogUtil.method_start();
 			View v = convertView;
 			if(v == null){
 				v = getActivity().getLayoutInflater().inflate(R.layout.layout_family_list_item, null);
@@ -147,7 +157,7 @@ public class FamilySelectFragment extends BaseFragment {
 			} else {
 				aq.recycle(v).backgroundColorId(R.color.white);
 			}
-				
+            CommonLogUtil.method_end();
 			return v;
 		}
 		
@@ -157,6 +167,7 @@ public class FamilySelectFragment extends BaseFragment {
 		OnClickListener lsnrClickEdit = new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+                CommonLogUtil.method_start();
 				FamilyInputDialogFragment fragment = new FamilyInputDialogFragment();
 				Bundle args = new Bundle();
 				if(v.getTag() instanceof Integer){
@@ -165,14 +176,17 @@ public class FamilySelectFragment extends BaseFragment {
 				fragment.setArguments(args);
 				fragment.setTargetFragment(FamilySelectFragment.this, 0);
 				fragment.show(getFragmentManager(), "");
+                CommonLogUtil.method_end();
 			}
 		};
 	}
 	
 	@Override
 	public void callback() {
+        CommonLogUtil.method_start();
 		//再描画
 		reload();
+        CommonLogUtil.method_end();
 	}
 
 	/**
@@ -180,11 +194,13 @@ public class FamilySelectFragment extends BaseFragment {
 	 */
 	@Override
 	public void callback(BaseForm arg0) {
+        CommonLogUtil.method_start();
 		//引数がFamilyFormであればIDを保持する
 		if(arg0 instanceof FamilyForm){
 			this.family_id = ((FamilyForm)arg0).getFamily_id();
 		}
 		reload();
+        CommonLogUtil.method_end();
 	}
 	
 	/**
@@ -192,7 +208,9 @@ public class FamilySelectFragment extends BaseFragment {
 	 * @param family_id
 	 */
 	public void changeDisplay(int family_id){
+        CommonLogUtil.method_start();
 		this.family_id = family_id;
 		reload();
+        CommonLogUtil.method_end();
 	}
 }

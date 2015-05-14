@@ -15,7 +15,6 @@ import android.os.Bundle;
 public class FamilyActivity extends BaseActivity {
 	
 	FamilySelectFragment fragment_sel;
-	FamilyInputDialogFragment fragment_dlg;		
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
