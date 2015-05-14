@@ -11,10 +11,12 @@ public class CommonConst {
 	/** エンコード */
 	public static final String ENCODE = "UTF-8";
 	/** キャッシュファイル名 */
-	public static final String CHACHE_FILE = "chache_file.txt";
+	public static final String CHACHE_FILE = "chache_family_id.txt";
 	
 	/**	リクエストコード ギャラリー */
 	public static final int REQUEST_CODE_GALLERY = 1;
+	/**	リクエストコード FamilyActivity */
+	public static final int REQUEST_CODE_FAMILY_ACTIVITY = 10;
 	
 	/** テーブル名 wc_record */
 	public static final String TABLE_NAME_WC_RECORD = "wc_record";

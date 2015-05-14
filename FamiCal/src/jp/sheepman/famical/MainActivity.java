@@ -1,10 +1,5 @@
 package jp.sheepman.famical;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
@@ -20,17 +15,16 @@ import jp.sheepman.famical.fragment.WcRecordCalendarFragment;
 import jp.sheepman.famical.fragment.WcRecordInputFragment;
 import jp.sheepman.famical.model.FamilyModel;
 import jp.sheepman.famical.util.CommonConst;
+import jp.sheepman.famical.util.CommonFileUtil;
+import jp.sheepman.famical.util.CommonLogUtil;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 
 import com.androidquery.AQuery;
 
 public class MainActivity extends BaseActivity {
-	private static final int REQUEST_CODE_FAMILY_ACTIVITY = 0;
-	
 	private AQuery aq;
 	private int family_id;
 	private Calendar wc_record_date;
@@ -44,16 +38,18 @@ public class MainActivity extends BaseActivity {
 	
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
+		CommonLogUtil.method_start();
 		super.onSaveInstanceState(outState);
 		if(outState != null){
 			outState.putInt(CommonConst.BUNDLE_KEY_FAMILY_ID, family_id);
 			outState.putString(CommonConst.BUNDLE_KEY_WC_RECORD_DATE, CalendarUtil.cal2str(wc_record_date));
 		}
+		CommonLogUtil.method_end();
 	}
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.d(this.getClass().toString(), String.valueOf(new Throwable().getStackTrace()[0].getLineNumber()) + ": start");
+		CommonLogUtil.method_start();
 		super.onCreate(savedInstanceState);
 		this.aq = new AQuery(this);
 		setContentView(R.layout.activity_main);
@@ -66,7 +62,7 @@ public class MainActivity extends BaseActivity {
 		fragment_select = new FamilySelectFragment();
 
 		//キャッシュからfamily_idを取得
-		this.family_id = readChacheFamilyId();
+		this.family_id = CommonFileUtil.readChacheFamilyId(getCacheDir());
 		//当日をセット
 		this.wc_record_date = CalendarUtil.getToday();
 		
@@ -81,7 +77,7 @@ public class MainActivity extends BaseActivity {
 		//データが0件の場合入力画面を表示する
 		if(family_list.size() == 0 || family_list.indexOf(Integer.valueOf(this.family_id)) < 0) {
 			Intent intent = new Intent(this, FamilyActivity.class);
-			startActivityForResult(intent, REQUEST_CODE_FAMILY_ACTIVITY);
+			startActivityForResult(intent, CommonConst.REQUEST_CODE_FAMILY_ACTIVITY);
 		}
 		
 		//Fragment処理
@@ -90,7 +86,7 @@ public class MainActivity extends BaseActivity {
 		//引数を作成
 		Bundle args = new Bundle();
 		//family_idをキャッシュに書き込み
-		this.writeChacheFamilyId(this.family_id);
+		CommonFileUtil.writeChacheFamilyId(getCacheDir(), this.family_id);
 		
 		args.putInt(CommonConst.BUNDLE_KEY_FAMILY_ID, this.family_id);
 		args.putString(CommonConst.BUNDLE_KEY_WC_RECORD_DATE, CalendarUtil.cal2str(wc_record_date));
@@ -121,8 +117,7 @@ public class MainActivity extends BaseActivity {
 					, CommonConst.FRAGMENT_TAG_FAMILY_SELECT);
 		}
 		tran.commit();
-		
-		Log.d(this.getClass().toString(), new Throwable().getStackTrace()[0].getMethodName() + ": end");
+		CommonLogUtil.method_end();
 	}
 	
 	/**
@@ -130,7 +125,7 @@ public class MainActivity extends BaseActivity {
 	 * @return family_idのリスト
 	 */
 	private List<Integer> getFamilyIdList(){
-		Log.d(this.getClass().toString(), new Throwable().getStackTrace()[0].getMethodName() + ": start");
+		CommonLogUtil.method_start();
 		//家族データ取得処理
 		FamilyModel selectModel = new FamilyModel(this);
 		List<Integer> list = new ArrayList<Integer>();
@@ -138,82 +133,23 @@ public class MainActivity extends BaseActivity {
 		while(ite.hasNext()){
 			list.add(((FamilyForm)ite.next()).getFamily_id());
 		}
-		Log.d(this.getClass().toString(), new Throwable().getStackTrace()[0].getMethodName() + ": end");
+		CommonLogUtil.method_end();
 		return list;
 	}
-	
-	/**
-	 * キャッシュファイルを読み取ってfamily_idを返す
-	 * @return family_id
-	 */
-	private int readChacheFamilyId(){
-		Log.d(this.getClass().toString(), new Throwable().getStackTrace()[0].getMethodName() + ": start");
-		int ret = 0;
 
-		File chache = new File(getCacheDir(), CommonConst.CHACHE_FILE);
-		if(chache.exists()){
-			byte[] buffer = new byte[256];
-			FileInputStream fis = null;
-			try {
-				fis = new FileInputStream(chache);
-				fis.read(buffer);
-				try{
-					String tmp = new String(buffer, CommonConst.ENCODE);
-					ret = Integer.valueOf(tmp.trim());
-				} catch(ClassCastException e) {
-					e.printStackTrace();
-				}
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} finally {
-				try {
-					fis.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		Log.d(this.getClass().toString(), new Throwable().getStackTrace()[0].getMethodName() + ": end");
-		return ret;
-	}
-	
 	/**
-	 * キャッシュファイルにfamily_idを書き込む
+	 * startActivityForResultでの結果を受け取る
 	 */
-	private void writeChacheFamilyId(int family_id){
-		Log.d(this.getClass().toString(), new Throwable().getStackTrace()[0].getMethodName() + ": start");
-		File chache = new File(getCacheDir(), CommonConst.CHACHE_FILE);
-		FileOutputStream fos = null;
-		try {
-			//存在している場合削除
-			if(chache.exists()){
-				chache.delete();
-			}
-			fos = new FileOutputStream(chache);
-			fos.write(String.valueOf(family_id).getBytes());
-			fos.flush();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				fos.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		Log.d(this.getClass().toString(), new Throwable().getStackTrace()[0].getMethodName() + ": end");
-	}
-
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		Log.d(this.getClass().toString(), new Throwable().getStackTrace()[0].getMethodName() + ": start");
+		CommonLogUtil.method_end();
+		//リクエストコード別に処理をする
 		switch (requestCode) {
-		case REQUEST_CODE_FAMILY_ACTIVITY:
+		//画像選択の場合
+		case CommonConst.REQUEST_CODE_FAMILY_ACTIVITY:
+			//正常終了の場合
 			if(resultCode == RESULT_OK){
+				//IDを受け取る
 				this.family_id = data.getIntExtra(CommonConst.BUNDLE_KEY_FAMILY_ID, family_id);
 				reload();
 			}
@@ -221,39 +157,48 @@ public class MainActivity extends BaseActivity {
 		default:
 			break;
 		}
-		Log.d(this.getClass().toString(), new Throwable().getStackTrace()[0].getMethodName() + ": end");
+		CommonLogUtil.method_end();
 	}
 	
+	/**
+	 * 画面上の表示をリロードする
+	 */
 	private void reload(){
-		Log.d(this.getClass().toString(), new Throwable().getStackTrace()[0].getMethodName() + ": start");
+		CommonLogUtil.method_start();
 		if(fragment_cal != null && fragment_inp != null){
 			fragment_cal.changeDisplay(family_id, wc_record_date, true);
 			fragment_inp.changeDisplay(family_id, wc_record_date);
-			fragment_select.callback();
+			fragment_select.changeDisplay(family_id);
 			((DrawerLayout)aq.id(R.id.dlMainFamilySelect).getView()).closeDrawers();
 			//family_idを書き込む
-			writeChacheFamilyId(family_id);
+			CommonFileUtil.writeChacheFamilyId(getCacheDir(), family_id);
 		}
-		Log.d(this.getClass().toString(), new Throwable().getStackTrace()[0].getMethodName() + ": end");
+		CommonLogUtil.method_end();
 	}
 	
+	/**
+	 * コールバック 画面を保持している情報でリロードする
+	 */
 	@Override
 	public void callback() {
-		Log.d(this.getClass().toString(), new Throwable().getStackTrace()[0].getMethodName() + ": start");
+		CommonLogUtil.method_start();
 		reload();
-		Log.d(this.getClass().toString(), new Throwable().getStackTrace()[0].getMethodName() + ": end");
+		CommonLogUtil.method_end();
 	}
 
+	/**
+	 * コールバック 受け取ったformの情報で画面をリロードする
+	 */
 	@Override
 	public void callback(BaseForm arg0) {
-		Log.d(this.getClass().toString(), new Throwable().getStackTrace()[0].getMethodName() + ": start");
+		CommonLogUtil.method_start();
 		if(arg0 instanceof ActivityForm){
 			this.family_id = ((ActivityForm)arg0).getFamily_id();
 			if(((ActivityForm)arg0).getWc_record_date() != null){
 				this.wc_record_date = ((ActivityForm)arg0).getWc_record_date();
 			}
 		}
+		CommonLogUtil.method_end();
 		this.callback();
-		Log.d(this.getClass().toString(), new Throwable().getStackTrace()[0].getMethodName() + ": end");
 	}
 }

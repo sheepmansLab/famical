@@ -1,6 +1,5 @@
 package jp.sheepman.famical.fragment;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -185,6 +184,15 @@ public class FamilySelectFragment extends BaseFragment {
 		if(arg0 instanceof FamilyForm){
 			this.family_id = ((FamilyForm)arg0).getFamily_id();
 		}
+		reload();
+	}
+	
+	/**
+	 * 外部からの再表示指示
+	 * @param family_id
+	 */
+	public void changeDisplay(int family_id){
+		this.family_id = family_id;
 		reload();
 	}
 }

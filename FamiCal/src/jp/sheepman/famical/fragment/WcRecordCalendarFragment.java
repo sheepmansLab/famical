@@ -4,10 +4,13 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
+import jp.sheepman.common.activity.BaseActivity;
 import jp.sheepman.common.form.BaseForm;
 import jp.sheepman.common.fragment.BaseFragment;
 import jp.sheepman.common.util.CalendarUtil;
+import jp.sheepman.famical.MainActivity;
 import jp.sheepman.famical.R;
+import jp.sheepman.famical.form.ActivityForm;
 import jp.sheepman.famical.form.FamilyForm;
 import jp.sheepman.famical.form.WcRecordForm;
 import jp.sheepman.famical.model.FamilyModel;
@@ -383,7 +386,7 @@ public class WcRecordCalendarFragment extends BaseFragment {
 				}
 				break;
 			case MotionEvent.ACTION_UP:
-				if(getTargetFragment() instanceof WcRecordInputFragment){ 
+				if(getTargetFragment() instanceof WcRecordInputFragment){
 					((WcRecordInputFragment)getTargetFragment()).changeDisplay(family_id, CalendarUtil.str2cal(v.getTag().toString()));
 					//選択したセルの日付を保持
 					wc_record_date = CalendarUtil.str2cal(v.getTag().toString());

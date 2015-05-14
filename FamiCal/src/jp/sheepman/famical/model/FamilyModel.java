@@ -149,7 +149,7 @@ public class FamilyModel extends BaseModel {
 			if(form.getBirth_date() != null){
 				entity.setBirth_date(CalendarUtil.cal2str(form.getBirth_date()));
 			}
-			if(form.getImage_id() == 0){
+			if(form.getImage_id() != 0){
 				entity.setImage_id(form.getImage_id());
 			}
 			//Insert処理

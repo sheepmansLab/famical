@@ -20,6 +20,7 @@ import jp.sheepman.famical.form.ImagesForm;
 import jp.sheepman.famical.model.FamilyModel;
 import jp.sheepman.famical.model.ImagesModel;
 import jp.sheepman.famical.util.CommonConst;
+import jp.sheepman.famical.util.CommonLogUtil;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -56,6 +57,7 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
+		CommonLogUtil.method_start();
 		this.aq = new AQuery(getActivity());
 		this.mContext = getActivity();
 		this.inflator = LayoutInflater.from(mContext);
@@ -106,6 +108,7 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 			dialog.setCancelable(false);
 			dialog.setCanceledOnTouchOutside(false);
 		}
+		CommonLogUtil.method_end();
 		return dialog;
 	}
 	
@@ -113,6 +116,7 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 	 * データを取得して設定を戻す
 	 */
 	private void setData(){
+		CommonLogUtil.method_start();
 		FamilyModel model = new FamilyModel(mContext);
 		Iterator<BaseForm> ite = model.selectById(form).iterator();
 		if(ite.hasNext()){
@@ -127,12 +131,14 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 				//削除ボタンを非活性化
 			aq.id(R.id.btnDialogDelete).visibility(View.GONE);
 		}
+		CommonLogUtil.method_end();
 	}
 	
 	/**
 	 * データをInsertする
 	 */
 	private void inputData(){
+		CommonLogUtil.method_start();
 		FamilyModel modelFamily = new FamilyModel(mContext);
 		ImagesModel modelImages = new ImagesModel(mContext);
 		ImagesForm formImages = new ImagesForm();
@@ -166,15 +172,18 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 			msg = "更新しました";
 		}
 		showToast(msg);
+		CommonLogUtil.method_end();
 	}
 	
 	/**
 	 * データを削除する
 	 */
 	private void deleteData(){
+		CommonLogUtil.method_start();
 		FamilyModel model = new FamilyModel(mContext);
 		model.delete(this.form);
 		showToast("削除しました");
+		CommonLogUtil.method_end();
 	}
 	
 	/**
@@ -182,6 +191,7 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 	 * @return byte配列
 	 */
 	private byte[] getImageByteArray(){
+		CommonLogUtil.method_start();
 		byte[] data = null;
 		BitmapDrawable bd = (BitmapDrawable)((ImageView)aq.id(R.id.ivDialogImage).getView()).getDrawable();
 		if(bd != null){
@@ -189,6 +199,7 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 			bd.getBitmap().compress(CompressFormat.PNG, 100, baos);
 			data = baos.toByteArray();
 		}
+		CommonLogUtil.method_end();
 		return data;
 	}
 	
@@ -198,8 +209,10 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 	private OnClickListener lsnrBtnSubmit = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
+			CommonLogUtil.method_start();
 			inputData();
 			dismiss();
+			CommonLogUtil.method_end();
 		}
 	};
 	
@@ -209,8 +222,10 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 	private OnClickListener lsnrClickDelete = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
+			CommonLogUtil.method_start();
 			deleteData();
 			dismiss();
+			CommonLogUtil.method_end();
 		}
 	};
 	
@@ -220,7 +235,9 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 	private OnClickListener lsnrBtnClose = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
+			CommonLogUtil.method_start();
 			dismiss();
+			CommonLogUtil.method_end();
 		}
 	};
 	
@@ -230,7 +247,9 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 	private OnClickListener lsnrClickClear = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
+			CommonLogUtil.method_start();
 			setData();
+			CommonLogUtil.method_end();
 		}
 	};
 	
@@ -240,9 +259,11 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 	OnClickListener lsnrBtnImage = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
+			CommonLogUtil.method_start();
 			Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
 			intent.setType("image/*");
 			startActivityForResult(intent, CommonConst.REQUEST_CODE_GALLERY);
+			CommonLogUtil.method_end();
 		}
 	};
 	
@@ -251,6 +272,7 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 	 */
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, android.content.Intent data) {
+		CommonLogUtil.method_start();
 		super.onActivityResult(requestCode, resultCode, data);
 		switch (requestCode) {
 		case CommonConst.REQUEST_CODE_GALLERY:
@@ -268,6 +290,7 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 		default:
 			break;
 		}
+		CommonLogUtil.method_end();
 	}
 		
 	/**
@@ -283,6 +306,7 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 	 */
 	@Override
 	public void onDismiss(DialogInterface dialog) {
+		CommonLogUtil.method_start();
 		if(getTargetFragment() instanceof BaseFragment){
 			((BaseFragment)getTargetFragment()).callback(form);
 		}else if(isModal){
@@ -291,15 +315,20 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 			((BaseActivity)getActivity()).callback(mainForm);
 		}
 		super.onDismiss(dialog);
+		CommonLogUtil.method_end();
 	}
 	
 	@Override
 	public void callback() {
+		CommonLogUtil.method_start();
+		CommonLogUtil.method_end();
 	}
 
 	@Override
 	public void callback(BaseForm arg0) {
+		CommonLogUtil.method_start();
 		this.callback();
+		CommonLogUtil.method_end();
 	}
 
 }
