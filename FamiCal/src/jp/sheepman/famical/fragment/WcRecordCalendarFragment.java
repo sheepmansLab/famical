@@ -180,7 +180,7 @@ public class WcRecordCalendarFragment extends BaseFragment {
 		List<BaseForm> list = model.selectByMonth(form);
 		
 		// ヘッダをセット
-		aq.id(R.id.tvCalMonth).text(year + "年 " + month + "月");
+		aq.id(R.id.tvCalMonth).text(year + "年 " + String.format("%1$2d", month) + "月");
 		aq.id(R.id.tvCalPrev).clicked(lsnrPrev);
 		aq.id(R.id.tvCalNext).clicked(lsnrNext);
 		
