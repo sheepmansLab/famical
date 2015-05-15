@@ -1,5 +1,12 @@
 package jp.sheepman.famical;
 
+import android.app.FragmentTransaction;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
+
+import com.androidquery.AQuery;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
@@ -17,12 +24,6 @@ import jp.sheepman.famical.model.FamilyModel;
 import jp.sheepman.famical.util.CommonConst;
 import jp.sheepman.famical.util.CommonFileUtil;
 import jp.sheepman.famical.util.CommonLogUtil;
-import android.app.FragmentTransaction;
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.v4.widget.DrawerLayout;
-
-import com.androidquery.AQuery;
 
 public class MainActivity extends BaseActivity {
 	private AQuery aq;
@@ -87,28 +88,27 @@ public class MainActivity extends BaseActivity {
 		//カレンダがセットされていなければセット
 		//カレンダーフラグメント
 		fragment_cal = new WcRecordCalendarFragment();
+        //入力欄フラグメント
+        fragment_inp = new WcRecordInputFragment();
+        //家族選択フラグメント
+        fragment_select = new FamilySelectFragment();
+
+        //引数をセット
 		fragment_cal.setArguments(args);
+        fragment_inp.setArguments(args);
+        fragment_select.setArguments(args);
+
 		//targetフラグメントをセット
 		fragment_cal.setTargetFragment(fragment_inp, 0);
+        fragment_inp.setTargetFragment(fragment_cal, 0);
+
+        //フラグメントをセット
 		tran.replace(R.id.frmCalendarFragment
-				, fragment_cal
-				, CommonConst.FRAGMENT_TAG_CALENDAR);
-		//入力欄がセットされていなければセット
-		//入力欄フラグメント
-		fragment_inp = new WcRecordInputFragment();
-		fragment_inp.setArguments(args);
-		//targetフラグメントをセット
-		fragment_inp.setTargetFragment(fragment_cal, 0);
+				, fragment_cal, CommonConst.FRAGMENT_TAG_CALENDAR);
 		tran.replace(R.id.frmInputFragment
-				, fragment_inp
-				, CommonConst.FRAGMENT_TAG_WCREC_INPUT);
-		//DrawerLayoutがなければ追加する
-		//家族選択フラグメント
-		fragment_select = new FamilySelectFragment();
-		fragment_select.setArguments(args);
+				, fragment_inp, CommonConst.FRAGMENT_TAG_WCREC_INPUT);
 		tran.replace(R.id.frmDrawerLayout
-				, fragment_select
-				, CommonConst.FRAGMENT_TAG_FAMILY_SELECT);
+				, fragment_select, CommonConst.FRAGMENT_TAG_FAMILY_SELECT);
 		tran.commit();
 		CommonLogUtil.method_end();
 	}

@@ -3,6 +3,29 @@
  */
 package jp.sheepman.famical.fragment;
 
+import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
+import android.provider.MediaStore.Images.Media;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.androidquery.AQuery;
+
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -21,27 +44,6 @@ import jp.sheepman.famical.model.FamilyModel;
 import jp.sheepman.famical.model.ImagesModel;
 import jp.sheepman.famical.util.CommonConst;
 import jp.sheepman.famical.util.CommonLogUtil;
-import android.app.Activity;
-import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Bundle;
-import android.provider.MediaStore.Images.Media;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.ImageView;
-import android.widget.Toast;
-
-import com.androidquery.AQuery;
 
 /**
  * @author sheepman
@@ -121,14 +123,22 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 		Iterator<BaseForm> ite = model.selectById(form).iterator();
 		if(ite.hasNext()){
 			this.form = (FamilyForm)ite.next();
+            ImagesModel imodel = new ImagesModel(mContext);
+            ImagesForm iform = new ImagesForm();
+            iform.setImage_id(form.getImage_id());
+            Iterator<BaseForm> iite = imodel.selectById(iform).iterator();
+            if(iite.hasNext()){
+                iform = (ImagesForm)iite.next();
+            }
 			
 			aq.id(R.id.etDialogFamilyName).text(form.getFamily_name());
 			aq.id(R.id.etDialogBirthDay).text(CalendarUtil.cal2str(form.getBirth_date()));
-			
+
+            aq.id(R.id.ivDialogImage).image(convertByte2Bitmap(iform.getImage()));
 			//削除ボタンを活性化
 			aq.id(R.id.btnDialogDelete).visibility(View.VISIBLE);
 		} else {
-				//削除ボタンを非活性化
+			//削除ボタンを非活性化
 			aq.id(R.id.btnDialogDelete).visibility(View.GONE);
 		}
 		CommonLogUtil.method_end();
@@ -168,6 +178,16 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 			form = (FamilyForm)modelFamily.selectByRowId(rowid).get(0);
 			msg = "登録しました";
 		} else {
+            formImages.setImage_id(form.getImage_id());
+            Iterator ite = modelImages.selectById(formImages).iterator();
+            if(ite.hasNext()){
+                formImages = (ImagesForm)ite.next();
+                modelImages.update(formImages);
+            } else {
+                rowid = modelImages.insert(formImages);
+                formImages = (ImagesForm)modelImages.selectByRowId(rowid).get(0);
+                form.setImage_id(formImages.getImage_id());
+            }
 			modelFamily.update(this.form);
 			msg = "更新しました";
 		}
@@ -202,6 +222,19 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 		CommonLogUtil.method_end();
 		return data;
 	}
+
+    /**
+     * byte配列をBitmapにして返却
+     * @param data byte配列
+     * @return Bitmapデータ
+     */
+    private Bitmap convertByte2Bitmap(byte[] data){
+        Bitmap bmp = null;
+        if(data != null && data.length > 0){
+            bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
+        }
+        return bmp;
+    }
 	
 	/**
 	 * 登録ボタン押下時イベント
@@ -330,5 +363,4 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 		this.callback();
 		CommonLogUtil.method_end();
 	}
-
 }

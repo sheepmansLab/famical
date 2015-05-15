@@ -1,5 +1,19 @@
 package jp.sheepman.famical.fragment;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
+
+import com.androidquery.AQuery;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,19 +29,6 @@ import jp.sheepman.famical.model.FamilyModel;
 import jp.sheepman.famical.model.ImagesModel;
 import jp.sheepman.famical.util.CommonConst;
 import jp.sheepman.famical.util.CommonLogUtil;
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
-
-import com.androidquery.AQuery;
 
 public class FamilySelectFragment extends BaseFragment {
 	private Context mContext;
@@ -147,7 +148,7 @@ public class FamilySelectFragment extends BaseFragment {
 				}
 			}
 			aq.id(R.id.tvFamSelItemFamilyName).text(form.getFamily_name() +"_"+String.valueOf(form.getFamily_id()));
-			aq.id(R.id.btnFamSelItemEdit).clicked(lsnrClickEdit);
+			aq.id(R.id.btnFamSelItemEdit).tag(form.getFamily_id()).clicked(lsnrClickEdit);
 			aq.id(R.id.btnFamSelItemDel).clicked(null);
 			//選択中のIDと同じならば背景色を設定
 			if(form.getFamily_id() == FamilySelectFragment.this.family_id){

@@ -1,5 +1,7 @@
 package jp.sheepman.famical.model;
 
+import android.content.Context;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -11,7 +13,6 @@ import jp.sheepman.common.util.DatabaseUtil;
 import jp.sheepman.famical.entity.ImagesEntity;
 import jp.sheepman.famical.form.ImagesForm;
 import jp.sheepman.famical.util.CommonConst;
-import android.content.Context;
 
 public class ImagesModel extends BaseModel {
 	
@@ -132,7 +133,30 @@ public class ImagesModel extends BaseModel {
 		}
 		return rowid;
 	}
-	
+
+    /**
+     * 画像データをUpdateする
+     * @param form
+     */
+    public void update(ImagesForm form){
+        final String whereClause = "image_id = ? ";
+        List<String> list = new ArrayList<String>();
+
+        DatabaseUtil dbutil = new DatabaseUtil(mContext);
+        dbutil.open();
+
+        ImagesEntity entity = new ImagesEntity();
+        entity.setImage_id(form.getImage_id());
+        entity.setImage(form.getImage());
+        entity.setImage_name(form.getImage_name());
+        entity.setComment(form.getComment());
+
+        list.add(String.valueOf(form.getImage_id()));
+
+        dbutil.update(tablename, whereClause, entity, list);
+
+        dbutil.close();
+    }
 	@Override
 	public BaseEntity getEntity() {
 		return new ImagesEntity();
