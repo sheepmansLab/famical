@@ -42,8 +42,8 @@ public class WcRecordCalendarFragment extends BaseFragment {
 	
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
-		Log.d("famical","onSaveInstanceState Start");
 		super.onSaveInstanceState(outState);
+        CommonLogUtil.method_start();
 		//Bundleに画面情報を保持
 		if(outState != null){
 			Log.d("famical", "Data set to Bundle");
@@ -51,27 +51,25 @@ public class WcRecordCalendarFragment extends BaseFragment {
 			outState.putString(CommonConst.BUNDLE_KEY_WC_RECORD_DATE, CalendarUtil.cal2str(wc_record_date));
 			outState.putString(CommonConst.BUNDLE_KEY_M_CALENDAR_BASE, CalendarUtil.cal2str(mCalendarBase));
 		}
-		Log.d("famical","onSaveInstanceState End");
+        CommonLogUtil.method_end();
 	}
 		
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		Log.d("famical","onCreate Start");
 		super.onCreate(savedInstanceState);
-		setRetainInstance(true);
+        CommonLogUtil.method_start();
 		aq = new AQuery(getActivity());
 		//カレンダーの基準日にデフォルト値として当日をセット
 		mCalendarBase = CalendarUtil.getToday();
 		//指定日にデフォルト値として当日をセット
-		wc_record_date = CalendarUtil.getToday();
-		
-		Log.d("famical","onCreate End");
+		//wc_record_date = CalendarUtil.getToday();
+        CommonLogUtil.method_end();
 	}
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		Log.d("famical","onCreateView Start");
+        CommonLogUtil.method_start();
 		this.mInflator = inflater;
 
 		//引数を受け取る
@@ -83,7 +81,6 @@ public class WcRecordCalendarFragment extends BaseFragment {
 		
 		//Bundleのデータ復帰
 		if(savedInstanceState != null){
-			Log.d("famical", "Data restore from Bundle");
 			wc_record_date = CalendarUtil.str2cal(savedInstanceState.getString(CommonConst.BUNDLE_KEY_WC_RECORD_DATE));
 			mCalendarBase = CalendarUtil.str2cal(savedInstanceState.getString(CommonConst.BUNDLE_KEY_M_CALENDAR_BASE));
 			family_id = savedInstanceState.getInt(CommonConst.BUNDLE_KEY_FAMILY_ID);
@@ -100,7 +97,7 @@ public class WcRecordCalendarFragment extends BaseFragment {
 
 		//家族データの表示
 		setFamilyData();
-		Log.d("famical","onCreateView End");
+        CommonLogUtil.method_end();
 		return v;
 	}
 	
@@ -181,8 +178,8 @@ public class WcRecordCalendarFragment extends BaseFragment {
 		
 		// ヘッダをセット
 		aq.id(R.id.tvCalMonth).text(year + "年 " + String.format("%1$2d", month) + "月");
-		aq.id(R.id.tvCalPrev).clicked(lsnrPrev);
-		aq.id(R.id.tvCalNext).clicked(lsnrNext);
+		aq.id(R.id.btnCalPrev).clicked(lsnrPrev);
+		aq.id(R.id.btnCalNext).clicked(lsnrNext);
 		
 		// 初日にリセット
 		vCalTemp.set(Calendar.DATE, 1);

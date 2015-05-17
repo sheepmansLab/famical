@@ -27,6 +27,7 @@ import jp.sheepman.famical.util.CommonLogUtil;
 
 public class MainActivity extends BaseActivity {
 	private AQuery aq;
+	
 	private int family_id;
 	private Calendar wc_record_date;
 	
@@ -40,7 +41,6 @@ public class MainActivity extends BaseActivity {
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		CommonLogUtil.method_start();
-		super.onSaveInstanceState(outState);
 		if(outState != null){
 			outState.putInt(CommonConst.BUNDLE_KEY_FAMILY_ID, family_id);
 			outState.putString(CommonConst.BUNDLE_KEY_WC_RECORD_DATE, CalendarUtil.cal2str(wc_record_date));
@@ -53,17 +53,20 @@ public class MainActivity extends BaseActivity {
 		CommonLogUtil.method_start();
 		super.onCreate(savedInstanceState);
 		this.aq = new AQuery(this);
+		
 		setContentView(R.layout.activity_main);
 		
 		//キャッシュからfamily_idを取得
 		this.family_id = CommonFileUtil.readChacheFamilyId(getCacheDir());
-		//当日をセット
-		this.wc_record_date = CalendarUtil.getToday();
 		
 		//Bundleに保持していた場合再取得
 		if(savedInstanceState != null){
 			this.family_id = savedInstanceState.getInt(CommonConst.BUNDLE_KEY_FAMILY_ID);
 			this.wc_record_date = CalendarUtil.str2cal(savedInstanceState.getString(CommonConst.BUNDLE_KEY_WC_RECORD_DATE));
+		}
+		if (wc_record_date == null) {
+			//当日をセット
+			this.wc_record_date = CalendarUtil.getToday();
 		}
 		
 		//家族データ取得処理
@@ -74,9 +77,6 @@ public class MainActivity extends BaseActivity {
 			startActivityForResult(intent, CommonConst.REQUEST_CODE_FAMILY_ACTIVITY);
 		}
 		
-		//Fragment処理
-		FragmentTransaction tran = getFragmentManager().beginTransaction();
-		
 		//引数を作成
 		Bundle args = new Bundle();
 		//family_idをキャッシュに書き込み
@@ -85,7 +85,8 @@ public class MainActivity extends BaseActivity {
 		args.putInt(CommonConst.BUNDLE_KEY_FAMILY_ID, this.family_id);
 		args.putString(CommonConst.BUNDLE_KEY_WC_RECORD_DATE, CalendarUtil.cal2str(wc_record_date));
 		
-		//カレンダがセットされていなければセット
+		//Fragment処理
+		FragmentTransaction tran = getFragmentManager().beginTransaction();
 		//カレンダーフラグメント
 		fragment_cal = new WcRecordCalendarFragment();
         //入力欄フラグメント

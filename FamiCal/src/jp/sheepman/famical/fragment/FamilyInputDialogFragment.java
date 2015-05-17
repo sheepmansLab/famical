@@ -65,10 +65,8 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 		this.inflator = LayoutInflater.from(mContext);
 		this.form = new FamilyForm();
 		
-		//ディスプレイ情報を取得
-		final float density = getResources().getDisplayMetrics().density;  
-		//ダイアログの横幅：280dpi
-		final int dialogWidth = (int) (400 * density);
+		//ダイアログの横幅：90%
+		final int dialogWidth = (int) (getResources().getDisplayMetrics().widthPixels * 0.9);
 
 		//Viewのレイアウトを取得
 		View view = this.inflator.inflate(R.layout.fragment_family_input, null);
