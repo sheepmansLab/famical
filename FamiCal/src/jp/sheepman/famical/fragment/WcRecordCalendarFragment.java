@@ -1,5 +1,22 @@
 package jp.sheepman.famical.fragment;
 
+import android.annotation.SuppressLint;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
+
+import com.androidquery.AQuery;
+
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
@@ -14,23 +31,6 @@ import jp.sheepman.famical.model.FamilyModel;
 import jp.sheepman.famical.model.WcRecordModel;
 import jp.sheepman.famical.util.CommonConst;
 import jp.sheepman.famical.util.CommonLogUtil;
-import android.annotation.SuppressLint;
-import android.graphics.Color;
-import android.graphics.Rect;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver.OnGlobalLayoutListener;
-import android.view.animation.AlphaAnimation;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-
-import com.androidquery.AQuery;
 
 public class WcRecordCalendarFragment extends BaseFragment {
 	private AQuery aq;
@@ -39,6 +39,8 @@ public class WcRecordCalendarFragment extends BaseFragment {
 	private Calendar mCalendarBase;		//カレンダの月を決める基準日
 	private Calendar wc_record_date;	//指定日
 	private int family_id;				//表示している対象者ID
+
+	private View mCellSelected;
 	
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
@@ -215,16 +217,6 @@ public class WcRecordCalendarFragment extends BaseFragment {
 						aqCell.id(R.id.tvCelPoCircle).text(R.string.lblMarkCircle).textColorId(R.color.lightgrey);
 						aqCell.id(R.id.tvCelPeCount).text("0").textColorId(R.color.lightgrey);
 						aqCell.id(R.id.tvCelPoCount).text("0").textColorId(R.color.lightgrey);
-						if(j == 6){	//土曜日
-							aqCell.id(R.id.tvCellDay).textColorId(R.color.steelblue);
-							cell.setBackgroundResource(R.drawable.calendar_cell_sat);
-						} else if(j == 0){	//日曜日
-							aqCell.id(R.id.tvCellDay).textColorId(R.color.crimson);
-							cell.setBackgroundResource(R.drawable.calendar_cell_sun);
-						} else {	//その他
-							aqCell.id(R.id.tvCellDay).textColorId(R.color.black);
-							cell.setBackgroundResource(R.drawable.calendar_cell);
-						}
 						//データの注入
 						Iterator<BaseForm> ite = list.iterator();
 						while(ite.hasNext()){
@@ -239,12 +231,15 @@ public class WcRecordCalendarFragment extends BaseFragment {
 								ite.remove();
 							}
 						}
+						//その日の文字列をタグにセット
+						cell.setTag(CalendarUtil.cal2str(vCalTemp));
 						//当日の場合色付け
 						if(vCalTemp.compareTo(wc_record_date) == 0){
 							setSelectedColor(cell);
+						} else {
+							//セルの背景色をセットする
+							setCellColor(cell);
 						}
-						//その日の文字列をタグにセット
-						cell.setTag(CalendarUtil.cal2str(vCalTemp));
 						//タッチイベントをセット
 						cell.setOnTouchListener(lsnrTouch);
 					} else {
@@ -278,46 +273,43 @@ public class WcRecordCalendarFragment extends BaseFragment {
 		}
         CommonLogUtil.method_end();
 	}
-	
+
+    /**
+     * セルの曜日ごとの背景色をセットする
+     * @param cell
+     */
+    private void setCellColor(View cell){
+        CommonLogUtil.method_start();
+		TextView cellDay = (TextView)cell.findViewById(R.id.tvCellDay);
+        if(cell.getTag() instanceof String) {
+            Calendar tmp = CalendarUtil.str2cal(cell.getTag().toString());
+            if (tmp.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
+                //セルの日付が土曜日の場合
+                cell.setBackgroundResource(R.drawable.calendar_cell_sat);
+				cellDay.setTextColor(getResources().getColor(R.color.steelblue));
+            } else if (tmp.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+                //セルの日付が日曜日の場合
+				cell.setBackgroundResource(R.drawable.calendar_cell_sun);
+				cellDay.setTextColor(getResources().getColor(R.color.crimson));
+            } else {
+                //その他
+				cell.setBackgroundResource(R.drawable.calendar_cell);
+				cellDay.setTextColor(getResources().getColor(R.color.black));
+            }
+        }
+        CommonLogUtil.method_end();
+    }
+
 	/**
 	 * 選択中のセルの色を変える
 	 */
-	private void setSelectedColor(final View cell){
+	private void setSelectedColor(View cell){
         CommonLogUtil.method_start();
-		//画面のレイアウトが決まった段階でレイアウトの計算をする
-		cell.getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
-			
-			@Override
-			public void onGlobalLayout() {
-                CommonLogUtil.method_start();
-				//不要になるのでリスナは削除する
-				cell.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-				
-				View ｍFrmSelectedCell = aq.id(R.id.vSelectedFrame).getView();
-				//セルの非表示化
-				ｍFrmSelectedCell.setVisibility(View.GONE);
-				
-				//画面情報を取得
-				Rect rect = new Rect();
-				//ステータスバーの高さ
-				getActivity().getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
-				
-				//セルの座標取得
-				int[] location = new int[2];
-				cell.getLocationInWindow(location);
-				
-				//フレームの座標をセット
-				ｍFrmSelectedCell.setX(location[0]);
-				ｍFrmSelectedCell.setY(location[1] - rect.top);
-				//フレームの大きさをセルにあわせる
-				ｍFrmSelectedCell.getLayoutParams().width = cell.getWidth();
-				ｍFrmSelectedCell.getLayoutParams().height = cell.getHeight();
-				
-				//セルを表示する
-				ｍFrmSelectedCell.setVisibility(View.VISIBLE);
-                CommonLogUtil.method_end();
-			}
-		});
+		if(mCellSelected != null){
+            setCellColor(mCellSelected);
+		}
+		mCellSelected = cell;
+		mCellSelected.setBackgroundResource(R.drawable.calendar_cell_sun);
         CommonLogUtil.method_end();
 	}
 	
@@ -358,6 +350,8 @@ public class WcRecordCalendarFragment extends BaseFragment {
 		private float y1;
 		private float y2;
 
+		private boolean isMoveFinished;
+
 		@Override
 		public boolean onTouch(View v, MotionEvent event) {
             CommonLogUtil.method_start();
@@ -370,28 +364,34 @@ public class WcRecordCalendarFragment extends BaseFragment {
 				x2 = event.getX();
 				y2 = event.getY();
 				//横移動の場合
-				if(Math.abs(x2 - x1) > Math.abs(y2 - y1)){
-					//一定量を超えた場合
-					if(Math.abs(x2 - x1) > adjust){
-						//右移動の場合
-						if(x2 > x1){
-							mCalendarBase.add(Calendar.MONTH, -1);
-						//左移動の場合
-						} else {
-							mCalendarBase.add(Calendar.MONTH, 1);
+				if(isMoveFinished) {
+					if (Math.abs(x2 - x1) > Math.abs(y2 - y1)) {
+						//一定量を超えた場合
+						if (Math.abs(x2 - x1) > adjust) {
+							isMoveFinished = false;
+							//右移動の場合
+							if (x2 > x1) {
+								mCalendarBase.add(Calendar.MONTH, -1);
+								//左移動の場合
+							} else {
+								mCalendarBase.add(Calendar.MONTH, 1);
+							}
+							//カレンダー再構築
+							setCellDetail(true);
 						}
-						//カレンダー再構築
-						setCellDetail(true);
 					}
 				}
 				break;
 			case MotionEvent.ACTION_UP:
-				if(getTargetFragment() instanceof WcRecordInputFragment){
-					((WcRecordInputFragment)getTargetFragment()).changeDisplay(family_id, CalendarUtil.str2cal(v.getTag().toString()));
-					//選択したセルの日付を保持
-					wc_record_date = CalendarUtil.str2cal(v.getTag().toString());
+				if(isMoveFinished) {
+					if (getTargetFragment() instanceof WcRecordInputFragment) {
+						((WcRecordInputFragment) getTargetFragment()).changeDisplay(family_id, CalendarUtil.str2cal(v.getTag().toString()));
+						//選択したセルの日付を保持
+						wc_record_date = CalendarUtil.str2cal(v.getTag().toString());
+					}
+					setSelectedColor(v);
 				}
-				setSelectedColor(v);
+				isMoveFinished = true;
 				break;
 			default:
 				break;
