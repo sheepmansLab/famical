@@ -6,7 +6,9 @@
 
     <uses-sdk
         android:minSdkVersion="19"
-        android:targetSdkVersion="19" />
+        android:targetSdkVersion="22" />
+    <supports-screens
+        android:anyDensity="true"/>
 
     <application
         android:allowBackup="true"

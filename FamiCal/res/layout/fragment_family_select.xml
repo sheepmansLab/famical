@@ -5,12 +5,18 @@
     android:orientation="vertical" >
     <Button
         android:id="@+id/btnFamSelInput"
-	    android:layout_width="100dp"
-    	android:layout_height="30dp"
+	    android:layout_width="match_parent"
+    	android:layout_height="42dp"
+		android:layout_margin="5dp"
+		android:gravity="center"
+		android:text="@string/lblNewRecord"
         />
 	<ListView
     	android:id="@+id/lvFamSel"
 	    android:layout_width="match_parent"
     	android:layout_height="match_parent"
+		android:layout_marginBottom="5dp"
+		android:divider="@color/BLANK"
+		android:dividerHeight="3dp"
 	    />
 </LinearLayout>

@@ -1,28 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black">#000000</color>
+    <color name="lightgrey">#d3d3d3</color>
     <color name="white">#FFFFFF</color>
-    <color name="mustard">#f3c759</color>
-    <color name="gold">#FFD700</color>
-    <color name="khaki">#f0e68c</color>
     <color name="ivory">#fffff0</color>
+    <color name="khaki">#f0e68c</color>
     <color name="mimosa">#fff462</color>
+    <color name="gold">#FFD700</color>
+    <color name="mustard">#f3c759</color>
+    <color name="sundayred">#fff0f5</color>
     <color name="moccasin">#ffe4b5</color>
     <color name="pink">#ffc0cb</color>
+    <color name="lightsalmon">#ffa07a</color>
     <color name="tomato">#ff6347</color>
     <color name="crimson">#dc143c</color>
-    <color name="darkslategray">#2f4f4f</color>
-    <color name="steelblue">#4682b4</color>
     <color name="darkgray">#a9a9a9</color>
     <color name="azure">#f0ffff</color>
-    <color name="lightsalmon">#ffa07a</color>
-    <color name="nile_blue">#2cb4ad</color>
-    <color name="taupe">#504946</color>
-    <color name="sundayred">#fff0f5</color>
     <color name="saturdayblue">#eaffff</color>
     <color name="powderblue">#b0e0e6</color>
-    <color name="lightgrey">#d3d3d3</color>
-    <color name="SELECTED">#55f3c759</color>
+    <color name="nile_blue">#2cb4ad</color>
+    <color name="steelblue">#4682b4</color>
+    <color name="darkslategray">#2f4f4f</color>
+    <color name="taupe">#504946</color>
+    <color name="SELECTED">#fffffb95</color>
     <color name="BLANK">#ffffffff</color>
-    
 </resources>

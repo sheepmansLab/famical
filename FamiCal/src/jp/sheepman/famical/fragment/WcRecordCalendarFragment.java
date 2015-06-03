@@ -89,7 +89,7 @@ public class WcRecordCalendarFragment extends BaseFragment {
 		}
 		
 		//Viewを生成
-		View v = mInflator.inflate(R.layout.fragment_calebdar, null);
+		View v = mInflator.inflate(R.layout.fragment_wcrec_calendar, null);
 		//AQueryを初期化
 		aq.recycle(v);
 		//カレンダを作成
@@ -309,7 +309,7 @@ public class WcRecordCalendarFragment extends BaseFragment {
             setCellColor(mCellSelected);
 		}
 		mCellSelected = cell;
-		mCellSelected.setBackgroundResource(R.drawable.calendar_cell_sun);
+		mCellSelected.setBackgroundResource(R.drawable.calendar_cell_select);
         CommonLogUtil.method_end();
 	}
 	
@@ -350,7 +350,7 @@ public class WcRecordCalendarFragment extends BaseFragment {
 		private float y1;
 		private float y2;
 
-		private boolean isMoveFinished;
+		private boolean isMoveFinished = true;
 
 		@Override
 		public boolean onTouch(View v, MotionEvent event) {

@@ -4,6 +4,7 @@
 package jp.sheepman.famical.fragment;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -21,6 +22,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -52,31 +54,30 @@ import jp.sheepman.famical.util.CommonLogUtil;
 public class FamilyInputDialogFragment extends BaseDialogFragment {
 	private AQuery aq;
 	private Context mContext;
-	private LayoutInflater inflator;
-	
-	private FamilyForm form;
-	private boolean isModal = false;
+	private FamilyForm mForm;
+	private boolean mIsModal = false;
 	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		CommonLogUtil.method_start();
 		this.aq = new AQuery(getActivity());
 		this.mContext = getActivity();
-		this.inflator = LayoutInflater.from(mContext);
-		this.form = new FamilyForm();
+		this.mForm = new FamilyForm();
+
+        LayoutInflater Inflator = LayoutInflater.from(mContext);
 		
 		//ダイアログの横幅：90%
 		final int dialogWidth = (int) (getResources().getDisplayMetrics().widthPixels * 0.9);
 
 		//Viewのレイアウトを取得
-		View view = this.inflator.inflate(R.layout.fragment_family_input, null);
+		View view = Inflator.inflate(R.layout.fragment_family_input, null);
 		
 		//引数を取得
 		Bundle args = getArguments();
 		if(args != null){
 			//IDをformにセット
-			form.setFamily_id(args.getInt(CommonConst.BUNDLE_KEY_FAMILY_ID));
-			this.isModal = args.getBoolean(CommonConst.BUNDLE_KEY_IS_MODAL);
+			mForm.setFamily_id(args.getInt(CommonConst.BUNDLE_KEY_FAMILY_ID));
+			this.mIsModal = args.getBoolean(CommonConst.BUNDLE_KEY_IS_MODAL);
 		}
 		//rootをDialog内のViewにセット
 		aq.recycle(view);
@@ -86,9 +87,10 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 		aq.id(R.id.btnDialogDelete).clicked(lsnrClickDelete);
 		aq.id(R.id.btnClose).clicked(lsnrBtnClose);
 		aq.id(R.id.ivDialogImage).clicked(lsnrBtnImage);
+        aq.id(R.id.tvDialogBirthDay).clicked(lsnrEtBirthDate);
 		
 		//初期値をセット
-		setData();
+		setupDisplay();
 		
 		//Dialogを生成
 		Dialog dialog = new Dialog(mContext);
@@ -102,7 +104,7 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 		dialog.getWindow().setAttributes(lp);
 		
 		//モーダル時の処理
-		if(isModal){
+		if(mIsModal){
 			aq.id(R.id.btnClose).visibility(View.GONE);
 			aq.id(R.id.btnDialogDelete).visibility(View.GONE);
 			dialog.setCancelable(false);
@@ -115,22 +117,22 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 	/**
 	 * データを取得して設定を戻す
 	 */
-	private void setData(){
+	private void setupDisplay(){
 		CommonLogUtil.method_start();
 		FamilyModel model = new FamilyModel(mContext);
-		Iterator<BaseForm> ite = model.selectById(form).iterator();
+		Iterator<BaseForm> ite = model.selectById(mForm).iterator();
 		if(ite.hasNext()){
-			this.form = (FamilyForm)ite.next();
+			this.mForm = (FamilyForm)ite.next();
             ImagesModel imodel = new ImagesModel(mContext);
             ImagesForm iform = new ImagesForm();
-            iform.setImage_id(form.getImage_id());
+            iform.setImage_id(mForm.getImage_id());
             Iterator<BaseForm> iite = imodel.selectById(iform).iterator();
             if(iite.hasNext()){
                 iform = (ImagesForm)iite.next();
             }
 			
-			aq.id(R.id.etDialogFamilyName).text(form.getFamily_name());
-			aq.id(R.id.etDialogBirthDay).text(CalendarUtil.cal2str(form.getBirth_date()));
+			aq.id(R.id.etDialogFamilyName).text(mForm.getFamily_name());
+			aq.id(R.id.tvDialogBirthDay).text(CalendarUtil.cal2str(mForm.getBirth_date()));
 
             aq.id(R.id.ivDialogImage).image(convertByte2Bitmap(iform.getImage()));
 			//削除ボタンを活性化
@@ -145,19 +147,19 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 	/**
 	 * データをInsertする
 	 */
-	private void inputData(){
+	private void createData(){
 		CommonLogUtil.method_start();
 		FamilyModel modelFamily = new FamilyModel(mContext);
 		ImagesModel modelImages = new ImagesModel(mContext);
 		ImagesForm formImages = new ImagesForm();
 		//Toastのメッセージ
-		String msg = "";
+		String msg;
 		//最新の値をセット
-		form.setFamily_name(aq.id(R.id.etDialogFamilyName).getText().toString());
-		form.setBirth_date(CalendarUtil.str2cal(aq.id(R.id.etDialogBirthDay).getText().toString()));
+		mForm.setFamily_name(aq.id(R.id.etDialogFamilyName).getText().toString());
+		mForm.setBirth_date(CalendarUtil.str2cal(aq.id(R.id.tvDialogBirthDay).getText().toString()));
 		//画像データを取得
 		BitmapDrawable bd = (BitmapDrawable)((ImageView)aq.id(R.id.ivDialogImage).getView()).getDrawable();
-		if(bd != null){
+		if(bd != null && bd.getBitmap() != null){
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			bd.getBitmap().compress(CompressFormat.PNG, 100, baos);
 			//formにセット
@@ -166,17 +168,17 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 		
 		//件数が0以上ならUpdate、0ならInsert
 		long rowid = 0;
-		if(modelFamily.selectById(this.form).size() == 0){
+		if(modelFamily.selectById(this.mForm).size() == 0){
 			rowid = modelImages.insert(formImages);
 			formImages = (ImagesForm)modelImages.selectByRowId(rowid).get(0);
-			this.form.setImage_id(formImages.getImage_id());
+			this.mForm.setImage_id(formImages.getImage_id());
 			
-			rowid = modelFamily.insert(this.form);
+			rowid = modelFamily.insert(this.mForm);
 			//Insertしたデータをformにセット
-			form = (FamilyForm)modelFamily.selectByRowId(rowid).get(0);
+			mForm = (FamilyForm)modelFamily.selectByRowId(rowid).get(0);
 			msg = "登録しました";
 		} else {
-            formImages.setImage_id(form.getImage_id());
+            formImages.setImage_id(mForm.getImage_id());
             Iterator ite = modelImages.selectById(formImages).iterator();
             if(ite.hasNext()){
                 formImages = (ImagesForm)ite.next();
@@ -184,9 +186,9 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
             } else {
                 rowid = modelImages.insert(formImages);
                 formImages = (ImagesForm)modelImages.selectByRowId(rowid).get(0);
-                form.setImage_id(formImages.getImage_id());
+                mForm.setImage_id(formImages.getImage_id());
             }
-			modelFamily.update(this.form);
+			modelFamily.update(this.mForm);
 			msg = "更新しました";
 		}
 		showToast(msg);
@@ -199,8 +201,9 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 	private void deleteData(){
 		CommonLogUtil.method_start();
 		FamilyModel model = new FamilyModel(mContext);
-		model.delete(this.form);
+		model.delete(this.mForm);
 		showToast("削除しました");
+		dismiss();
 		CommonLogUtil.method_end();
 	}
 	
@@ -241,7 +244,7 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 		@Override
 		public void onClick(View v) {
 			CommonLogUtil.method_start();
-			inputData();
+			createData();
 			dismiss();
 			CommonLogUtil.method_end();
 		}
@@ -279,7 +282,7 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 		@Override
 		public void onClick(View v) {
 			CommonLogUtil.method_start();
-			setData();
+			setupDisplay();
 			CommonLogUtil.method_end();
 		}
 	};
@@ -297,6 +300,20 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 			CommonLogUtil.method_end();
 		}
 	};
+
+    OnClickListener lsnrEtBirthDate = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            new DatePickerDialog(mContext, lsnrDpDateSet, 2000, 0, 1).show();
+        }
+    };
+
+    DatePickerDialog.OnDateSetListener lsnrDpDateSet = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+            aq.id(R.id.tvDialogBirthDay).text(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
+        }
+    };
 	
 	/**
 	 * startActovityForResultの結果を受け取る
@@ -326,7 +343,7 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 		
 	/**
 	 * Toast表示
-	 * @param msg
+	 * @param msg   メッセージ
 	 */
 	private void showToast(String msg){
 		Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
@@ -339,10 +356,10 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 	public void onDismiss(DialogInterface dialog) {
 		CommonLogUtil.method_start();
 		if(getTargetFragment() instanceof BaseFragment){
-			((BaseFragment)getTargetFragment()).callback(form);
-		}else if(isModal){
+			((BaseFragment)getTargetFragment()).callback(mForm);
+		}else if(mIsModal){
 			ActivityForm mainForm = new ActivityForm();
-			mainForm.setFamily_id(form.getFamily_id());
+			mainForm.setFamily_id(mForm.getFamily_id());
 			((BaseActivity)getActivity()).callback(mainForm);
 		}
 		super.onDismiss(dialog);

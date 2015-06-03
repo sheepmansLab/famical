@@ -39,9 +39,9 @@
         <!-- メインコンテンツ -->
     <!-- 名前 -->    
     <TextView
-        android:id="@+id/tvDialogFamilyName"
+        android:id="@+id/tvDialogFamilyNamelbl"
         android:layout_width="60dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_alignBaseline="@+id/etDialogFamilyName"
         android:layout_alignParentStart="true"
         android:padding="5dp"
@@ -51,12 +51,17 @@
     <EditText
         android:id="@+id/etDialogFamilyName"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_alignTop="@+id/ivDialogImage"
-        android:layout_toEndOf="@+id/tvDialogFamilyName"
+        android:layout_toEndOf="@+id/tvDialogFamilyNamelbl"
         android:layout_toStartOf="@+id/ivDialogImage"
+        android:gravity="center_vertical"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:textSize="16sp"
         android:inputType="text"
         android:maxLength="20"
+        android:background="@drawable/background_text_area"
         />
     <!-- 写真 -->
     <ImageView 
@@ -72,29 +77,32 @@
         />
     <!-- 誕生日 -->
     <TextView
-        android:id="@+id/tvDialogBirthDay"
+        android:id="@+id/tvDialogBirthDaylbl"
         android:layout_width="60dp"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/etDialogBirthDay"
+        android:layout_height="40dp"
+        android:layout_alignBaseline="@+id/tvDialogBirthDay"
         android:layout_alignParentStart="true"
         android:padding="5dp"
         android:gravity="center"
         android:text="誕生日"
         />
-    <EditText
-        android:id="@+id/etDialogBirthDay"
+    <TextView
+        android:id="@+id/tvDialogBirthDay"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_alignBottom="@+id/ivDialogImage"
-        android:layout_toEndOf="@+id/tvDialogBirthDay"
+        android:layout_toEndOf="@+id/tvDialogBirthDaylbl"
         android:layout_toStartOf="@+id/ivDialogImage"
-        android:layout_marginBottom="-7dp"
-        android:inputType="date"
+        android:gravity="center_vertical"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:textSize="16sp"
+        android:background="@drawable/background_text_area"
         />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/etDialogBirthDay"
+        android:layout_below="@+id/tvDialogBirthDay"
         android:layout_marginTop="20dp"
         android:gravity="center_horizontal">
 

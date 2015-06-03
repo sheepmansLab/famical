@@ -18,7 +18,7 @@
 		    />
 		<FrameLayout 
 		    android:layout_width="match_parent"
-		    android:layout_height="180dp"
+		    android:layout_height="200dp"
 		    android:id="@+id/frmInputFragment"
 		    />
 	</LinearLayout>
@@ -28,5 +28,5 @@
 	    android:layout_width="240dp"
 	    android:layout_height="match_parent"
 	    android:layout_gravity="start"
-	    android:background="@color/azure"/>
+	    android:background="@color/white"/>
 </android.support.v4.widget.DrawerLayout>

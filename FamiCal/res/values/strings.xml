@@ -7,6 +7,7 @@
     <string name="lblEventDate">日付</string>
     <string name="lblComment">コメント</string>
     <string name="lblInput">登録</string>
+    <string name="lblEdit">変更</string>
     <string name="lblClear">クリア</string>
     <string name="lblDelete">削除</string>
     <string name="lblListYear">年</string>
@@ -25,6 +26,6 @@
     <string name="lblMarkDown">▼</string>
     <string name="str_blank"></string>
     <string name="title_activity_family">FamilyActivity</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="lblNewRecord">新規作成</string>
 
 </resources>
