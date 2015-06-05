@@ -36,7 +36,6 @@ import java.util.Iterator;
 import jp.sheepman.common.activity.BaseActivity;
 import jp.sheepman.common.form.BaseForm;
 import jp.sheepman.common.fragment.BaseDialogFragment;
-import jp.sheepman.common.fragment.BaseFragment;
 import jp.sheepman.common.util.CalendarUtil;
 import jp.sheepman.famical.R;
 import jp.sheepman.famical.form.ActivityForm;
@@ -64,13 +63,13 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 		this.mContext = getActivity();
 		this.mForm = new FamilyForm();
 
-        LayoutInflater Inflator = LayoutInflater.from(mContext);
+        LayoutInflater inflater = LayoutInflater.from(mContext);
 		
 		//ダイアログの横幅：90%
 		final int dialogWidth = (int) (getResources().getDisplayMetrics().widthPixels * 0.9);
 
 		//Viewのレイアウトを取得
-		View view = Inflator.inflate(R.layout.fragment_family_input, null);
+		View view = inflater.inflate(R.layout.fragment_family_input, null);
 		
 		//引数を取得
 		Bundle args = getArguments();
@@ -202,6 +201,7 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 		CommonLogUtil.method_start();
 		FamilyModel model = new FamilyModel(mContext);
 		model.delete(this.mForm);
+		mForm = new FamilyForm();
 		showToast("削除しました");
 		dismiss();
 		CommonLogUtil.method_end();
@@ -355,13 +355,9 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 	@Override
 	public void onDismiss(DialogInterface dialog) {
 		CommonLogUtil.method_start();
-		if(getTargetFragment() instanceof BaseFragment){
-			((BaseFragment)getTargetFragment()).callback(mForm);
-		}else if(mIsModal){
-			ActivityForm mainForm = new ActivityForm();
-			mainForm.setFamily_id(mForm.getFamily_id());
-			((BaseActivity)getActivity()).callback(mainForm);
-		}
+		ActivityForm actForm = new ActivityForm();
+		actForm.setFamily_id(mForm.getFamily_id());
+		((BaseActivity)getActivity()).callback(actForm);
 		super.onDismiss(dialog);
 		CommonLogUtil.method_end();
 	}
@@ -375,7 +371,6 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 	@Override
 	public void callback(BaseForm arg0) {
 		CommonLogUtil.method_start();
-		this.callback();
 		CommonLogUtil.method_end();
 	}
 }

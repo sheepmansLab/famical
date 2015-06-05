@@ -162,9 +162,6 @@ public class WcRecordCalendarFragment extends BaseFragment {
 	 */
 	private void setCellDetail(boolean doAnimation){
         CommonLogUtil.method_start();
-		//選択表示を消す
-		aq.id(R.id.vSelectedFrame).visibility(View.GONE);
-						
 		//1日を取得し作業用にコピーする
 		Calendar vCalTemp = CalendarUtil.getMonthFirstDate(CalendarUtil.clone(mCalendarBase));
 		//表示用に年月を取得
@@ -252,7 +249,7 @@ public class WcRecordCalendarFragment extends BaseFragment {
 						aqCell.id(R.id.tvCelPoCount).text("");
 						//背景をグレーにする
 						aqCell.id(R.id.tvCellDay).textColorId(R.color.black);
-						cell.setBackgroundColor(Color.GRAY);
+						cell.setBackgroundColor(getResources().getColor(R.color.lightgrey));
 						//非表示セル数をカウント
 						disableCount++;
 					}

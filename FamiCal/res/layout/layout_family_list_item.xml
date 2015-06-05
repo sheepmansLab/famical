@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="60dp"
-    android:background="@drawable/background_inputdialog">
+    android:background="@drawable/background_family_item">
     <ImageView
         android:id="@+id/ivFamSelItemFamilyPict"
         android:layout_width="50dp"
@@ -22,6 +22,9 @@
         android:layout_centerVertical="true"
         android:layout_gravity="center_vertical"
         android:gravity="center_vertical|start"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:scrollHorizontally="true"
         />
     <Button
         android:id="@+id/btnFamSelItemEdit"

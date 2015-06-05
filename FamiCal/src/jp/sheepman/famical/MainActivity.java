@@ -1,5 +1,6 @@
 package jp.sheepman.famical;
 
+import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
@@ -28,91 +29,97 @@ import jp.sheepman.famical.util.CommonLogUtil;
 public class MainActivity extends BaseActivity {
 	private AQuery aq;
 	
-	private int family_id;
-	private Calendar wc_record_date;
-	
-	//カレンダーフラグメント
-	WcRecordCalendarFragment fragment_cal; 
-	//入力欄フラグメント
-	WcRecordInputFragment fragment_inp;
-	//家族選択フラグメント
-	FamilySelectFragment fragment_select;
-	
+	private int mFamily_id;
+	private Calendar mWc_record_date;
+
+	private WcRecordCalendarFragment mFragment_cal;	//カレンダーフラグメント
+	private WcRecordInputFragment mFragment_inp;		//入力欄フラグメント
+	private FamilySelectFragment mFragment_select;	//家族選択フラグメント
+
+    /**
+     * 画面情報保存
+     * @param outState  Bundle
+     */
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		CommonLogUtil.method_start();
-		if(outState != null){
-			outState.putInt(CommonConst.BUNDLE_KEY_FAMILY_ID, family_id);
-			outState.putString(CommonConst.BUNDLE_KEY_WC_RECORD_DATE, CalendarUtil.cal2str(wc_record_date));
-		}
+        outState.putInt(CommonConst.BUNDLE_KEY_FAMILY_ID, mFamily_id);
+        outState.putString(CommonConst.BUNDLE_KEY_WC_RECORD_DATE, CalendarUtil.cal2str(mWc_record_date));
 		CommonLogUtil.method_end();
 	}
-	
+
+    /**
+     * Activity作成時
+     * @param savedInstanceState    Bundle
+     */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		CommonLogUtil.method_start();
+		setContentView(R.layout.activity_main);
+
 		super.onCreate(savedInstanceState);
 		this.aq = new AQuery(this);
-		
-		setContentView(R.layout.activity_main);
-		
+
 		//キャッシュからfamily_idを取得
-		this.family_id = CommonFileUtil.readChacheFamilyId(getCacheDir());
-		
+		this.mFamily_id = CommonFileUtil.readChacheFamilyId(getCacheDir());
 		//Bundleに保持していた場合再取得
 		if(savedInstanceState != null){
-			this.family_id = savedInstanceState.getInt(CommonConst.BUNDLE_KEY_FAMILY_ID);
-			this.wc_record_date = CalendarUtil.str2cal(savedInstanceState.getString(CommonConst.BUNDLE_KEY_WC_RECORD_DATE));
+			this.mFamily_id = savedInstanceState.getInt(CommonConst.BUNDLE_KEY_FAMILY_ID);
+			this.mWc_record_date = CalendarUtil.str2cal(savedInstanceState.getString(CommonConst.BUNDLE_KEY_WC_RECORD_DATE));
 		}
-		if (wc_record_date == null) {
+        //family_idをキャッシュに書き込み
+        CommonFileUtil.writeChacheFamilyId(getCacheDir(), this.mFamily_id);
+
+        //対象日付
+		if (mWc_record_date == null) {
 			//当日をセット
-			this.wc_record_date = CalendarUtil.getToday();
+			this.mWc_record_date = CalendarUtil.getToday();
 		}
-		
-		//家族データ取得処理
-		List<Integer> family_list = getFamilyIdList();
-		//データが0件の場合入力画面を表示する
-		if(family_list.size() == 0 || family_list.indexOf(Integer.valueOf(this.family_id)) < 0) {
-			Intent intent = new Intent(this, FamilyActivity.class);
-			startActivityForResult(intent, CommonConst.REQUEST_CODE_FAMILY_ACTIVITY);
-		}
-		
-		//引数を作成
-		Bundle args = new Bundle();
-		//family_idをキャッシュに書き込み
-		CommonFileUtil.writeChacheFamilyId(getCacheDir(), this.family_id);
-		
-		args.putInt(CommonConst.BUNDLE_KEY_FAMILY_ID, this.family_id);
-		args.putString(CommonConst.BUNDLE_KEY_WC_RECORD_DATE, CalendarUtil.cal2str(wc_record_date));
 		
 		//Fragment処理
 		FragmentTransaction tran = getFragmentManager().beginTransaction();
 		//カレンダーフラグメント
-		fragment_cal = new WcRecordCalendarFragment();
+		mFragment_cal = new WcRecordCalendarFragment();
         //入力欄フラグメント
-        fragment_inp = new WcRecordInputFragment();
+        mFragment_inp = new WcRecordInputFragment();
         //家族選択フラグメント
-        fragment_select = new FamilySelectFragment();
+        mFragment_select = new FamilySelectFragment();
 
         //引数をセット
-		fragment_cal.setArguments(args);
-        fragment_inp.setArguments(args);
-        fragment_select.setArguments(args);
+        Bundle args = getArgs();
+		mFragment_cal.setArguments(args);
+        mFragment_inp.setArguments(args);
+        mFragment_select.setArguments(args);
 
 		//targetフラグメントをセット
-		fragment_cal.setTargetFragment(fragment_inp, 0);
-        fragment_inp.setTargetFragment(fragment_cal, 0);
+		mFragment_cal.setTargetFragment(mFragment_inp, 0);
+        mFragment_inp.setTargetFragment(mFragment_cal, 0);
 
         //フラグメントをセット
 		tran.replace(R.id.frmCalendarFragment
-				, fragment_cal, CommonConst.FRAGMENT_TAG_CALENDAR);
+				, mFragment_cal, CommonConst.FRAGMENT_TAG_CALENDAR);
 		tran.replace(R.id.frmInputFragment
-				, fragment_inp, CommonConst.FRAGMENT_TAG_WCREC_INPUT);
-		tran.replace(R.id.frmDrawerLayout
-				, fragment_select, CommonConst.FRAGMENT_TAG_FAMILY_SELECT);
-		tran.commit();
+				, mFragment_inp, CommonConst.FRAGMENT_TAG_WCREC_INPUT);
+        tran.replace(R.id.frmDrawerLayout
+                , mFragment_select, CommonConst.FRAGMENT_TAG_FAMILY_SELECT);
+        tran.commit();
+        //ドロアーのロック有無をチェック
+        setDrawerLockMode();
+
 		CommonLogUtil.method_end();
 	}
+
+    /**
+     * Fragmentに渡すBundleを作成する
+     * @return
+     */
+    private Bundle getArgs(){
+        //引数を作成
+        Bundle args = new Bundle();
+        args.putInt(CommonConst.BUNDLE_KEY_FAMILY_ID, mFamily_id);
+        args.putString(CommonConst.BUNDLE_KEY_WC_RECORD_DATE, CalendarUtil.cal2str(mWc_record_date));
+        return args;
+    }
 	
 	/**
 	 * 条件なしのFamilyIDのリストを返却
@@ -131,42 +138,43 @@ public class MainActivity extends BaseActivity {
 		return list;
 	}
 
-	/**
-	 * startActivityForResultでの結果を受け取る
-	 */
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		CommonLogUtil.method_end();
-		//リクエストコード別に処理をする
-		switch (requestCode) {
-		//画像選択の場合
-		case CommonConst.REQUEST_CODE_FAMILY_ACTIVITY:
-			//正常終了の場合
-			if(resultCode == RESULT_OK){
-				//IDを受け取る
-				this.family_id = data.getIntExtra(CommonConst.BUNDLE_KEY_FAMILY_ID, family_id);
-				reload();
-			}
-			break;
-		default:
-			break;
-		}
-		CommonLogUtil.method_end();
-	}
+    /**
+     * ドロアーの状態をチェックして設定
+     */
+    private void setDrawerLockMode(){
+        //家族データ取得処理
+        List<Integer> family_list = getFamilyIdList();
+        //データが0件の場合入力画面を表示する
+        if(family_list.size() == 0 || family_list.indexOf(Integer.valueOf(this.mFamily_id)) < 0) {
+            //ドロアーを閉じなくさせる
+            ((DrawerLayout)aq.id(R.id.dlMainFamilySelect).getView())
+                    .setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
+        } else {
+            //ドロアーのロックを解除
+            ((DrawerLayout)aq.id(R.id.dlMainFamilySelect).getView())
+                    .setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        }
+    }
 	
 	/**
 	 * 画面上の表示をリロードする
 	 */
 	private void reload(){
 		CommonLogUtil.method_start();
-		if(fragment_cal != null && fragment_inp != null){
-			fragment_cal.changeDisplay(family_id, wc_record_date, true);
-			fragment_inp.changeDisplay(family_id, wc_record_date);
-			fragment_select.changeDisplay(family_id);
-			((DrawerLayout)aq.id(R.id.dlMainFamilySelect).getView()).closeDrawers();
-			//family_idを書き込む
-			CommonFileUtil.writeChacheFamilyId(getCacheDir(), family_id);
-		}
+		if(mFragment_cal != null) {
+            mFragment_cal.changeDisplay(mFamily_id, mWc_record_date, true);
+        }
+        if(mFragment_inp != null) {
+            mFragment_inp.changeDisplay(mFamily_id, mWc_record_date);
+        }
+        if(mFragment_select != null) {
+            mFragment_select.changeDisplay(mFamily_id);
+            ((DrawerLayout) aq.id(R.id.dlMainFamilySelect).getView()).closeDrawers();
+        }
+        //ドロアーのロックをチェック
+        setDrawerLockMode();
+        //family_idを書き込む
+        CommonFileUtil.writeChacheFamilyId(getCacheDir(), mFamily_id);
 		CommonLogUtil.method_end();
 	}
 	
@@ -186,13 +194,15 @@ public class MainActivity extends BaseActivity {
 	@Override
 	public void callback(BaseForm arg0) {
 		CommonLogUtil.method_start();
+        //パラメータがActivityFormだった場合
 		if(arg0 instanceof ActivityForm){
-			this.family_id = ((ActivityForm)arg0).getFamily_id();
-			if(((ActivityForm)arg0).getWc_record_date() != null){
-				this.wc_record_date = ((ActivityForm)arg0).getWc_record_date();
+            ActivityForm form = (ActivityForm)arg0;
+			this.mFamily_id = form.getFamily_id();
+			if(form.getWc_record_date() != null){
+				mWc_record_date = form.getWc_record_date();
 			}
 		}
+        reload();
 		CommonLogUtil.method_end();
-		this.callback();
 	}
 }

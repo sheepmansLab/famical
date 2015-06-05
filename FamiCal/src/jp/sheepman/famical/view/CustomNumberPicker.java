@@ -21,8 +21,8 @@ public class CustomNumberPicker extends LinearLayout {
 	public CustomNumberPicker(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		if(!isInEditMode()){
-			LayoutInflater inflator = ((Activity)context).getLayoutInflater();
-			View view = inflator.inflate(R.layout.layout_numpick_view, null);
+			LayoutInflater inflater = ((Activity)context).getLayoutInflater();
+			View view = inflater.inflate(R.layout.layout_numpick_view, null);
 			this.aq = new AQuery(view);
 			aq.id(R.id.btnNumpickUp).clicked(lsnrButtonUp);
 			aq.id(R.id.btnNumpickDown).clicked(lsnrButtonDown);

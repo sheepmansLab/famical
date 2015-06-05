@@ -21,7 +21,6 @@ import jp.sheepman.common.activity.BaseActivity;
 import jp.sheepman.common.adapter.BaseCustomAdapter;
 import jp.sheepman.common.form.BaseForm;
 import jp.sheepman.common.fragment.BaseFragment;
-import jp.sheepman.famical.FamilyActivity;
 import jp.sheepman.famical.R;
 import jp.sheepman.famical.form.ActivityForm;
 import jp.sheepman.famical.form.FamilyForm;
@@ -36,21 +35,29 @@ public class FamilySelectFragment extends BaseFragment {
 	private AQuery aq;
 	private FamilySelectListAdapter mAdapter;
 	
-	private int family_id;
+	private int mFamily_id;
     private boolean mIsNoData = false;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
         CommonLogUtil.method_start();
 		super.onCreate(savedInstanceState);
+		//コンテキストの保持
 		mContext = getActivity();
 		aq = new AQuery(mContext);
 		if(getArguments() != null){
-			this.family_id = getArguments().getInt(CommonConst.BUNDLE_KEY_FAMILY_ID);
+			mFamily_id = getArguments().getInt(CommonConst.BUNDLE_KEY_FAMILY_ID);
 		}
         CommonLogUtil.method_end();
 	}
-	
+
+	/**
+	 * ContentViewの作成時
+	 * @param inflater	Inflater
+	 * @param container	コンテナ
+	 * @param savedInstanceState	Bundle
+	 * @return
+	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -59,7 +66,7 @@ public class FamilySelectFragment extends BaseFragment {
 		View view = inflater.inflate(R.layout.fragment_family_select, null);
 		//aqのルートをViewでセット
 		aq.recycle(view);
-		
+		//新規作成ボタンにイベントをセット
 		aq.id(R.id.btnFamSelInput).clicked(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -68,12 +75,8 @@ public class FamilySelectFragment extends BaseFragment {
 				dialog.show(getFragmentManager(), CommonConst.FRAGMENT_TAG_FAMILY_DIALOG);
 			}
 		});
-
+		//Listのアイテムにクリックイベントをセット
 		((ListView)aq.id(R.id.lvFamSel).getView()).setOnItemClickListener(lsnrItemClick);
-		
-		//アダプタを生成してセット
-		mAdapter = new FamilySelectListAdapter();
-
 		//画面の反映
 		reload();
 		
@@ -88,13 +91,16 @@ public class FamilySelectFragment extends BaseFragment {
 	 */
 	private void reload(){
         CommonLogUtil.method_start();
+		if(mAdapter == null){
+			//アダプタを生成
+			mAdapter = new FamilySelectListAdapter();
+		}
 		mAdapter.clear();
 		//データの取得
 		FamilyModel model = new FamilyModel(mContext);
 		List<BaseForm> list = model.selectAll();
         //データの件数が0の場合
-        if(list.size() == 0 && getActivity() instanceof FamilyActivity){
-            mIsNoData = true;
+        if(list.size() == 0){
             FamilyInputDialogFragment dialog = new FamilyInputDialogFragment();
             Bundle args = new Bundle();
             //モーダル表示設定
@@ -102,11 +108,10 @@ public class FamilySelectFragment extends BaseFragment {
             dialog.setArguments(args);
             dialog.setTargetFragment(FamilySelectFragment.this, 0);
             dialog.show(getFragmentManager(), CommonConst.FRAGMENT_TAG_FAMILY_DIALOG);
-        } else {
-            //アダプタにデータをセット
-            mAdapter.setList(list);
-            mAdapter.notifyDataSetChanged();
         }
+		//アダプタにデータをセット
+		mAdapter.setList(list);
+		mAdapter.notifyDataSetChanged();
         CommonLogUtil.method_end();
 	}
 	
@@ -118,9 +123,11 @@ public class FamilySelectFragment extends BaseFragment {
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
             CommonLogUtil.method_start();
 			if(arg1.getTag() instanceof Integer){
-				FamilySelectFragment.this.family_id = Integer.valueOf(arg1.getTag().toString());
+				FamilySelectFragment.this.mFamily_id = Integer.valueOf(arg1.getTag().toString());
+				ActivityForm form = new ActivityForm();
+				form.setFamily_id(mFamily_id);
+				((BaseActivity)getActivity()).callback(form);
 			}
-            responseToActivity(FamilySelectFragment.this.family_id);
             CommonLogUtil.method_end();
 		}
 	};
@@ -164,13 +171,13 @@ public class FamilySelectFragment extends BaseFragment {
 			}
 			//名前をセット
 			aq.id(R.id.tvFamSelItemFamilyName).text(form.getFamily_name() +"_"+String.valueOf(form.getFamily_id()));
-			//編集ボタンにタグ(family_id)とクリックイベントをセット
+			//編集ボタンにタグ(mFamily_id)とクリックイベントをセット
 			aq.id(R.id.btnFamSelItemEdit).tag(form.getFamily_id()).clicked(lsnrClickEdit);
 			//選択中のIDと同じならば背景色を設定
-			if(form.getFamily_id() == FamilySelectFragment.this.family_id){
-				aq.recycle(v).backgroundColorId(R.color.SELECTED);
+			if(form.getFamily_id() == FamilySelectFragment.this.mFamily_id){
+				aq.recycle(v).background(R.drawable.background_family_item_select);
 			} else {
-				aq.recycle(v).backgroundColorId(R.color.white);
+				aq.recycle(v).background(R.drawable.background_family_item);
 			}
             CommonLogUtil.method_end();
 			return v;
@@ -196,18 +203,6 @@ public class FamilySelectFragment extends BaseFragment {
 		};
 	}
 
-    /**
-     * Activityに返答する
-     * @param family_id family_id
-     */
-    private void responseToActivity(int family_id){
-        ActivityForm form = new ActivityForm();
-        this.family_id = family_id;
-        form.setFamily_id(this.family_id);
-        reload();
-        ((BaseActivity)getActivity()).callback(form);
-    }
-	
 	@Override
 	public void callback() {
         CommonLogUtil.method_start();
@@ -224,11 +219,7 @@ public class FamilySelectFragment extends BaseFragment {
         CommonLogUtil.method_start();
 		//引数がFamilyFormであればIDを保持する
 		if(arg0 instanceof FamilyForm){
-			this.family_id = ((FamilyForm)arg0).getFamily_id();
-            if(mIsNoData){
-                mIsNoData = false;
-                responseToActivity(this.family_id);
-            }
+			this.mFamily_id = ((FamilyForm)arg0).getFamily_id();
 		}
 		reload();
         CommonLogUtil.method_end();
@@ -240,7 +231,7 @@ public class FamilySelectFragment extends BaseFragment {
 	 */
 	public void changeDisplay(int family_id){
         CommonLogUtil.method_start();
-		this.family_id = family_id;
+		this.mFamily_id = family_id;
         mIsNoData = false;
 		reload();
         CommonLogUtil.method_end();

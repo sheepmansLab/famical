@@ -15,8 +15,6 @@ public class CommonConst {
 	
 	/**	リクエストコード ギャラリー */
 	public static final int REQUEST_CODE_GALLERY = 1;
-	/**	リクエストコード FamilyActivity */
-	public static final int REQUEST_CODE_FAMILY_ACTIVITY = 10;
 	
 	/** テーブル名 wc_record */
 	public static final String TABLE_NAME_WC_RECORD = "wc_record";
