@@ -31,6 +31,7 @@ import com.androidquery.AQuery;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Iterator;
 
 import jp.sheepman.common.activity.BaseActivity;
@@ -153,44 +154,48 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 		ImagesForm formImages = new ImagesForm();
 		//Toastのメッセージ
 		String msg;
-		//最新の値をセット
-		mForm.setFamily_name(aq.id(R.id.etDialogFamilyName).getText().toString());
-		mForm.setBirth_date(CalendarUtil.str2cal(aq.id(R.id.tvDialogBirthDay).getText().toString()));
-		//画像データを取得
-		BitmapDrawable bd = (BitmapDrawable)((ImageView)aq.id(R.id.ivDialogImage).getView()).getDrawable();
-		if(bd != null && bd.getBitmap() != null){
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			bd.getBitmap().compress(CompressFormat.PNG, 100, baos);
-			//formにセット
-			formImages.setImage(baos.toByteArray());
+
+		//必須項目のチェック
+		if(validate()) {
+			//最新の値をセット
+			mForm.setFamily_name(aq.id(R.id.etDialogFamilyName).getText().toString());
+			mForm.setBirth_date(CalendarUtil.str2cal(aq.id(R.id.tvDialogBirthDay).getText().toString()));
+			//画像データを取得
+			BitmapDrawable bd = (BitmapDrawable) ((ImageView) aq.id(R.id.ivDialogImage).getView()).getDrawable();
+			if (bd != null && bd.getBitmap() != null) {
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				bd.getBitmap().compress(CompressFormat.PNG, 100, baos);
+				//formにセット
+				formImages.setImage(baos.toByteArray());
+			}
+
+			//件数が0以上ならUpdate、0ならInsert
+			long rowid = 0;
+			if (modelFamily.selectById(this.mForm).size() == 0) {
+				rowid = modelImages.insert(formImages);
+				formImages = (ImagesForm) modelImages.selectByRowId(rowid).get(0);
+				this.mForm.setImage_id(formImages.getImage_id());
+
+				rowid = modelFamily.insert(this.mForm);
+				//Insertしたデータをformにセット
+				mForm = (FamilyForm) modelFamily.selectByRowId(rowid).get(0);
+				msg = "登録しました";
+			} else {
+				formImages.setImage_id(mForm.getImage_id());
+				Iterator ite = modelImages.selectById(formImages).iterator();
+				if (ite.hasNext()) {
+					formImages = (ImagesForm) ite.next();
+					modelImages.update(formImages);
+				} else {
+					rowid = modelImages.insert(formImages);
+					formImages = (ImagesForm) modelImages.selectByRowId(rowid).get(0);
+					mForm.setImage_id(formImages.getImage_id());
+				}
+				modelFamily.update(this.mForm);
+				msg = "更新しました";
+			}
+			showToast(msg);
 		}
-		
-		//件数が0以上ならUpdate、0ならInsert
-		long rowid = 0;
-		if(modelFamily.selectById(this.mForm).size() == 0){
-			rowid = modelImages.insert(formImages);
-			formImages = (ImagesForm)modelImages.selectByRowId(rowid).get(0);
-			this.mForm.setImage_id(formImages.getImage_id());
-			
-			rowid = modelFamily.insert(this.mForm);
-			//Insertしたデータをformにセット
-			mForm = (FamilyForm)modelFamily.selectByRowId(rowid).get(0);
-			msg = "登録しました";
-		} else {
-            formImages.setImage_id(mForm.getImage_id());
-            Iterator ite = modelImages.selectById(formImages).iterator();
-            if(ite.hasNext()){
-                formImages = (ImagesForm)ite.next();
-                modelImages.update(formImages);
-            } else {
-                rowid = modelImages.insert(formImages);
-                formImages = (ImagesForm)modelImages.selectByRowId(rowid).get(0);
-                mForm.setImage_id(formImages.getImage_id());
-            }
-			modelFamily.update(this.mForm);
-			msg = "更新しました";
-		}
-		showToast(msg);
 		CommonLogUtil.method_end();
 	}
 	
@@ -205,6 +210,19 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 		showToast("削除しました");
 		dismiss();
 		CommonLogUtil.method_end();
+	}
+
+	/**
+	 * 入力項目のValidate
+	 * @return	チェック結果
+	 */
+	private boolean validate(){
+		boolean ret = true;
+		if(aq.id(R.id.etDialogFamilyName).getText().length() == 0){
+			Toast.makeText(mContext, "名前を入力してください", Toast.LENGTH_SHORT).show();
+			ret = false;
+		}
+		return ret;
 	}
 	
 	/**
@@ -301,13 +319,24 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 		}
 	};
 
+	/**
+	 * 誕生日TextViewクリック時のイベント
+	 */
     OnClickListener lsnrEtBirthDate = new OnClickListener() {
         @Override
         public void onClick(View v) {
-            new DatePickerDialog(mContext, lsnrDpDateSet, 2000, 0, 1).show();
+			Calendar cal = CalendarUtil.getToday();
+			new DatePickerDialog(mContext, lsnrDpDateSet
+					, CalendarUtil.getYear(cal)
+					, CalendarUtil.getMonth(cal) -1
+					, CalendarUtil.getDate(cal))
+					.show();
         }
     };
 
+	/**
+	 * DatePickerで設定をクリックした場合のイベント
+	 */
     DatePickerDialog.OnDateSetListener lsnrDpDateSet = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {

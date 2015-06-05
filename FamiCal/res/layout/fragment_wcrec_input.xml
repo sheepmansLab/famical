@@ -1,42 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <LinearLayout
-        android:id="@+id/llInputDivider"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:gravity="end|center_vertical"
-        android:background="@color/taupe"
-        >
-        <!-- 削除ボタン-->
-        <Button
-            android:id="@+id/btnDialogDelete"
-            android:layout_width="50dp"
-            android:layout_height="20dp"
-            android:layout_marginEnd="5dp"
-            android:background="@color/tomato"
-            android:textColor="@color/white"
-            android:textSize="13sp"
-            android:text="@string/lblDelete" />
-        <!-- 非表示項目　Fanily_ID-->
-        <TextView
-            android:id="@+id/tvDialogFamily_id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="invisible">
-        </TextView>
-    </LinearLayout>
-    <!-- タイトル-->
+    android:layout_height="match_parent"
+    android:background="@color/snowwhite">
+    <!--日付表示エリア-->
     <RelativeLayout
         android:id="@+id/rlInputTitle"
-        android:layout_width="100dp"
+        android:layout_width="80dp"
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/llInputDivider"
-        android:padding="10dp"
-        android:background="@color/khaki">
+        android:layout_alignParentTop="true"
+        android:background="@color/usukuminezu">
         <!-- 前日ボタン-->
         <Button
             android:id="@+id/btnPrevDay"
@@ -57,26 +31,81 @@
             />
         <!-- 日付表示-->
         <TextView
-            android:id="@+id/tvDialogDate"
+            android:id="@+id/tvDialogDateYear"
             android:layout_width="80dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/btnPrevDay"
+            android:layout_marginTop="-10dp"
             android:gravity="center"
             android:focusable="true"
             android:focusableInTouchMode="true"
-            android:textColor="@color/white"
-            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:textSize="28sp"
             android:textStyle="bold">
             <requestFocus/>
         </TextView>
+        <TextView
+            android:id="@+id/tvDialogDateMonth"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvDialogDateYear"
+            android:layout_marginTop="-5dp"
+            android:gravity="center"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:textColor="@color/black"
+            android:textSize="28sp"
+            android:textStyle="bold">
+        </TextView>
+        <TextView
+            android:id="@+id/tvDialogDateDay"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvDialogDateMonth"
+            android:layout_marginTop="-10dp"
+            android:gravity="center"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:textColor="@color/black"
+            android:textSize="28sp"
+            android:textStyle="bold">
+        </TextView>
     </RelativeLayout>
+    <!-- 削除ボタン等-->
+    <LinearLayout
+        android:id="@+id/llInputDivider"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/rlInputTitle"
+        android:gravity="end|center_vertical"
+        android:background="@color/snowwhite"
+        >
+        <!-- 削除ボタン-->
+        <Button
+            android:id="@+id/btnDialogDelete"
+            android:layout_width="50dp"
+            android:layout_height="20dp"
+            android:layout_marginEnd="5dp"
+            android:background="@color/tomato"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            android:text="@string/lblDelete" />
+        <!-- 非表示項目　Fanily_ID-->
+        <TextView
+            android:id="@+id/tvDialogFamily_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible">
+        </TextView>
+    </LinearLayout>
     <!-- カウンタ部 -->
     <RelativeLayout
         android:id="@+id/rlDialogCount"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/llInputDivider"
-        android:layout_above="@+id/llInputButton"
+        android:layout_marginTop="15dp"
         android:layout_toEndOf="@+id/rlInputTitle">
         <!-- 小マーク-->
     	<TextView
@@ -127,18 +156,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/rlDialogCount"
-        android:layout_centerHorizontal="true"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
-        android:gravity="center"
-        android:background="@drawable/background_numberpicker">
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@+id/rlInputTitle"
+        android:gravity="center_horizontal|bottom">
         <!-- 入力ボタン -->
         <Button
             android:id="@+id/btnDialogInput"
             android:layout_width="120dp"
-            android:layout_height="30dp"
+            android:layout_height="40dp"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:text="@string/lblInput"/>
@@ -146,7 +171,7 @@
         <Button
             android:id="@+id/btnDialogClear"
             android:layout_width="120dp"
-            android:layout_height="30dp"
+            android:layout_height="40dp"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:text="@string/lblClear" />

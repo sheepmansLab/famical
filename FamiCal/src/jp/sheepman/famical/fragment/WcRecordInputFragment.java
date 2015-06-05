@@ -3,6 +3,16 @@
  */
 package jp.sheepman.famical.fragment;
 
+import android.content.Context;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.androidquery.AQuery;
+
 import java.util.Calendar;
 import java.util.Iterator;
 
@@ -17,15 +27,6 @@ import jp.sheepman.famical.model.WcRecordModel;
 import jp.sheepman.famical.util.CommonConst;
 import jp.sheepman.famical.util.CommonLogUtil;
 import jp.sheepman.famical.view.CustomNumberPicker;
-import android.content.Context;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.Toast;
-
-import com.androidquery.AQuery;
 
 
 /**
@@ -142,7 +143,12 @@ public class WcRecordInputFragment extends BaseFragment {
 			aq.id(R.id.btnDialogDelete).visibility(View.GONE);
 		}
 		//ラベルに日付を表示
-		aq.id(R.id.tvDialogDate).text(CalendarUtil.cal2str(form.getWc_record_date()));
+		int year = CalendarUtil.getYear(form.getWc_record_date());
+		int month = CalendarUtil.getMonth(form.getWc_record_date());
+		int day = CalendarUtil.getDate(form.getWc_record_date());
+        aq.id(R.id.tvDialogDateYear).text(String.format("%1$4d",year));
+        aq.id(R.id.tvDialogDateMonth).text(String.format("%1$02d", month));
+        aq.id(R.id.tvDialogDateDay).text(String.format("%1$02d", day));
         CommonLogUtil.method_end();
 	}
 	
