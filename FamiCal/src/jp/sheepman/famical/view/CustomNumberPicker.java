@@ -3,6 +3,7 @@ package jp.sheepman.famical.view;
 import jp.sheepman.famical.R;
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +13,7 @@ import com.androidquery.AQuery;
 
 public class CustomNumberPicker extends LinearLayout {
 	private AQuery aq;
-	
+
 	/**
 	 * 初期化処理
 	 * @param context
@@ -26,10 +27,25 @@ public class CustomNumberPicker extends LinearLayout {
 			this.aq = new AQuery(view);
 			aq.id(R.id.btnNumpickUp).clicked(lsnrButtonUp);
 			aq.id(R.id.btnNumpickDown).clicked(lsnrButtonDown);
+
+            if(attrs != null){
+//                TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.CustomNumberPicker);
+//                //幅をセット
+//                int width = typedArray.getDimensionPixelSize(R.attr.width, 0);
+//                setWidth(R.id.etNumpickCount, width);
+//                setWidth(R.id.btnNumpickDown, width);
+//                setWidth(R.id.btnNumpickUp, width);
+//                //高さをセット
+//                int counter_height = typedArray.getDimensionPixelSize(R.attr.counter_height, 0);
+//                int button_height = typedArray.getDimensionPixelSize(R.attr.button_height, 0);
+//                setHeight(R.id.etNumpickCount, counter_height);
+//                setHeight(R.id.btnNumpickDown, button_height);
+//                setHeight(R.id.btnNumpickUp, button_height);
+            }
 			setValue(0);
 			addView(view);
 		}
-	}
+    }
 	
 	/**
 	 * Upボタン押下時
@@ -56,7 +72,7 @@ public class CustomNumberPicker extends LinearLayout {
 	 * @return
 	 */
 	public int getValue(){
-		return Integer.valueOf(aq.id(R.id.etCount).getText().toString());
+		return Integer.valueOf(aq.id(R.id.etNumpickCount).getText().toString());
 	}
 	
 	/**
@@ -67,7 +83,7 @@ public class CustomNumberPicker extends LinearLayout {
 		if(value < 0){
 			value = 0;
 		}
-		aq.id(R.id.etCount).text(String.valueOf(value));
+		aq.id(R.id.etNumpickCount).text(String.valueOf(value));
 	}
 	
 	/**
@@ -75,8 +91,29 @@ public class CustomNumberPicker extends LinearLayout {
 	 * @param num	加算値
 	 */
 	private void addNumber(int num){
-		int value = Integer.valueOf(aq.id(R.id.etCount).getText().toString());
+		int value = Integer.valueOf(aq.id(R.id.etNumpickCount).getText().toString());
 		value = value + num;
 		setValue(value);
 	}
+
+    /**
+     * リソースの高さをセットする
+     * @param id    リソースID(R.id)
+     * @param pixcel   pixcel
+     */
+    private void setHeight(int id, int pixcel){
+        if(pixcel > 0){
+            aq.id(id).height(pixcel, false);
+        }
+    }
+    /**
+     * リソースの幅をセットする
+     * @param id    リソースID(R.id)
+     * @param pixcel   pixcel
+     */
+    private void setWidth(int id, int pixcel){
+        if(pixcel > 0){
+            aq.id(id).width(pixcel, false);
+        }
+    }
 }

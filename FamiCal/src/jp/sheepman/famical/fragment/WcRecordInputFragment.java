@@ -84,11 +84,11 @@ public class WcRecordInputFragment extends BaseFragment {
 		//rootをDialog内のViewにセット
 		aq.recycle(view);
 		//各項目に初期値をセット
-		aq.id(R.id.btnDialogInput).clicked(lsnrClickSubmit);
-		aq.id(R.id.btnDialogClear).clicked(lsnrClickClear);
-		aq.id(R.id.btnDialogDelete).clicked(lsnrClickDelete);
-		aq.id(R.id.btnPrevDay).clicked(lsnrClickAddDay);
-		aq.id(R.id.btnNextDay).clicked(lsnrClickAddDay);
+		aq.id(R.id.btnWcRecInputInput).clicked(lsnrClickSubmit);
+		aq.id(R.id.btnWcRecInputClear).clicked(lsnrClickClear);
+		aq.id(R.id.btnWcRecInputDelete).clicked(lsnrClickDelete);
+		aq.id(R.id.btnWcRecInputPrevDay).clicked(lsnrClickAddDay);
+		aq.id(R.id.btnWcRecInputNextDay).clicked(lsnrClickAddDay);
 		
 		//初期値をセット
 		setContents();
@@ -123,32 +123,32 @@ public class WcRecordInputFragment extends BaseFragment {
 		Iterator<BaseEntity> ite = model.selectByPrimary(this.form).iterator();
 		if(ite.hasNext()){
 			WcRecordEntity entity = (WcRecordEntity)ite.next();
-			((CustomNumberPicker)aq.id(R.id.cnpDialogPeCount).getView()).setValue(entity.getPe_count());
-			((CustomNumberPicker)aq.id(R.id.cnpDialogPoCount).getView()).setValue(entity.getPo_count());
+			((CustomNumberPicker)aq.id(R.id.cnpWcRecInputPeCount).getView()).setValue(entity.getPe_count());
+			((CustomNumberPicker)aq.id(R.id.cnpWcRecInputPoCount).getView()).setValue(entity.getPo_count());
 			//取得したデータをformにセット
 			this.form.setPe_count(entity.getPe_count());
 			this.form.setPo_count(entity.getPo_count());
 			this.form.setComment(entity.getComment());
 			//削除ボタンを活性化
-			aq.id(R.id.btnDialogDelete).visibility(View.VISIBLE);
+			aq.id(R.id.btnWcRecInputDelete).visibility(View.VISIBLE);
 		//データが無い場合は初期値をセット
 		} else {
-			((CustomNumberPicker)aq.id(R.id.cnpDialogPeCount).getView()).setValue(0);
-			((CustomNumberPicker)aq.id(R.id.cnpDialogPoCount).getView()).setValue(0);
+			((CustomNumberPicker)aq.id(R.id.cnpWcRecInputPeCount).getView()).setValue(0);
+			((CustomNumberPicker)aq.id(R.id.cnpWcRecInputPoCount).getView()).setValue(0);
 			//formの初期値をセット
 			this.form.setPe_count(0);
 			this.form.setPo_count(0);
 			this.form.setComment("");
 			//削除ボタンを活性化
-			aq.id(R.id.btnDialogDelete).visibility(View.GONE);
+			aq.id(R.id.btnWcRecInputDelete).visibility(View.INVISIBLE);
 		}
 		//ラベルに日付を表示
 		int year = CalendarUtil.getYear(form.getWc_record_date());
 		int month = CalendarUtil.getMonth(form.getWc_record_date());
 		int day = CalendarUtil.getDate(form.getWc_record_date());
-        aq.id(R.id.tvDialogDateYear).text(String.format("%1$4d",year));
-        aq.id(R.id.tvDialogDateMonth).text(String.format("%1$02d", month));
-        aq.id(R.id.tvDialogDateDay).text(String.format("%1$02d", day));
+        aq.id(R.id.tvWcRecInputDateYear).text(String.format("%1$4d",year));
+        aq.id(R.id.tvWcRecInputDateMonth).text(String.format("%1$02d", month));
+        aq.id(R.id.tvWcRecInputDateDay).text(String.format("%1$02d", day));
         CommonLogUtil.method_end();
 	}
 	
@@ -159,8 +159,8 @@ public class WcRecordInputFragment extends BaseFragment {
         CommonLogUtil.method_start();
 		WcRecordModel model = new WcRecordModel(mContext);
 		//最新の値をセット
-		this.form.setPe_count(((CustomNumberPicker)aq.id(R.id.cnpDialogPeCount).getView()).getValue());
-		this.form.setPo_count(((CustomNumberPicker)aq.id(R.id.cnpDialogPoCount).getView()).getValue());
+		this.form.setPe_count(((CustomNumberPicker)aq.id(R.id.cnpWcRecInputPeCount).getView()).getValue());
+		this.form.setPo_count(((CustomNumberPicker)aq.id(R.id.cnpWcRecInputPoCount).getView()).getValue());
 		//Toastのメッセージ
 		String msg = "";
 		//件数が0以上ならUpdate、0ならInsert
@@ -208,9 +208,9 @@ public class WcRecordInputFragment extends BaseFragment {
 		@Override
 		public void onClick(View v) {
             CommonLogUtil.method_start();
-			if (v.getId() == R.id.btnPrevDay) {
+			if (v.getId() == R.id.btnWcRecInputPrevDay) {
 				form.getWc_record_date().add(Calendar.DATE, -1);
-			} else if(v.getId() == R.id.btnNextDay) {
+			} else if(v.getId() == R.id.btnWcRecInputNextDay) {
 				form.getWc_record_date().add(Calendar.DATE, 1);
 			}
 			setContents();

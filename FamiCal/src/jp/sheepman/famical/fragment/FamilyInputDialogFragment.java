@@ -45,6 +45,7 @@ import jp.sheepman.famical.form.ImagesForm;
 import jp.sheepman.famical.model.FamilyModel;
 import jp.sheepman.famical.model.ImagesModel;
 import jp.sheepman.famical.util.CommonConst;
+import jp.sheepman.famical.util.CommonImageUtil;
 import jp.sheepman.famical.util.CommonLogUtil;
 
 /**
@@ -82,9 +83,9 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 		//rootをDialog内のViewにセット
 		aq.recycle(view);
 		//各項目に初期値をセット
-		aq.id(R.id.btnDialogInput).clicked(lsnrBtnSubmit);
-		aq.id(R.id.btnDialogClear).clicked(lsnrClickClear);
-		aq.id(R.id.btnDialogDelete).clicked(lsnrClickDelete);
+		aq.id(R.id.btnWcRecInputInput).clicked(lsnrBtnSubmit);
+		aq.id(R.id.btnWcRecInputClear).clicked(lsnrClickClear);
+		aq.id(R.id.btnWcRecInputDelete).clicked(lsnrClickDelete);
 		aq.id(R.id.btnClose).clicked(lsnrBtnClose);
 		aq.id(R.id.ivDialogImage).clicked(lsnrBtnImage);
         aq.id(R.id.tvDialogBirthDay).clicked(lsnrEtBirthDate);
@@ -106,7 +107,7 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 		//モーダル時の処理
 		if(mIsModal){
 			aq.id(R.id.btnClose).visibility(View.GONE);
-			aq.id(R.id.btnDialogDelete).visibility(View.GONE);
+			aq.id(R.id.btnWcRecInputDelete).visibility(View.GONE);
 			dialog.setCancelable(false);
 			dialog.setCanceledOnTouchOutside(false);
 		}
@@ -134,12 +135,12 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 			aq.id(R.id.etDialogFamilyName).text(mForm.getFamily_name());
 			aq.id(R.id.tvDialogBirthDay).text(CalendarUtil.cal2str(mForm.getBirth_date()));
 
-            aq.id(R.id.ivDialogImage).image(convertByte2Bitmap(iform.getImage()));
+            aq.id(R.id.ivDialogImage).image(CommonImageUtil.convertByte2Bitmap(iform.getImage()));
 			//削除ボタンを活性化
-			aq.id(R.id.btnDialogDelete).visibility(View.VISIBLE);
+			aq.id(R.id.btnWcRecInputDelete).visibility(View.VISIBLE);
 		} else {
 			//削除ボタンを非活性化
-			aq.id(R.id.btnDialogDelete).visibility(View.GONE);
+			aq.id(R.id.btnWcRecInputDelete).visibility(View.GONE);
 		}
 		CommonLogUtil.method_end();
 	}
@@ -162,12 +163,8 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 			mForm.setBirth_date(CalendarUtil.str2cal(aq.id(R.id.tvDialogBirthDay).getText().toString()));
 			//画像データを取得
 			BitmapDrawable bd = (BitmapDrawable) ((ImageView) aq.id(R.id.ivDialogImage).getView()).getDrawable();
-			if (bd != null && bd.getBitmap() != null) {
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				bd.getBitmap().compress(CompressFormat.PNG, 100, baos);
-				//formにセット
-				formImages.setImage(baos.toByteArray());
-			}
+            //formにセット
+            formImages.setImage(CommonImageUtil.getImageByteArray(bd));
 
 			//件数が0以上ならUpdate、0ならInsert
 			long rowid = 0;
@@ -224,37 +221,7 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 		}
 		return ret;
 	}
-	
-	/**
-	 * ImageViewの画像データをbyte配列にして返却する
-	 * @return byte配列
-	 */
-	private byte[] getImageByteArray(){
-		CommonLogUtil.method_start();
-		byte[] data = null;
-		BitmapDrawable bd = (BitmapDrawable)((ImageView)aq.id(R.id.ivDialogImage).getView()).getDrawable();
-		if(bd != null){
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			bd.getBitmap().compress(CompressFormat.PNG, 100, baos);
-			data = baos.toByteArray();
-		}
-		CommonLogUtil.method_end();
-		return data;
-	}
 
-    /**
-     * byte配列をBitmapにして返却
-     * @param data byte配列
-     * @return Bitmapデータ
-     */
-    private Bitmap convertByte2Bitmap(byte[] data){
-        Bitmap bmp = null;
-        if(data != null && data.length > 0){
-            bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
-        }
-        return bmp;
-    }
-	
 	/**
 	 * 登録ボタン押下時イベント
 	 */

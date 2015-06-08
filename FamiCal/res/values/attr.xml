@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CustomNumberPicker">
+        <attr name="width" format="dimension"/>
+        <attr name="counter_height" format="dimension"/>
+        <attr name="button_height" format="dimension"/>
+        <attr name="max_ems" format="integer"/>
+    </declare-styleable>
+</resources>

@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/jp.sheepman.famical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/snowwhite">
+    android:background="@color/whitelily">
     <!--日付表示エリア-->
     <RelativeLayout
-        android:id="@+id/rlInputTitle"
-        android:layout_width="80dp"
+        android:id="@+id/rlWcRecInputTitle"
+        android:layout_width="70dp"
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:background="@color/usukuminezu">
         <!-- 前日ボタン-->
         <Button
-            android:id="@+id/btnPrevDay"
+            android:id="@+id/btnWcRecInputPrevDay"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_alignParentTop="true"
@@ -22,7 +23,7 @@
             />
         <!-- 翌日ボタン-->
         <Button
-            android:id="@+id/btnNextDay"
+            android:id="@+id/btnWcRecInputNextDay"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_alignParentTop="true"
@@ -31,11 +32,11 @@
             />
         <!-- 日付表示-->
         <TextView
-            android:id="@+id/tvDialogDateYear"
+            android:id="@+id/tvWcRecInputDateYear"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/btnPrevDay"
-            android:layout_marginTop="-10dp"
+            android:layout_below="@+id/btnWcRecInputPrevDay"
+            android:layout_marginTop="-15dp"
             android:gravity="center"
             android:focusable="true"
             android:focusableInTouchMode="true"
@@ -45,11 +46,11 @@
             <requestFocus/>
         </TextView>
         <TextView
-            android:id="@+id/tvDialogDateMonth"
+            android:id="@+id/tvWcRecInputDateMonth"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tvDialogDateYear"
-            android:layout_marginTop="-5dp"
+            android:layout_below="@+id/tvWcRecInputDateYear"
+            android:layout_marginTop="-18dp"
             android:gravity="center"
             android:focusable="true"
             android:focusableInTouchMode="true"
@@ -58,11 +59,11 @@
             android:textStyle="bold">
         </TextView>
         <TextView
-            android:id="@+id/tvDialogDateDay"
+            android:id="@+id/tvWcRecInputDateDay"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tvDialogDateMonth"
-            android:layout_marginTop="-10dp"
+            android:layout_below="@+id/tvWcRecInputDateMonth"
+            android:layout_marginTop="-18dp"
             android:gravity="center"
             android:focusable="true"
             android:focusableInTouchMode="true"
@@ -71,109 +72,104 @@
             android:textStyle="bold">
         </TextView>
     </RelativeLayout>
-    <!-- 削除ボタン等-->
-    <LinearLayout
-        android:id="@+id/llInputDivider"
-        android:layout_width="match_parent"
+    <!-- 削除ボタン-->
+    <Button
+        android:id="@+id/btnWcRecInputDelete"
+        android:layout_width="80dp"
         android:layout_height="20dp"
         android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/rlInputTitle"
-        android:gravity="end|center_vertical"
-        android:background="@color/snowwhite"
-        >
-        <!-- 削除ボタン-->
-        <Button
-            android:id="@+id/btnDialogDelete"
-            android:layout_width="50dp"
-            android:layout_height="20dp"
-            android:layout_marginEnd="5dp"
-            android:background="@color/tomato"
-            android:textColor="@color/white"
-            android:textSize="13sp"
-            android:text="@string/lblDelete" />
-        <!-- 非表示項目　Fanily_ID-->
-        <TextView
-            android:id="@+id/tvDialogFamily_id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="invisible">
-        </TextView>
-    </LinearLayout>
+        android:layout_alignParentEnd="true"
+        android:background="@color/tomato"
+        android:textColor="@color/white"
+        android:textSize="13sp"
+        android:text="@string/lblDelete" />
     <!-- カウンタ部 -->
     <RelativeLayout
-        android:id="@+id/rlDialogCount"
+        android:id="@+id/rlWcRecInputCount"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/llInputDivider"
-        android:layout_marginTop="15dp"
-        android:layout_toEndOf="@+id/rlInputTitle">
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/rlWcRecInputTitle"
+        android:layout_toStartOf="@+id/llWcRecInputButton"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
+        >
         <!-- 小マーク-->
     	<TextView
-    	    android:id="@+id/tvInputPeMark"
+    	    android:id="@+id/tvWcRecInputPeMark"
     	    android:layout_width="wrap_content"
     	    android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentStart="true"
             android:gravity="start|top"
-            android:layout_marginTop="-10dp"
     	    android:textColor="@color/powderblue"
     	    android:text="@string/lblMarkCircle"
     	    android:textSize="40sp"
     	    />
         <!-- 小カウンタ-->
 		<jp.sheepman.famical.view.CustomNumberPicker
-		    android:id="@+id/cnpDialogPeCount"
-		    android:layout_width="wrap_content"
+		    android:id="@+id/cnpWcRecInputPeCount"
+		    android:layout_width="0dp"
 		    android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-    	    android:layout_toEndOf="@+id/tvInputPeMark"
+            android:layout_marginEnd="8dp"
+            android:layout_toStartOf="@+id/vWcRecInputSpacer"
+    	    android:layout_toEndOf="@+id/tvWcRecInputPeMark"
 		    />
+        <!-- スペーサー-->
+        <View
+            android:id="@+id/vWcRecInputSpacer"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_centerHorizontal="true"/>
         <!-- 大マーク-->
     	<TextView
-    	    android:id="@+id/tvInputPoMark"
+    	    android:id="@+id/tvWcRecInputPoMark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_toEndOf="@+id/cnpDialogPeCount"
+            android:layout_toEndOf="@+id/vWcRecInputSpacer"
             android:gravity="start|top"
-            android:layout_marginTop="-10dp"
     	    android:textColor="@color/mustard"
     	    android:text="@string/lblMarkCircle"
     	    android:textSize="40sp"
     	    />
         <!-- 大カウンタ-->
 		<jp.sheepman.famical.view.CustomNumberPicker
-		    android:id="@+id/cnpDialogPoCount"
+		    android:id="@+id/cnpWcRecInputPoCount"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-    	    android:layout_toEndOf="@+id/tvInputPoMark"
+    	    android:layout_toEndOf="@+id/tvWcRecInputPoMark"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="8dp"
 		    />
     </RelativeLayout>
     <!-- ボタン部 -->
     <LinearLayout
-        android:id="@+id/llInputButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/rlDialogCount"
+        android:id="@+id/llWcRecInputButton"
+        android:layout_width="80dp"
+        android:layout_height="match_parent"
+        android:layout_below="@id/btnWcRecInputDelete"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_toEndOf="@+id/rlInputTitle"
-        android:gravity="center_horizontal|bottom">
-        <!-- 入力ボタン -->
-        <Button
-            android:id="@+id/btnDialogInput"
-            android:layout_width="120dp"
-            android:layout_height="40dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:text="@string/lblInput"/>
+        android:layout_marginBottom="5dp"
+        android:gravity="bottom"
+        android:orientation="vertical">
         <!-- クリアボタン -->
         <Button
-            android:id="@+id/btnDialogClear"
-            android:layout_width="120dp"
-            android:layout_height="40dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
+            android:id="@+id/btnWcRecInputClear"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:background="@color/lightgrey"
             android:text="@string/lblClear" />
+        <!-- 入力ボタン -->
+        <Button
+            android:id="@+id/btnWcRecInputInput"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/khaki"
+            android:text="@string/lblInput"/>
     </LinearLayout>
 </RelativeLayout>

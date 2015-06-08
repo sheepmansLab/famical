@@ -28,6 +28,7 @@ import jp.sheepman.famical.form.ImagesForm;
 import jp.sheepman.famical.model.FamilyModel;
 import jp.sheepman.famical.model.ImagesModel;
 import jp.sheepman.famical.util.CommonConst;
+import jp.sheepman.famical.util.CommonImageUtil;
 import jp.sheepman.famical.util.CommonLogUtil;
 
 public class FamilySelectFragment extends BaseFragment {
@@ -166,7 +167,7 @@ public class FamilySelectFragment extends BaseFragment {
 				//画像があればセットする
 				if(imagesForm != null && imagesForm.getImage() != null){
 					byte[] image = imagesForm.getImage();
-					aq.id(R.id.ivFamSelItemFamilyPict).image(BitmapFactory.decodeByteArray(image, 0, image.length));
+					aq.id(R.id.ivFamSelItemFamilyPict).image(CommonImageUtil.convertByte2Bitmap(image));
 				}
 			}
 			//名前をセット

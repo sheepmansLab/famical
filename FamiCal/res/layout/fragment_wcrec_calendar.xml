@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_alignParentTop="true"
 	    android:orientation="horizontal"
-        android:background="@color/watergreen">
+        android:background="@color/whitelily">
 	    <Button 
 	        android:layout_width="30dp"
 	        android:layout_height="30dp"

@@ -111,7 +111,7 @@
         android:gravity="center_horizontal">
 
         <Button
-            android:id="@+id/btnDialogInput"
+            android:id="@+id/btnWcRecInputInput"
             android:layout_width="80dp"
             android:layout_height="40dp"
             android:layout_marginLeft="5dp"
@@ -119,7 +119,7 @@
             android:text="@string/lblInput"/>
 
         <Button
-            android:id="@+id/btnDialogClear"
+            android:id="@+id/btnWcRecInputClear"
             android:layout_width="80dp"
             android:layout_height="40dp"
             android:layout_marginLeft="5dp"
@@ -127,7 +127,7 @@
             android:text="@string/lblClear" />
 
         <Button
-            android:id="@+id/btnDialogDelete"
+            android:id="@+id/btnWcRecInputDelete"
             android:layout_width="80dp"
             android:layout_height="40dp"
             android:layout_marginLeft="5dp"

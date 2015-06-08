@@ -1,7 +1,6 @@
 package jp.sheepman.famical.fragment;
 
 import android.annotation.SuppressLint;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,10 +25,13 @@ import jp.sheepman.common.fragment.BaseFragment;
 import jp.sheepman.common.util.CalendarUtil;
 import jp.sheepman.famical.R;
 import jp.sheepman.famical.form.FamilyForm;
+import jp.sheepman.famical.form.ImagesForm;
 import jp.sheepman.famical.form.WcRecordForm;
 import jp.sheepman.famical.model.FamilyModel;
+import jp.sheepman.famical.model.ImagesModel;
 import jp.sheepman.famical.model.WcRecordModel;
 import jp.sheepman.famical.util.CommonConst;
+import jp.sheepman.famical.util.CommonImageUtil;
 import jp.sheepman.famical.util.CommonLogUtil;
 
 public class WcRecordCalendarFragment extends BaseFragment {
@@ -142,18 +144,33 @@ public class WcRecordCalendarFragment extends BaseFragment {
 	 */
 	private void setFamilyData(){
         CommonLogUtil.method_start();
-		FamilyModel model = new FamilyModel(getActivity());
-		
+		FamilyModel familyModel = new FamilyModel(getActivity());
+		ImagesModel imagesModel = new ImagesModel(getActivity());
+		ImagesForm imagesForm = new ImagesForm();
+
 		FamilyForm form = new FamilyForm();
 		form.setFamily_id(family_id);
 		
-		Iterator<BaseForm> ite = model.selectById(form).iterator();
+		Iterator<BaseForm> ite = familyModel.selectById(form).iterator();
+		//データが存在した場合
 		if(ite.hasNext()){
 			form = (FamilyForm)ite.next();
+			imagesForm.setImage_id(form.getImage_id());
+			Iterator<BaseForm> iite = imagesModel.selectById(imagesForm).iterator();
+			if(ite.hasNext()){
+				imagesForm = (ImagesForm)iite.next();
+			}
 		}
-		
-		aq.id(R.id.tvCalFamilyName).text(form.getFamily_name() + "(" + form.getFamily_id() +")");
-		//aq.id(R.id.ivCalFamily).image(Bitmapなど);
+		//名前をセット
+		if(form.getFamily_id() == 0 || form.getFamily_name() == null){
+			aq.id(R.id.tvCalFamilyName).text("");
+			aq.id(R.id.ivCalFamily).clear();
+		} else {
+			//名前をセット
+			aq.id(R.id.tvCalFamilyName).text(form.getFamily_name());
+			//画像をセット
+			aq.id(R.id.ivCalFamily).image(CommonImageUtil.convertByte2Bitmap(imagesForm.getImage()));
+		}
         CommonLogUtil.method_end();
 	}
 	

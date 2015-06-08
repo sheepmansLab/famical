@@ -1,35 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/btnNumpickUp"
+            android:layout_width="0dp"
+            android:layout_height="25dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignEnd="@+id/etNumpickCount"
+            android:gravity="center"
+            android:textSize="12sp"
+            android:text="@string/lblMarkUp"
+            android:background="@color/usukuminezu"/>
         <EditText
-            android:id="@+id/etCount"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:id="@+id/etNumpickCount"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_below="@+id/btnNumpickUp"
             android:layout_alignParentStart="true"
             android:gravity="center"
             android:maxLength="2"
             android:textSize="15sp"
-            android:inputType="number"/>
-
-        <Button
-            android:id="@+id/btnNumpickUp"
-            android:layout_width="30dp"
-            android:layout_height="25dp"
-            android:layout_toEndOf="@+id/etCount"
-            android:layout_alignTop="@+id/etCount"
-            android:gravity="center_horizontal|top"
-            android:textSize="12sp"
-            android:text="@string/lblMarkUp" />
+            android:inputType="number"
+            android:background="@drawable/background_text_area"/>
 
         <Button
             android:id="@+id/btnNumpickDown"
-            android:layout_width="30dp"
+            android:layout_width="0dp"
             android:layout_height="25dp"
-            android:layout_toEndOf="@+id/etCount"
-            android:layout_alignBottom="@+id/etCount"
-            android:gravity="center_horizontal|bottom"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/etNumpickCount"
+            android:layout_alignEnd="@+id/etNumpickCount"
+            android:gravity="center"
             android:textSize="12sp"
-            android:text="@string/lblMarkDown" />
+            android:text="@string/lblMarkDown"
+            android:background="@color/usukuminezu"/>
     
 </RelativeLayout>
