@@ -11,6 +11,7 @@
     <color name="gold">#FFD700</color>
     <color name="mustard">#f3c759</color>
     <color name="sundayred">#fff0f5</color>
+    <color name="oyster">#eae1cf</color>
     <color name="moccasin">#ffe4b5</color>
     <color name="pink">#ffc0cb</color>
     <color name="lightsalmon">#ffa07a</color>
@@ -21,17 +22,21 @@
     <color name="yanaginezu">#c8d5bb</color>
     <color name="watergreen">#a5c9c1</color>
     <color name="fog">#abb1b5</color>
+    <color name="genjinezu">#888084</color>
+    <color name="orchidgray">#bcc7d7</color>
+    <color name="geppaku">#eaf4fc</color>
     <color name="azure">#f0ffff</color>
     <color name="saturdayblue">#eaffff</color>
     <color name="babyblue">#bbe2f1</color>
     <color name="powderblue">#b0e0e6</color>
     <color name="hisokuiro">#abced8</color>
     <color name="aotakeiro">#7ebeab</color>
+    <color name="usuhanairo">#698aab</color>
     <color name="nile_blue">#2cb4ad</color>
     <color name="steelblue">#4682b4</color>
     <color name="koiai">#0f2350</color>
     <color name="darkslategray">#2f4f4f</color>
     <color name="taupe">#504946</color>
     <color name="SELECTED">#fffffb95</color>
-    <color name="BLANK">#ffffffff</color>
+    <color name="BLANK">#00ffffff</color>
 </resources>

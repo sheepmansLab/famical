@@ -26,6 +26,6 @@
     <string name="lblMarkDown">▼</string>
     <string name="str_blank"></string>
     <string name="title_activity_family">FamilyActivity</string>
-    <string name="lblNewRecord">新規作成</string>
+    <string name="lblNewRecord">追加</string>
 
 </resources>

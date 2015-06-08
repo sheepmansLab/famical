@@ -6,6 +6,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.widget.ImageView;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 import jp.sheepman.famical.R;
 
@@ -19,9 +20,14 @@ public class CommonImageUtil {
 		CommonLogUtil.method_start();
 		byte[] data = null;
 		if(bitmapDrawable != null && bitmapDrawable.getBitmap() != null){
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			bitmapDrawable.getBitmap().compress(Bitmap.CompressFormat.PNG, 100, baos);
-			data = baos.toByteArray();
+			try {
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				bitmapDrawable.getBitmap().compress(Bitmap.CompressFormat.PNG, 100, baos);
+				data = baos.toByteArray();
+				baos.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		CommonLogUtil.method_end();
 		return data;

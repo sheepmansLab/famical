@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_alignParentTop="true"
 	    android:orientation="horizontal"
-        android:background="@color/whitelily">
+        android:background="@color/snowwhite">
 	    <Button 
 	        android:layout_width="30dp"
 	        android:layout_height="30dp"
@@ -61,7 +61,7 @@
 	    android:layout_height="20dp"
         android:layout_width="match_parent"
         android:layout_below="@+id/llCalendarHeader"
-		android:background="@color/usukuminezu"
+		android:background="@color/genjinezu"
 	    android:orientation="horizontal">
 	    <TextView
 	        android:id="@+id/tvCalWeekday01"

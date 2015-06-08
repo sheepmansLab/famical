@@ -163,12 +163,13 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 			mForm.setBirth_date(CalendarUtil.str2cal(aq.id(R.id.tvDialogBirthDay).getText().toString()));
 			//画像データを取得
 			BitmapDrawable bd = (BitmapDrawable) ((ImageView) aq.id(R.id.ivDialogImage).getView()).getDrawable();
-            //formにセット
-            formImages.setImage(CommonImageUtil.getImageByteArray(bd));
+            //画像をByte化
+			byte[] image = CommonImageUtil.getImageByteArray(bd);
 
 			//件数が0以上ならUpdate、0ならInsert
 			long rowid = 0;
 			if (modelFamily.selectById(this.mForm).size() == 0) {
+				formImages.setImage(image);
 				rowid = modelImages.insert(formImages);
 				formImages = (ImagesForm) modelImages.selectByRowId(rowid).get(0);
 				this.mForm.setImage_id(formImages.getImage_id());
@@ -182,8 +183,10 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 				Iterator ite = modelImages.selectById(formImages).iterator();
 				if (ite.hasNext()) {
 					formImages = (ImagesForm) ite.next();
+					formImages.setImage(image);
 					modelImages.update(formImages);
 				} else {
+					formImages.setImage(image);
 					rowid = modelImages.insert(formImages);
 					formImages = (ImagesForm) modelImages.selectByRowId(rowid).get(0);
 					mForm.setImage_id(formImages.getImage_id());
@@ -353,7 +356,9 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 		CommonLogUtil.method_start();
 		ActivityForm actForm = new ActivityForm();
 		actForm.setFamily_id(mForm.getFamily_id());
-		((BaseActivity)getActivity()).callback(actForm);
+		if(getActivity() != null) {
+			((BaseActivity)getActivity()).callback(actForm);
+		}
 		super.onDismiss(dialog);
 		CommonLogUtil.method_end();
 	}

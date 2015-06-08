@@ -2,21 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+	android:background="@color/snowwhite"
     android:orientation="vertical" >
     <Button
         android:id="@+id/btnFamSelInput"
 	    android:layout_width="match_parent"
     	android:layout_height="42dp"
-		android:layout_margin="5dp"
 		android:gravity="center"
 		android:text="@string/lblNewRecord"
+		android:background="@color/mustard"
         />
 	<ListView
     	android:id="@+id/lvFamSel"
 	    android:layout_width="match_parent"
     	android:layout_height="match_parent"
-		android:layout_marginBottom="5dp"
+		android:layout_marginTop="15dp"
 		android:divider="@color/BLANK"
-		android:dividerHeight="3dp"
+		android:dividerHeight="0dp"
 	    />
 </LinearLayout>

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res/jp.sheepman.famical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/whitelily">
+    android:background="@color/snowwhite">
     <!--日付表示エリア-->
     <RelativeLayout
         android:id="@+id/rlWcRecInputTitle"
@@ -36,7 +36,7 @@
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/btnWcRecInputPrevDay"
-            android:layout_marginTop="-15dp"
+            android:layout_marginTop="-10dp"
             android:gravity="center"
             android:focusable="true"
             android:focusableInTouchMode="true"
@@ -50,7 +50,7 @@
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvWcRecInputDateYear"
-            android:layout_marginTop="-18dp"
+            android:layout_marginTop="-15dp"
             android:gravity="center"
             android:focusable="true"
             android:focusableInTouchMode="true"
@@ -63,7 +63,7 @@
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvWcRecInputDateMonth"
-            android:layout_marginTop="-18dp"
+            android:layout_marginTop="-15dp"
             android:gravity="center"
             android:focusable="true"
             android:focusableInTouchMode="true"
@@ -91,6 +91,7 @@
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/rlWcRecInputTitle"
         android:layout_toStartOf="@+id/llWcRecInputButton"
+        android:gravity="bottom"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="10dp"
         >
@@ -101,6 +102,7 @@
     	    android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentStart="true"
+            android:layout_marginTop="-15dp"
             android:gravity="start|top"
     	    android:textColor="@color/powderblue"
     	    android:text="@string/lblMarkCircle"
@@ -129,6 +131,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/vWcRecInputSpacer"
+            android:layout_marginTop="-15dp"
             android:gravity="start|top"
     	    android:textColor="@color/mustard"
     	    android:text="@string/lblMarkCircle"
@@ -153,7 +156,7 @@
         android:layout_below="@id/btnWcRecInputDelete"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="10dp"
         android:gravity="bottom"
         android:orientation="vertical">
         <!-- クリアボタン -->
