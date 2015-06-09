@@ -20,10 +20,12 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
+import jp.sheepman.common.activity.BaseActivity;
 import jp.sheepman.common.form.BaseForm;
 import jp.sheepman.common.fragment.BaseFragment;
 import jp.sheepman.common.util.CalendarUtil;
 import jp.sheepman.famical.R;
+import jp.sheepman.famical.form.ActivityForm;
 import jp.sheepman.famical.form.FamilyForm;
 import jp.sheepman.famical.form.ImagesForm;
 import jp.sheepman.famical.form.WcRecordForm;
@@ -39,8 +41,8 @@ public class WcRecordCalendarFragment extends BaseFragment {
 
 	private LayoutInflater mInflator;	//Infrator
 	private Calendar mCalendarBase;		//カレンダの月を決める基準日
-	private Calendar wc_record_date;	//指定日
-	private int family_id;				//表示している対象者ID
+	private Calendar mWc_record_date;	//指定日
+	private int mFamily_id;				//表示している対象者ID
 
 	private View mCellSelected;
 	
@@ -51,8 +53,8 @@ public class WcRecordCalendarFragment extends BaseFragment {
 		//Bundleに画面情報を保持
 		if(outState != null){
 			Log.d("famical", "Data set to Bundle");
-			outState.putInt(CommonConst.BUNDLE_KEY_FAMILY_ID, family_id);
-			outState.putString(CommonConst.BUNDLE_KEY_WC_RECORD_DATE, CalendarUtil.cal2str(wc_record_date));
+			outState.putInt(CommonConst.BUNDLE_KEY_FAMILY_ID, mFamily_id);
+			outState.putString(CommonConst.BUNDLE_KEY_WC_RECORD_DATE, CalendarUtil.cal2str(mWc_record_date));
 			outState.putString(CommonConst.BUNDLE_KEY_M_CALENDAR_BASE, CalendarUtil.cal2str(mCalendarBase));
 		}
         CommonLogUtil.method_end();
@@ -66,7 +68,7 @@ public class WcRecordCalendarFragment extends BaseFragment {
 		//カレンダーの基準日にデフォルト値として当日をセット
 		mCalendarBase = CalendarUtil.getToday();
 		//指定日にデフォルト値として当日をセット
-		//wc_record_date = CalendarUtil.getToday();
+		//mWc_record_date = CalendarUtil.getToday();
         CommonLogUtil.method_end();
 	}
 	
@@ -78,16 +80,16 @@ public class WcRecordCalendarFragment extends BaseFragment {
 
 		//引数を受け取る
 		if(getArguments() != null){
-			family_id = getArguments().getInt(CommonConst.BUNDLE_KEY_FAMILY_ID);
-			wc_record_date = CalendarUtil.str2cal(getArguments().getString(CommonConst.BUNDLE_KEY_WC_RECORD_DATE));
-			mCalendarBase = CalendarUtil.getMonthFirstDate(wc_record_date);
+			mFamily_id = getArguments().getInt(CommonConst.BUNDLE_KEY_FAMILY_ID);
+			mWc_record_date = CalendarUtil.str2cal(getArguments().getString(CommonConst.BUNDLE_KEY_WC_RECORD_DATE));
+			mCalendarBase = CalendarUtil.getMonthFirstDate(mWc_record_date);
 		}
 		
 		//Bundleのデータ復帰
 		if(savedInstanceState != null){
-			wc_record_date = CalendarUtil.str2cal(savedInstanceState.getString(CommonConst.BUNDLE_KEY_WC_RECORD_DATE));
+			mWc_record_date = CalendarUtil.str2cal(savedInstanceState.getString(CommonConst.BUNDLE_KEY_WC_RECORD_DATE));
 			mCalendarBase = CalendarUtil.str2cal(savedInstanceState.getString(CommonConst.BUNDLE_KEY_M_CALENDAR_BASE));
-			family_id = savedInstanceState.getInt(CommonConst.BUNDLE_KEY_FAMILY_ID);
+			mFamily_id = savedInstanceState.getInt(CommonConst.BUNDLE_KEY_FAMILY_ID);
 		}
 		
 		//Viewを生成
@@ -149,7 +151,7 @@ public class WcRecordCalendarFragment extends BaseFragment {
 		ImagesForm imagesForm = new ImagesForm();
 
 		FamilyForm form = new FamilyForm();
-		form.setFamily_id(family_id);
+		form.setFamily_id(mFamily_id);
 		
 		Iterator<BaseForm> ite = familyModel.selectById(form).iterator();
 		//データが存在した場合
@@ -157,7 +159,7 @@ public class WcRecordCalendarFragment extends BaseFragment {
 			form = (FamilyForm)ite.next();
 			imagesForm.setImage_id(form.getImage_id());
 			Iterator<BaseForm> iite = imagesModel.selectById(imagesForm).iterator();
-			if(ite.hasNext()){
+			if(iite.hasNext()){
 				imagesForm = (ImagesForm)iite.next();
 			}
 		}
@@ -189,7 +191,7 @@ public class WcRecordCalendarFragment extends BaseFragment {
 		WcRecordModel model = new WcRecordModel(getActivity());
 		WcRecordForm form = new WcRecordForm();
 		form.setWc_record_date(vCalTemp);
-		form.setFamily_id(family_id);
+		form.setFamily_id(mFamily_id);
 		List<BaseForm> list = model.selectByMonth(form);
 		
 		// ヘッダをセット
@@ -248,7 +250,7 @@ public class WcRecordCalendarFragment extends BaseFragment {
 						//その日の文字列をタグにセット
 						cell.setTag(CalendarUtil.cal2str(vCalTemp));
 						//当日の場合色付け
-						if(vCalTemp.compareTo(wc_record_date) == 0){
+						if(vCalTemp.compareTo(mWc_record_date) == 0){
 							setSelectedColor(cell);
 						} else {
 							//セルの背景色をセットする
@@ -398,10 +400,13 @@ public class WcRecordCalendarFragment extends BaseFragment {
 				break;
 			case MotionEvent.ACTION_UP:
 				if(isMoveFinished) {
-					if (getTargetFragment() instanceof WcRecordInputFragment) {
-						((WcRecordInputFragment) getTargetFragment()).changeDisplay(family_id, CalendarUtil.str2cal(v.getTag().toString()));
+					if(getActivity() instanceof BaseActivity){
 						//選択したセルの日付を保持
-						wc_record_date = CalendarUtil.str2cal(v.getTag().toString());
+						mWc_record_date = CalendarUtil.str2cal(v.getTag().toString());
+						ActivityForm form = new ActivityForm();
+						form.setFamily_id(mFamily_id);
+						form.setWc_record_date(mWc_record_date);
+						((BaseActivity)getActivity()).callback(form);
 					}
 					setSelectedColor(v);
 				}
@@ -419,19 +424,18 @@ public class WcRecordCalendarFragment extends BaseFragment {
 	 * 外部からのカレンダー更新指示
 	 * @param family_id
 	 * @param wc_record_date
-	 * @param reload
 	 */
-	public void changeDisplay(int family_id, Calendar wc_record_date, boolean reload){
+	public void changeDisplay(int family_id, Calendar wc_record_date){
         CommonLogUtil.method_start();
-		this.family_id = family_id;
+		this.mFamily_id = family_id;
 		
 		this.mCalendarBase = CalendarUtil.getMonthFirstDate(wc_record_date);
 		//指定が異なる月であった場合カレンダーを再描画する
-		if(CalendarUtil.getMonth(wc_record_date) != CalendarUtil.getMonth(this.wc_record_date) || reload){
+		if(CalendarUtil.getMonth(wc_record_date) != CalendarUtil.getMonth(this.mWc_record_date)){
 			setCellDetail(true);
 		}
 		//日付をFragmentに保持させる
-		this.wc_record_date = wc_record_date;
+		this.mWc_record_date = CalendarUtil.clone(wc_record_date);
 
 		//家族データの更新
 		setFamilyData();

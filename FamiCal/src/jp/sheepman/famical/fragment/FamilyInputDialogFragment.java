@@ -44,6 +44,7 @@ import jp.sheepman.famical.form.FamilyForm;
 import jp.sheepman.famical.form.ImagesForm;
 import jp.sheepman.famical.model.FamilyModel;
 import jp.sheepman.famical.model.ImagesModel;
+import jp.sheepman.famical.model.WcRecordModel;
 import jp.sheepman.famical.util.CommonConst;
 import jp.sheepman.famical.util.CommonImageUtil;
 import jp.sheepman.famical.util.CommonLogUtil;
@@ -152,50 +153,46 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 		CommonLogUtil.method_start();
 		FamilyModel modelFamily = new FamilyModel(mContext);
 		ImagesModel modelImages = new ImagesModel(mContext);
-		ImagesForm formImages = new ImagesForm();
+		ImagesForm imagesForm = new ImagesForm();
 		//Toastのメッセージ
 		String msg;
+		//最新の値をセット
+		mForm.setFamily_name(aq.id(R.id.etDialogFamilyName).getText().toString());
+		mForm.setBirth_date(CalendarUtil.str2cal(aq.id(R.id.tvDialogBirthDay).getText().toString()));
+		//画像データを取得
+		BitmapDrawable bd = (BitmapDrawable) ((ImageView) aq.id(R.id.ivDialogImage).getView()).getDrawable();
+		//画像をByte化
+		byte[] image = CommonImageUtil.getImageByteArray(bd);
 
-		//必須項目のチェック
-		if(validate()) {
-			//最新の値をセット
-			mForm.setFamily_name(aq.id(R.id.etDialogFamilyName).getText().toString());
-			mForm.setBirth_date(CalendarUtil.str2cal(aq.id(R.id.tvDialogBirthDay).getText().toString()));
-			//画像データを取得
-			BitmapDrawable bd = (BitmapDrawable) ((ImageView) aq.id(R.id.ivDialogImage).getView()).getDrawable();
-            //画像をByte化
-			byte[] image = CommonImageUtil.getImageByteArray(bd);
-
-			//件数が0以上ならUpdate、0ならInsert
-			long rowid = 0;
-			if (modelFamily.selectById(this.mForm).size() == 0) {
-				formImages.setImage(image);
-				rowid = modelImages.insert(formImages);
-				formImages = (ImagesForm) modelImages.selectByRowId(rowid).get(0);
-				this.mForm.setImage_id(formImages.getImage_id());
-
-				rowid = modelFamily.insert(this.mForm);
-				//Insertしたデータをformにセット
-				mForm = (FamilyForm) modelFamily.selectByRowId(rowid).get(0);
-				msg = "登録しました";
+		long rowid = 0;
+        //対象者のFamilyの件数が1以上ならUpdate、0ならInsert
+        if (modelFamily.selectById(this.mForm).size() == 0) {
+			imagesForm.setImage(image);
+			rowid = modelImages.insert(imagesForm);
+			imagesForm = (ImagesForm) modelImages.selectByRowId(rowid).get(0);
+			this.mForm.setImage_id(imagesForm.getImage_id());
+			rowid = modelFamily.insert(this.mForm);
+			//Insertしたデータをformにセット
+			mForm = (FamilyForm) modelFamily.selectByRowId(rowid).get(0);
+			msg = "登録しました";
+		} else {
+			imagesForm.setImage_id(mForm.getImage_id());
+			Iterator ite = modelImages.selectById(imagesForm).iterator();
+			if (ite.hasNext()) {
+				imagesForm = (ImagesForm) ite.next();
+				imagesForm.setImage(image);
+				modelImages.update(imagesForm);
 			} else {
-				formImages.setImage_id(mForm.getImage_id());
-				Iterator ite = modelImages.selectById(formImages).iterator();
-				if (ite.hasNext()) {
-					formImages = (ImagesForm) ite.next();
-					formImages.setImage(image);
-					modelImages.update(formImages);
-				} else {
-					formImages.setImage(image);
-					rowid = modelImages.insert(formImages);
-					formImages = (ImagesForm) modelImages.selectByRowId(rowid).get(0);
-					mForm.setImage_id(formImages.getImage_id());
-				}
-				modelFamily.update(this.mForm);
-				msg = "更新しました";
+                imagesForm.setImage(image);
+                rowid = modelImages.insert(imagesForm);
+                imagesForm = (ImagesForm) modelImages.selectByRowId(rowid).get(0);
+                mForm.setImage_id(imagesForm.getImage_id());
 			}
+			modelFamily.update(this.mForm);
+			msg = "更新しました";
+
 			showToast(msg);
-		}
+        }
 		CommonLogUtil.method_end();
 	}
 	
@@ -204,8 +201,13 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 	 */
 	private void deleteData(){
 		CommonLogUtil.method_start();
-		FamilyModel model = new FamilyModel(mContext);
-		model.delete(this.mForm);
+		FamilyModel familyModel = new FamilyModel(mContext);
+        WcRecordModel wcRecordModel = new WcRecordModel(mContext);
+        //対象者データの削除
+		familyModel.delete(this.mForm);
+        //対象者の記録を削除
+        wcRecordModel.deleteByFamilyId(mForm.getFamily_id());
+        //画面に保持するformを初期化
 		mForm = new FamilyForm();
 		showToast("削除しました");
 		dismiss();
@@ -232,8 +234,10 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 		@Override
 		public void onClick(View v) {
 			CommonLogUtil.method_start();
-			createData();
-			dismiss();
+			if(validate()) {
+				createData();
+				dismiss();
+			}
 			CommonLogUtil.method_end();
 		}
 	};

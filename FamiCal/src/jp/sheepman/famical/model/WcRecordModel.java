@@ -130,12 +130,12 @@ public class WcRecordModel extends BaseModel {
 		//input情報をセット
 		WcRecordEntity entity = new WcRecordEntity();
 		entity.setFamily_id(form.getFamily_id());
-		entity.setWc_record_date( CalendarUtil.cal2str(form.getWc_record_date()));
+		entity.setWc_record_date(CalendarUtil.cal2str(form.getWc_record_date()));
 		entity.setPe_count(form.getPe_count());
 		entity.setPo_count(form.getPo_count());
 		entity.setComment(form.getComment());
 		//Insert処理
-		dbutil.insert(tablename , entity);
+		dbutil.insert(tablename, entity);
 		dbutil.close();
 	}
 
@@ -143,7 +143,7 @@ public class WcRecordModel extends BaseModel {
 	 * 記録データの削除処理
 	 * @param form
 	 */
-	public void execute(WcRecordForm form){
+	public void delete(WcRecordForm form){
 		final String whereClause = "family_id = ? "
 								  + "AND wc_record_date = ? ";
 		List<String> list = new ArrayList<String>();
@@ -157,6 +157,26 @@ public class WcRecordModel extends BaseModel {
 		dbutil.delete(tablename, whereClause, list);
 		dbutil.close();
 	}
+
+
+	/**
+	 * Family_idに基づく記録データの削除処理
+	 * @param family_id family_id
+	 */
+	public void deleteByFamilyId(int family_id){
+		final String whereClause = "family_id = ? ";
+		List<String> list = new ArrayList<String>();
+
+		DatabaseUtil dbutil = new DatabaseUtil(mContext);
+		dbutil.open();
+		//条件設定
+		list.add(String.valueOf(family_id));
+		//Update処理
+		dbutil.delete(tablename, whereClause, list);
+		dbutil.close();
+	}
+
+
 	@Override
 	public BaseEntity getEntity() {
 		return new WcRecordEntity();

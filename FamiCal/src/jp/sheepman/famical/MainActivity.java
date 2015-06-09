@@ -96,8 +96,8 @@ public class MainActivity extends BaseActivity {
         mFragment_inp.setTargetFragment(mFragment_cal, 0);
 
         //フラグメントをセット
-		tran.replace(R.id.frmCalendarFragment
-				, mFragment_cal, CommonConst.FRAGMENT_TAG_CALENDAR);
+        tran.replace(R.id.frmCalendarFragment
+                , mFragment_cal, CommonConst.FRAGMENT_TAG_CALENDAR);
 		tran.replace(R.id.frmInputFragment
 				, mFragment_inp, CommonConst.FRAGMENT_TAG_WCREC_INPUT);
         tran.replace(R.id.frmDrawerLayout
@@ -162,7 +162,7 @@ public class MainActivity extends BaseActivity {
 	private void reload(){
 		CommonLogUtil.method_start();
 		if(mFragment_cal != null) {
-            mFragment_cal.changeDisplay(mFamily_id, mWc_record_date, true);
+            mFragment_cal.changeDisplay(mFamily_id, mWc_record_date);
         }
         if(mFragment_inp != null) {
             mFragment_inp.changeDisplay(mFamily_id, mWc_record_date);

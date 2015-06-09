@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.Toast;
 
 import com.androidquery.AQuery;
@@ -16,12 +17,14 @@ import com.androidquery.AQuery;
 import java.util.Calendar;
 import java.util.Iterator;
 
+import jp.sheepman.common.activity.BaseActivity;
 import jp.sheepman.common.entity.BaseEntity;
 import jp.sheepman.common.form.BaseForm;
 import jp.sheepman.common.fragment.BaseFragment;
 import jp.sheepman.common.util.CalendarUtil;
 import jp.sheepman.famical.R;
 import jp.sheepman.famical.entity.WcRecordEntity;
+import jp.sheepman.famical.form.ActivityForm;
 import jp.sheepman.famical.form.WcRecordForm;
 import jp.sheepman.famical.model.WcRecordModel;
 import jp.sheepman.famical.util.CommonConst;
@@ -182,11 +185,11 @@ public class WcRecordInputFragment extends BaseFragment {
 	private void refrectCalendar(boolean reload){
         CommonLogUtil.method_start();
 		//カレンダーに反映
-		if(getTargetFragment() instanceof WcRecordCalendarFragment){
-			((WcRecordCalendarFragment)getTargetFragment()).changeDisplay(
-					this.form.getFamily_id()
-					, (Calendar)(this.form.getWc_record_date()).clone()
-					, reload);
+		if(getActivity() instanceof BaseActivity){
+			ActivityForm activityForm = new ActivityForm();
+			activityForm.setFamily_id(form.getFamily_id());
+			activityForm.setWc_record_date((Calendar)form.getWc_record_date().clone());
+			((BaseActivity) getActivity()).callback(activityForm);
 		}
         CommonLogUtil.method_end();
 	}
@@ -197,7 +200,7 @@ public class WcRecordInputFragment extends BaseFragment {
 	private void deleteData(){
         CommonLogUtil.method_start();
 		WcRecordModel model = new WcRecordModel(mContext);
-		model.execute(this.form);
+		model.delete(this.form);
 		showToast("削除しました");
         CommonLogUtil.method_end();
 	}
