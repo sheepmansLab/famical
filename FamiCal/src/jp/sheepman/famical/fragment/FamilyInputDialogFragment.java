@@ -10,8 +10,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -28,7 +26,6 @@ import android.widget.Toast;
 
 import com.androidquery.AQuery;
 
-import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Calendar;
@@ -38,8 +35,9 @@ import jp.sheepman.common.activity.BaseActivity;
 import jp.sheepman.common.form.BaseForm;
 import jp.sheepman.common.fragment.BaseDialogFragment;
 import jp.sheepman.common.util.CalendarUtil;
+import jp.sheepman.famical.MainActivity;
 import jp.sheepman.famical.R;
-import jp.sheepman.famical.form.ActivityForm;
+import jp.sheepman.famical.form.MainActivityForm;
 import jp.sheepman.famical.form.FamilyForm;
 import jp.sheepman.famical.form.ImagesForm;
 import jp.sheepman.famical.model.FamilyModel;
@@ -236,6 +234,7 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 			CommonLogUtil.method_start();
 			if(validate()) {
 				createData();
+                referActivity(true);
 				dismiss();
 			}
 			CommonLogUtil.method_end();
@@ -250,6 +249,7 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 		public void onClick(View v) {
 			CommonLogUtil.method_start();
 			deleteData();
+            referActivity(true);
 			dismiss();
 			CommonLogUtil.method_end();
 		}
@@ -343,7 +343,20 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 		}
 		CommonLogUtil.method_end();
 	}
-		
+
+    /**
+     * Activityへ反映させる
+     * @param reload
+     */
+    private void referActivity(boolean reload){
+        if(getActivity() instanceof BaseActivity) {
+            MainActivityForm mainActivityForm = new MainActivityForm();
+            mainActivityForm.setFamily_id(mForm.getFamily_id());
+            mainActivityForm.setReloadFlg(reload);
+            ((BaseActivity) getActivity()).callback(mainActivityForm);
+        }
+    }
+
 	/**
 	 * Toast表示
 	 * @param msg   メッセージ
@@ -358,11 +371,6 @@ public class FamilyInputDialogFragment extends BaseDialogFragment {
 	@Override
 	public void onDismiss(DialogInterface dialog) {
 		CommonLogUtil.method_start();
-		ActivityForm actForm = new ActivityForm();
-		actForm.setFamily_id(mForm.getFamily_id());
-		if(getActivity() != null) {
-			((BaseActivity)getActivity()).callback(actForm);
-		}
 		super.onDismiss(dialog);
 		CommonLogUtil.method_end();
 	}

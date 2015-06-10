@@ -25,9 +25,9 @@ import jp.sheepman.common.form.BaseForm;
 import jp.sheepman.common.fragment.BaseFragment;
 import jp.sheepman.common.util.CalendarUtil;
 import jp.sheepman.famical.R;
-import jp.sheepman.famical.form.ActivityForm;
 import jp.sheepman.famical.form.FamilyForm;
 import jp.sheepman.famical.form.ImagesForm;
+import jp.sheepman.famical.form.MainActivityForm;
 import jp.sheepman.famical.form.WcRecordForm;
 import jp.sheepman.famical.model.FamilyModel;
 import jp.sheepman.famical.model.ImagesModel;
@@ -400,14 +400,15 @@ public class WcRecordCalendarFragment extends BaseFragment {
 				break;
 			case MotionEvent.ACTION_UP:
 				if(isMoveFinished) {
-					if(getActivity() instanceof BaseActivity){
-						//選択したセルの日付を保持
-						mWc_record_date = CalendarUtil.str2cal(v.getTag().toString());
-						ActivityForm form = new ActivityForm();
-						form.setFamily_id(mFamily_id);
-						form.setWc_record_date(mWc_record_date);
-						((BaseActivity)getActivity()).callback(form);
-					}
+                    //タップしたセルの日付を取得
+                    if(v.getTag() instanceof String) {
+                        mWc_record_date = CalendarUtil.str2cal(v.getTag().toString());
+                    }
+                    //カレンダFragmentに連携
+                    if(getTargetFragment() instanceof WcRecordInputFragment){
+                        ((WcRecordInputFragment)getTargetFragment())
+                                .changeDisplay(mFamily_id, CalendarUtil.clone(mWc_record_date));
+                    }
 					setSelectedColor(v);
 				}
 				isMoveFinished = true;
@@ -424,22 +425,32 @@ public class WcRecordCalendarFragment extends BaseFragment {
 	 * 外部からのカレンダー更新指示
 	 * @param family_id
 	 * @param wc_record_date
+     * @param reload
 	 */
-	public void changeDisplay(int family_id, Calendar wc_record_date){
+	public void changeDisplay(int family_id, Calendar wc_record_date, boolean reload){
         CommonLogUtil.method_start();
 		this.mFamily_id = family_id;
 		
 		this.mCalendarBase = CalendarUtil.getMonthFirstDate(wc_record_date);
 		//指定が異なる月であった場合カレンダーを再描画する
-		if(CalendarUtil.getMonth(wc_record_date) != CalendarUtil.getMonth(this.mWc_record_date)){
-			setCellDetail(true);
+		boolean isDiffMonth = (CalendarUtil.getMonth(wc_record_date) != CalendarUtil.getMonth(this.mWc_record_date));
+        if(isDiffMonth || reload){
+			setCellDetail(isDiffMonth);
 		}
 		//日付をFragmentに保持させる
 		this.mWc_record_date = CalendarUtil.clone(wc_record_date);
 
-		//家族データの更新
-		setFamilyData();
-		
+        //家族データの更新
+        setFamilyData();
+
+        //Activityに反映
+        if(getActivity() instanceof BaseActivity){
+            MainActivityForm mainActivityForm = new MainActivityForm();
+            mainActivityForm.setFamily_id(mFamily_id);
+            mainActivityForm.setWc_record_date(CalendarUtil.clone(mWc_record_date));
+            mainActivityForm.setReloadFlg(false);
+            ((BaseActivity) getActivity()).callback(mainActivityForm);
+        }
 		//指定日付のセルを探して色付けする
 		TableLayout tlCalendar = (TableLayout)aq.id(R.id.tlCalendar).getView();
 		//TableRow分回す

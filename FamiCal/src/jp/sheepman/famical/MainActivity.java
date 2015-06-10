@@ -1,8 +1,6 @@
 package jp.sheepman.famical;
 
-import android.app.Activity;
 import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 
@@ -16,7 +14,7 @@ import java.util.List;
 import jp.sheepman.common.activity.BaseActivity;
 import jp.sheepman.common.form.BaseForm;
 import jp.sheepman.common.util.CalendarUtil;
-import jp.sheepman.famical.form.ActivityForm;
+import jp.sheepman.famical.form.MainActivityForm;
 import jp.sheepman.famical.form.FamilyForm;
 import jp.sheepman.famical.fragment.FamilySelectFragment;
 import jp.sheepman.famical.fragment.WcRecordCalendarFragment;
@@ -162,7 +160,7 @@ public class MainActivity extends BaseActivity {
 	private void reload(){
 		CommonLogUtil.method_start();
 		if(mFragment_cal != null) {
-            mFragment_cal.changeDisplay(mFamily_id, mWc_record_date);
+            mFragment_cal.changeDisplay(mFamily_id, mWc_record_date, true);
         }
         if(mFragment_inp != null) {
             mFragment_inp.changeDisplay(mFamily_id, mWc_record_date);
@@ -195,14 +193,16 @@ public class MainActivity extends BaseActivity {
 	public void callback(BaseForm arg0) {
 		CommonLogUtil.method_start();
         //パラメータがActivityFormだった場合
-		if(arg0 instanceof ActivityForm){
-            ActivityForm form = (ActivityForm)arg0;
+		if(arg0 instanceof MainActivityForm){
+            MainActivityForm form = (MainActivityForm)arg0;
 			this.mFamily_id = form.getFamily_id();
 			if(form.getWc_record_date() != null){
 				mWc_record_date = form.getWc_record_date();
 			}
+            if(form.getReloadFlg()){
+                reload();
+            }
 		}
-        reload();
 		CommonLogUtil.method_end();
 	}
 }

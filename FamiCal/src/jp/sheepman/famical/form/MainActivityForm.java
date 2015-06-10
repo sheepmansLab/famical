@@ -4,9 +4,11 @@ import java.util.Calendar;
 
 import jp.sheepman.common.form.BaseForm;
 
-public class ActivityForm extends BaseForm {
+public class MainActivityForm extends BaseForm {
 	private int family_id;
 	private Calendar wc_record_date;
+
+	private boolean reloadFlg;
 	/**
 	 * @return family_id
 	 */
@@ -30,5 +32,21 @@ public class ActivityForm extends BaseForm {
 	 */
 	public void setWc_record_date(Calendar wc_record_date) {
 		this.wc_record_date = wc_record_date;
+	}
+
+	/**
+	 *
+	 * @return reloadFlg
+	 */
+	public boolean getReloadFlg() {
+		return reloadFlg;
+	}
+
+	/**
+	 *
+	 * @param reloadFlg
+	 */
+	public void setReloadFlg(boolean reloadFlg) {
+		this.reloadFlg = reloadFlg;
 	}
 }

@@ -2,7 +2,6 @@ package jp.sheepman.famical.fragment;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +21,7 @@ import jp.sheepman.common.adapter.BaseCustomAdapter;
 import jp.sheepman.common.form.BaseForm;
 import jp.sheepman.common.fragment.BaseFragment;
 import jp.sheepman.famical.R;
-import jp.sheepman.famical.form.ActivityForm;
+import jp.sheepman.famical.form.MainActivityForm;
 import jp.sheepman.famical.form.FamilyForm;
 import jp.sheepman.famical.form.ImagesForm;
 import jp.sheepman.famical.model.FamilyModel;
@@ -125,9 +124,10 @@ public class FamilySelectFragment extends BaseFragment {
             CommonLogUtil.method_start();
 			if(arg1.getTag() instanceof Integer){
 				FamilySelectFragment.this.mFamily_id = Integer.valueOf(arg1.getTag().toString());
-				ActivityForm form = new ActivityForm();
-				form.setFamily_id(mFamily_id);
-				((BaseActivity)getActivity()).callback(form);
+				MainActivityForm mainActivityForm = new MainActivityForm();
+				mainActivityForm.setFamily_id(mFamily_id);
+                mainActivityForm.setReloadFlg(true);
+				((BaseActivity)getActivity()).callback(mainActivityForm);
 			}
             CommonLogUtil.method_end();
 		}

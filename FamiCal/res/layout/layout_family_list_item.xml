@@ -11,7 +11,7 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="5dp"
         android:contentDescription="@string/str_blank"
-        android:src="@drawable/ic_launcher"
+        android:src="@drawable/noimage"
         />
     <TextView 
         android:id="@+id/tvFamSelItemFamilyName"
